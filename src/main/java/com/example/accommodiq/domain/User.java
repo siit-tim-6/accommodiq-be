@@ -8,6 +8,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    public User() {
+
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
