@@ -1,6 +1,9 @@
 package com.example.accommodiq.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.Collection;
 
 @Entity
 public class User {
@@ -14,6 +17,8 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "owner")
+    private Collection<Apartment> apartments;
 
     public User() {
 
@@ -26,6 +31,14 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+    }
+
+    public Collection<Apartment> getApartments() {
+        return apartments;
+    }
+
+    public void setApartments(Collection<Apartment> apartments) {
+        this.apartments = apartments;
     }
 
     public Role getRole() {
