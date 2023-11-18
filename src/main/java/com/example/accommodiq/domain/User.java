@@ -19,6 +19,8 @@ public class User {
     private Role role;
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "owner")
     private Collection<Apartment> apartments;
+    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "user")
+    private Collection<Reservation> reservations;
 
     public User() {
 

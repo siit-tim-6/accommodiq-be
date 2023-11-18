@@ -3,6 +3,7 @@ package com.example.accommodiq.domain;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 public class Apartment {
@@ -16,6 +17,10 @@ public class Apartment {
     @ManyToOne(cascade = {})
     @JoinColumn(name = "user_id")
     private User owner;
+
+    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "apartment")
+    private Collection<Reservation> reservations;
+
 
     public Apartment() {
     }
