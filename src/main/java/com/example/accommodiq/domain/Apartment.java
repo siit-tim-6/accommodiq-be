@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -14,8 +15,7 @@ public class Apartment {
     private int numberOfRooms;
 
     // Reference to the owner (User)
-    @ManyToOne(cascade = {})
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     private User owner;
 
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "apartment")

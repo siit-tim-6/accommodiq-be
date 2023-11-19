@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -18,6 +19,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "owner")
+    @JsonIgnore
     private Collection<Apartment> apartments;
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "user")
     private Collection<Reservation> reservations;
