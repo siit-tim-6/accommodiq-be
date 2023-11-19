@@ -18,9 +18,6 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "owner")
-    @JsonIgnore
-    private Collection<Apartment> apartments;
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "user")
     private Collection<Reservation> reservations;
 
@@ -35,14 +32,6 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
-    }
-
-    public Collection<Apartment> getApartments() {
-        return apartments;
-    }
-
-    public void setApartments(Collection<Apartment> apartments) {
-        this.apartments = apartments;
     }
 
     public Role getRole() {

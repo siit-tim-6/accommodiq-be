@@ -1,7 +1,10 @@
 package com.example.accommodiq.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -15,7 +18,9 @@ public class Apartment {
     private int numberOfRooms;
 
     // Reference to the owner (User)
-    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User owner;
 
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "apartment")
