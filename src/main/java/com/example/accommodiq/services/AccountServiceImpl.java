@@ -1,18 +1,19 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+@Service
 public class AccountServiceImpl implements IAccountService {
 
     final
