@@ -52,6 +52,16 @@ public class ApartmentController {
         apartmentService.deleteAll();
     }
 
+    @PutMapping("/apartments/{apartmentId}/accept")
+    public Apartment acceptApartment(@PathVariable Long apartmentId) {
+        return apartmentService.setApartmentAcceptance(apartmentId, true);
+    }
+
+    @PutMapping("/apartments/{apartmentId}/deny")
+    public Apartment denyApartment(@PathVariable Long apartmentId) {
+        return apartmentService.setApartmentAcceptance(apartmentId, false);
+    }
+
     @PostMapping("/users/{ownerId}/apartments")
     public Apartment insert(@PathVariable(value = "ownerId") Long tutorialId, @RequestBody Apartment apartment) {
         User owner = userService.findUser(tutorialId);

@@ -19,4 +19,6 @@ public interface IApartmentService {
     public void deleteAll();
 
     List<Apartment> findApartmentsByOwnerId(Long ownerId);
+
+    public Apartment setApartmentAcceptance(Long apartmentId, boolean isAccepted);
 }

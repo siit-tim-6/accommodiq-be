@@ -62,13 +62,8 @@ public class ApartmentServiceImpl implements IApartmentService {
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
-            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
-                e = (RuntimeException) c;
-            }
-            if ((c != null) && (c instanceof ConstraintViolationException)) {
-
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
-            }
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) e = c;
+            if (c != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
             throw ex;
         }
     }
@@ -90,5 +85,14 @@ public class ApartmentServiceImpl implements IApartmentService {
     @Override
     public List<Apartment> findApartmentsByOwnerId(Long ownerId) {
         return allApartments.findByOwnerId(ownerId);
+    }
+
+    @Override
+    public Apartment setApartmentAcceptance(Long apartmentId, boolean isAccepted) {
+        Apartment apartment = findApartment(apartmentId);
+        apartment.setAccepted(isAccepted);
+        allApartments.save(apartment);
+        allApartments.flush();
+        return apartment;
     }
 }
