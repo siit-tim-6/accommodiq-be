@@ -1,46 +1,48 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.User;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.services.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
-
     final
-    IUserService service;
+    IAccountService service;
 
-    public UserController(IUserService service) {
+    @Autowired
+    public UserController(IAccountService service) {
         this.service = service;
     }
 
     @GetMapping
-    public Collection<User> getUsers() {
+    public Collection<Account> getAccounts() {
         return service.getAll();
     }
 
-    @GetMapping("/{userId}")
-    public User findUserById(@PathVariable Long userId) {
-        return service.findUser(userId);
+    @GetMapping("/{accountId}")
+    public Account findAccountById(@PathVariable Long accountId) {
+        return service.findAccount(accountId);
     }
 
     @PostMapping
-    public User insert(@RequestBody User user) {
-        return service.insert(user);
+    public Account insert(@RequestBody Account account) {
+        return service.insert(account);
     }
 
     @PutMapping
-    public User update(@RequestBody User user) {
-        return service.update(user);
+    public Account update(@RequestBody Account account) {
+        return service.update(account);
     }
 
-    @DeleteMapping("/{userId}")
-    public User delete(@PathVariable Long userId) {
-        return service.delete(userId);
+    @DeleteMapping("/{accountId}")
+    public Account delete(@PathVariable Long accountId) {
+        return service.delete(accountId);
     }
 
     @DeleteMapping
@@ -48,4 +50,8 @@ public class UserController {
         service.deleteAll();
     }
 
+    @PostMapping("/login")
+    public UserLoginDto login(@RequestBody CredentialsDto credentialsDto) {
+        return service.login(credentialsDto);
+    }
 }
