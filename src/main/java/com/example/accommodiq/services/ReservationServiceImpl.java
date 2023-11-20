@@ -3,9 +3,11 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IReservationService;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,7 +51,7 @@ public class ReservationServiceImpl implements IReservationService {
             allReservations.flush();
             return reservation;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Validation error: " + ex.getMessage());
         }
     }
 
@@ -60,14 +62,10 @@ public class ReservationServiceImpl implements IReservationService {
             allReservations.save(reservation);
             allReservations.flush();
             return reservation;
-        } catch (RuntimeException ex) {
-            Throwable e = ex;
-            Throwable c = null;
-            while((e != null) && !((c=e.getCause()) instanceof ConstraintViolationException))
-                e = (RuntimeException)c;
-            if ((c!= null) && (c instanceof ConstraintViolationException))
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error");
-            throw ex;
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Data integrity violation");
+        } catch (EntityNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found");
         }
     }
 

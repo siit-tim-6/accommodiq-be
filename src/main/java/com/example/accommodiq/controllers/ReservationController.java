@@ -1,10 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.services.interfaces.IApartmentService;
 import com.example.accommodiq.services.interfaces.IReservationService;
-import com.example.accommodiq.services.interfaces.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
