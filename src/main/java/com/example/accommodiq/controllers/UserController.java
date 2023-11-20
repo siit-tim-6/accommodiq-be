@@ -5,9 +5,11 @@ import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -31,27 +33,56 @@ public class UserController {
     }
 
     @PostMapping
-    public Account insert(@RequestBody Account account) {
+    public Account registerUser(@RequestBody Account account) {
+        account.setStatus(Account.AccountStatus.INACTIVE);
         return service.insert(account);
     }
 
     @PutMapping
-    public Account update(@RequestBody Account account) {
+    public Account manageUserAccount(@RequestBody Account account) {
         return service.update(account);
     }
 
     @DeleteMapping("/{accountId}")
-    public Account delete(@PathVariable Long accountId) {
+    public Account deleteUser(@PathVariable Long accountId) {
         return service.delete(accountId);
     }
 
     @DeleteMapping
-    public void deleteAll() {
+    public void deleteAllUsers() {
         service.deleteAll();
     }
 
     @PostMapping("/login")
     public UserLoginDto login(@RequestBody CredentialsDto credentialsDto) {
         return service.login(credentialsDto);
+    }
+
+    @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseStatus(HttpStatus.OK)
+    public void activateUser(@PathVariable Long id) {
+        service.changeStatus(id, Account.AccountStatus.ACTIVE);
+    }
+
+    @PutMapping("/{id}/changePassword")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePassword(@PathVariable Long id, @RequestBody String newPassword) {
+        // service.changePassword(id, newPassword);
+    }
+
+    @PutMapping("/{id}/report")
+    public Account reportUser(@PathVariable Long id, @RequestBody Objects reportData) {
+        // Implement the logic to report a user
+        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
+        // Return appropriate response
+        return null;
+    }
+
+    @PutMapping("/{id}/block")
+    public Account blockUser(@PathVariable Long id) {
+        // Implement the logic to block a user
+        // You can use userService.blockUser(id) to delegate blocking to a service
+        // Return appropriate response
+        return null;
     }
 }
