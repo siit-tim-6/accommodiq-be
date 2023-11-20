@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/v2/reservation")
+@RequestMapping("/api/reservations")
 public class ReservationController {
 
     @Autowired

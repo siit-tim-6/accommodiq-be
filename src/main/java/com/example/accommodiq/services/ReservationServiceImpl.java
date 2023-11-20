@@ -79,4 +79,42 @@ public class ReservationServiceImpl implements IReservationService {
         allReservations.deleteAll();
         allReservations.flush();
     }
+
+    @Override
+    public Collection<Reservation> findReservationsByApartmentId(Long apartmentId) {
+        Collection<Reservation> found = allReservations.findByApartmentId(apartmentId);
+        if (found.isEmpty()) {
+            String value = bundle.getString("reservationNotFound");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
+        return found;
+    }
+
+    @Override
+    public Collection<Reservation> findReservationsByUserId(Long userId) {
+        Collection<Reservation> found = allReservations.findByUserId(userId);
+        if (found.isEmpty()) {
+            String value = bundle.getString("reservationNotFound");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
+        return found;
+    }
+
+    @Override
+    public Reservation setReservationStatus(Long reservationId, Reservation.Status status) {
+        Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
+        if(optionalReservation.isPresent()){
+            Reservation reservation = optionalReservation.get();
+            reservation.setStatus(status);
+            allReservations.save(reservation);
+            allReservations.flush();
+            return reservation;
+        }
+        else{
+            String value = bundle.getString("reservationNotFound");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
+    }
+
+
 }

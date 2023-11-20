@@ -11,4 +11,10 @@ public interface IReservationService {
     public Reservation update(Reservation reservation);
     public Reservation delete(Long reservationId);
     public void deleteAll();
+
+    Collection<Reservation> findReservationsByApartmentId(Long apartmentId);
+
+    Collection<Reservation> findReservationsByUserId(Long userId);
+
+    Reservation setReservationStatus(Long reservationId, Reservation.Status status);
 }

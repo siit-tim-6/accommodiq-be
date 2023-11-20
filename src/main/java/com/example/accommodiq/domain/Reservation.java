@@ -35,8 +35,6 @@ public class Reservation {
         this.apartment = apartment;
     }
 
-    // Create getters and setters...
-
     public Long getId() {
         return id;
     }
