@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.UserRepository;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements IUserService {
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
+    @Autowired
     public UserServiceImpl(UserRepository allUsers) {
         this.allUsers = allUsers;
     }
@@ -48,7 +50,7 @@ public class UserServiceImpl implements IUserService {
             allUsers.flush();
             return user;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User cannot be inserted");
         }
     }
 
@@ -66,7 +68,7 @@ public class UserServiceImpl implements IUserService {
                 e = c;
             }
             if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User cannot be updated");
             }
             throw ex;
         }
