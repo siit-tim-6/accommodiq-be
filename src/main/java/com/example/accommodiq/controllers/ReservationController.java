@@ -1,7 +1,9 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.services.interfaces.IApartmentService;
 import com.example.accommodiq.services.interfaces.IReservationService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,24 +16,38 @@ import java.util.Collection;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    @Autowired
-    IReservationService service;
+    final
+    IReservationService reservationService;
+
+    final
+    IUserService userService;
+
+    final
+    IApartmentService apartmentService;
+
+    public ReservationController(IReservationService reservationService, IUserService userService, IApartmentService apartmentService) {
+        this.reservationService = reservationService;
+        this.userService = userService;
+        this.apartmentService = apartmentService;
+    }
+
+
 
     @GetMapping
-    public Collection<Reservation> getReservations() { return service.getAll();}
+    public Collection<Reservation> getReservations() { return reservationService.getAll();}
 
     @GetMapping("/{reservationId}")
-    public Reservation findReservationById(@PathVariable Long reservationId) { return service.findReservation(reservationId); }
+    public Reservation findReservationById(@PathVariable Long reservationId) { return reservationService.findReservation(reservationId); }
 
     @PostMapping
-    public Reservation insert(@RequestBody Reservation reservation) { return service.insert(reservation); }
+    public Reservation insert(@RequestBody Reservation reservation) { return reservationService.insert(reservation); }
 
     @PutMapping
-    public Reservation update(@RequestBody Reservation reservation) { return service.update(reservation); }
+    public Reservation update(@RequestBody Reservation reservation) { return reservationService.update(reservation); }
 
     @DeleteMapping("/{reservationId}")
-    public Reservation delete(@PathVariable Long reservationId) { return service.delete(reservationId); }
+    public Reservation delete(@PathVariable Long reservationId) { return reservationService.delete(reservationId); }
 
     @DeleteMapping
-    public void deleteAll() { service.deleteAll(); }
+    public void deleteAll() { reservationService.deleteAll(); }
 }
