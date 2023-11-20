@@ -20,16 +20,8 @@ public class ReservationController {
     final
     IReservationService reservationService;
 
-    final
-    IUserService userService;
-
-    final
-    IApartmentService apartmentService;
-
-    public ReservationController(IReservationService reservationService, IUserService userService, IApartmentService apartmentService) {
+    public ReservationController(IReservationService reservationService) {
         this.reservationService = reservationService;
-        this.userService = userService;
-        this.apartmentService = apartmentService;
     }
 
 
@@ -47,7 +39,14 @@ public class ReservationController {
     public Reservation update(@RequestBody Reservation reservation) { return reservationService.update(reservation); }
 
     @DeleteMapping("/{reservationId}")
-    public Reservation delete(@PathVariable Long reservationId) { return reservationService.delete(reservationId); }
+    public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
+        Reservation reservation = reservationService.findReservation(reservationId);
+        reservationService.delete(reservationId);
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
+    }
+
+    //@DeleteMapping("/{reservationId}")
+    //public Reservation delete(@PathVariable Long reservationId) { return reservationService.delete(reservationId); }
 
     @DeleteMapping
     public void deleteAll() { reservationService.deleteAll(); }
@@ -57,9 +56,23 @@ public class ReservationController {
         Reservation reservation = reservationService.findReservation(reservationId);
         reservation.setStatus(Reservation.Status.ACCEPTED);
         reservationService.update(reservation);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been accepted.");
     }
 
     @PutMapping("/{reservationId}/deny")
+    public ResponseEntity<String> denyReservation(@PathVariable Long reservationId) {
+        Reservation reservation = reservationService.findReservation(reservationId);
+        reservation.setStatus(Reservation.Status.DECLINED);
+        reservationService.update(reservation);
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been denied.");
+    }
+
+    @PutMapping("/{reservationId}/cancel")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+        Reservation reservation = reservationService.findReservation(reservationId);
+        reservation.setStatus(Reservation.Status.CANCELLED);
+        reservationService.update(reservation);
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been cancelled.");
+    }
 
 }
