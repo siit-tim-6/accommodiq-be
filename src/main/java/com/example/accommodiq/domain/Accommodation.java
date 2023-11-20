@@ -1,10 +1,10 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.enums.PricingType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Accommodation {
@@ -21,6 +21,10 @@ public class Accommodation {
     private boolean accepted;
     private PricingType pricingType;
     private int cancellationDeadline;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Review> reviews = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Availability> available = new HashSet<>();
 
     public Accommodation(Long id, String title, String description, String location, String image, int minGuests,
                          int maxGuests, String type, boolean accepted, PricingType pricingType, int cancellationDeadline) {
@@ -128,6 +132,38 @@ public class Accommodation {
 
     public void setCancellationDeadline(int cancellationDeadline) {
         this.cancellationDeadline = cancellationDeadline;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+    }
+
+    public Set<Availability> getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Set<Availability> available) {
+        this.available = available;
+    }
+
+    public void addAvailability(Availability availability) {
+        available.add(availability);
+    }
+
+    public void removeAvailability(Availability availability) {
+        available.remove(availability);
     }
 }
 
