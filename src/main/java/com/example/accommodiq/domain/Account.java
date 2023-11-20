@@ -1,9 +1,6 @@
 package com.example.accommodiq.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Account {
@@ -16,15 +13,19 @@ public class Account {
     private Role role;
     private AccountStatus status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private User user;
+
     public Account() {
     }
 
-    public Account(Long id, String email, String password, Role role, AccountStatus status) {
+    public Account(Long id, String email, String password, Role role, AccountStatus status, User user) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
         this.status = status;
+        this.user = user;
     }
 
     public String getEmail() {
@@ -65,6 +66,14 @@ public class Account {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public enum Role {
