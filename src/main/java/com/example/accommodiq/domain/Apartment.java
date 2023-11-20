@@ -18,7 +18,7 @@ public class Apartment {
     private int numberOfRooms;
 
     // Reference to the owner (User)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User owner;

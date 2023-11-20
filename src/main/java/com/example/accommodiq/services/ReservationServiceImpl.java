@@ -31,7 +31,7 @@ public class ReservationServiceImpl implements IReservationService {
     public Reservation findReservation(Long reservationId) {
         Optional<Reservation> found = allReservations.findById(reservationId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("reservationNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();

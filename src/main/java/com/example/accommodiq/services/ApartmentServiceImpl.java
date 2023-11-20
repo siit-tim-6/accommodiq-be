@@ -1,19 +1,16 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Apartment;
-import com.example.accommodiq.domain.Apartment;
-import com.example.accommodiq.repositories.ApartmentRepository;
 import com.example.accommodiq.repositories.ApartmentRepository;
 import com.example.accommodiq.services.interfaces.IApartmentService;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -37,7 +34,7 @@ public class ApartmentServiceImpl implements IApartmentService {
     public Apartment findApartment(Long apartmentId) {
         Optional<Apartment> found = allApartments.findById(apartmentId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("apartmentNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();
@@ -57,7 +54,8 @@ public class ApartmentServiceImpl implements IApartmentService {
     @Override
     public Apartment update(Apartment apartment) {
         try {
-            findApartment(apartment.getId()); // this will throw ResponseStatusException if Apartment is not found
+            Apartment oldApartment = findApartment(apartment.getId()); // this will throw ResponseStatusException if Apartment is not found
+            apartment.setOwner(oldApartment.getOwner());
             allApartments.save(apartment);
             allApartments.flush();
             return apartment;
@@ -87,5 +85,10 @@ public class ApartmentServiceImpl implements IApartmentService {
     public void deleteAll() {
         allApartments.deleteAll();
         allApartments.flush();
+    }
+
+    @Override
+    public List<Apartment> findApartmentsByOwnerId(Long ownerId) {
+        return allApartments.findByOwnerId(ownerId);
     }
 }

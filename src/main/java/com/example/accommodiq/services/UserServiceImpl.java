@@ -17,10 +17,14 @@ import java.util.ResourceBundle;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    @Autowired
+    final
     UserRepository allUsers;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+
+    public UserServiceImpl(UserRepository allUsers) {
+        this.allUsers = allUsers;
+    }
 
     @Override
     public Collection<User> getAll() {
@@ -32,7 +36,7 @@ public class UserServiceImpl implements IUserService {
     public User findUser(Long UserId) {
         Optional<User> found = allUsers.findById(UserId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("userNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();
@@ -60,12 +64,9 @@ public class UserServiceImpl implements IUserService {
             Throwable e = ex;
             Throwable c = null;
             while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
-                e = (RuntimeException) c;
+                e = c;
             }
-            if ((c != null) && (c instanceof ConstraintViolationException)) {
-
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
-            }
+            if (c != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
             throw ex;
         }
     }

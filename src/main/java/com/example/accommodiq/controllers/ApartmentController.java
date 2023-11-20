@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.xml.stream.events.Comment;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +21,6 @@ public class ApartmentController {
 
     final
     IUserService userService;
-    UserRepository userRepository;
 
     public ApartmentController(IApartmentService apartmentService, IUserService userService) {
         this.apartmentService = apartmentService;
@@ -36,6 +37,21 @@ public class ApartmentController {
         return apartmentService.findApartment(apartmentId);
     }
 
+    @PutMapping("/apartments")
+    public Apartment update(@RequestBody Apartment apartment) {
+        return apartmentService.update(apartment);
+    }
+
+    @DeleteMapping("/apartments/{apartmentId}")
+    public Apartment delete(@PathVariable Long apartmentId) {
+        return apartmentService.delete(apartmentId);
+    }
+
+    @DeleteMapping("/apartments")
+    public void deleteAll() {
+        apartmentService.deleteAll();
+    }
+
     @PostMapping("/users/{ownerId}/apartments")
     public Apartment insert(@PathVariable(value = "ownerId") Long tutorialId, @RequestBody Apartment apartment) {
         User owner = userService.findUser(tutorialId);
@@ -46,18 +62,8 @@ public class ApartmentController {
         return apartmentService.insert(apartment);
     }
 
-    @PutMapping
-    public Apartment update(@RequestBody Apartment apartment) {
-        return apartmentService.update(apartment);
-    }
-
-    @DeleteMapping("/{apartmentId}")
-    public Apartment delete(@PathVariable Long apartmentId) {
-        return apartmentService.delete(apartmentId);
-    }
-
-    @DeleteMapping
-    public void deleteAll() {
-        apartmentService.deleteAll();
+    @GetMapping("/users/{ownerId}/apartments")
+    public List<Apartment> getApartmentsByOwnerId(@PathVariable Long ownerId) {
+        return apartmentService.findApartmentsByOwnerId(ownerId);
     }
 }
