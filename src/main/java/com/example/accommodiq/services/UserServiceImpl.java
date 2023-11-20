@@ -50,7 +50,7 @@ public class UserServiceImpl implements IUserService {
             allUsers.flush();
             return user;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User cannot be inserted");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User cannot be inserted");
         }
     }
 
@@ -68,7 +68,7 @@ public class UserServiceImpl implements IUserService {
                 e = c;
             }
             if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User cannot be updated");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User cannot be updated");
             }
             throw ex;
         }
