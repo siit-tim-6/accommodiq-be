@@ -1,12 +1,10 @@
 package com.example.accommodiq.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
@@ -16,27 +14,22 @@ public class Apartment {
     private Long id;
     private String address;
     private int numberOfRooms;
+    private boolean accepted;
 
-    // Reference to the owner (User)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User owner;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "apartment")
-    private Collection<Reservation> reservations;
-
-
     public Apartment() {
     }
 
-    public Apartment(String address, int numberOfRooms, User owner) {
+    public Apartment(String address, int numberOfRooms, boolean accepted, User owner) {
         this.address = address;
         this.numberOfRooms = numberOfRooms;
+        this.accepted = accepted;
         this.owner = owner;
     }
-
-    // Other getters and setters...
 
     public Long getId() {
         return id;
@@ -68,5 +61,13 @@ public class Apartment {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
     }
 }
