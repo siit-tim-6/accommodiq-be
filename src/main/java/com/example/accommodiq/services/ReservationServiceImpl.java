@@ -17,10 +17,15 @@ import java.util.ResourceBundle;
 @Service
 public class ReservationServiceImpl implements IReservationService {
 
-    @Autowired
+    final
     ReservationRepository allReservations;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+
+    public ReservationServiceImpl(ReservationRepository allReservations) {
+        this.allReservations = allReservations;
+    }
+
     @Override
     public Collection<Reservation> getAll() {
         System.out.println(allReservations.findAll());
