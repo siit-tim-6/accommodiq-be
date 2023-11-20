@@ -4,7 +4,6 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.UserRepository;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,14 @@ import java.util.ResourceBundle;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    @Autowired
+    final
     UserRepository allUsers;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+
+    public UserServiceImpl(UserRepository allUsers) {
+        this.allUsers = allUsers;
+    }
 
     @Override
     public Collection<User> getAll() {
@@ -29,8 +32,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User findUser(Long UserId) {
-        Optional<User> found = allUsers.findById(UserId);
+    public User findUser(Long userId) {
+        Optional<User> found = allUsers.findById(userId);
         if (found.isEmpty()) {
             String value = bundle.getString("notFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
@@ -39,31 +42,30 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User insert(User User) {
+    public User insert(User user) {
         try {
-            allUsers.save(User);
+            allUsers.save(user);
             allUsers.flush();
-            return User;
+            return user;
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error");
         }
     }
 
     @Override
-    public User update(User User) {
+    public User update(User user) {
         try {
-            findUser(User.getId()); // this will throw ResponseStatusException if User is not found
-            allUsers.save(User);
+            findUser(user.getId()); // this will throw ResponseStatusException if user is not found
+            allUsers.save(user);
             allUsers.flush();
-            return User;
+            return user;
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
             while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
-                e = (RuntimeException) c;
+                e = c;
             }
-            if ((c != null) && (c instanceof ConstraintViolationException)) {
-
+            if ((c != null)) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
             }
             throw ex;
@@ -71,8 +73,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User delete(Long UserId) {
-        User found = findUser(UserId); // this will throw UserNotFoundException if User is not found
+    public User delete(Long userId) {
+        User found = findUser(userId); // this will throw UserNotFoundException if User is not found
         allUsers.delete(found);
         allUsers.flush();
         return found;
