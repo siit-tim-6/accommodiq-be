@@ -12,9 +12,6 @@ public class User {
     private String address;
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Account account;
-
     public User() {
 
     }
@@ -25,7 +22,6 @@ public class User {
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.account = account;
     }
 
     public Long getId() {
@@ -66,13 +62,5 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 }
