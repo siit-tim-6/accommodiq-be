@@ -1,6 +1,8 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +46,10 @@ public class AccountController {
     @DeleteMapping
     public void deleteAll() {
         service.deleteAll();
+    }
+
+    @PostMapping("/login")
+    public UserLoginDto login(@RequestBody CredentialsDto credentialsDto) {
+        return service.login(credentialsDto);
     }
 }
