@@ -1,9 +1,6 @@
 package com.example.accommodiq.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.Collection;
 
 @Entity
 public class User {
@@ -12,41 +9,31 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;
+    private String address;
     private String phoneNumber;
-    private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "owner")
-    private Collection<Apartment> apartments;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Account account;
 
     public User() {
 
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phoneNumber, String password) {
+    public User(Long id, String firstName, String lastName, String address, String phoneNumber, Account account) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.address = address;
         this.phoneNumber = phoneNumber;
-        this.password = password;
+        this.account = account;
     }
 
-    public Collection<Apartment> getApartments() {
-        return apartments;
+    public Long getId() {
+        return id;
     }
 
-    public void setApartments(Collection<Apartment> apartments) {
-        this.apartments = apartments;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -65,6 +52,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -73,33 +68,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getId() {
-        return id;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public enum Role {
-        GUEST,
-        OWNER,
-        ADMIN
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
