@@ -69,7 +69,7 @@ public class Account {
 
     public enum Role {
         GUEST,
-        OWNER,
+        HOST,
         ADMIN
     }
 
