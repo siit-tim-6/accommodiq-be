@@ -14,66 +14,42 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v2/apartment")
 public class ApartmentController {
     final
-    IApartmentService apartmentService;
+    IApartmentService service;
 
-    final
-    IUserService userService;
-
-    public ApartmentController(IApartmentService apartmentService, IUserService userService) {
-        this.apartmentService = apartmentService;
-        this.userService = userService;
+    public ApartmentController(IApartmentService service) {
+        this.service = service;
     }
 
-    @GetMapping("/apartments")
+    @GetMapping
     public Collection<Apartment> getApartments() {
-        return apartmentService.getAll();
+        return service.getAll();
     }
 
-    @GetMapping("/apartments/{apartmentId}")
+    @GetMapping("/{apartmentId}")
     public Apartment findApartmentById(@PathVariable Long apartmentId) {
-        return apartmentService.findApartment(apartmentId);
+        return service.findApartment(apartmentId);
     }
 
-    @PutMapping("/apartments")
+    @PostMapping
+    public Apartment insert(@RequestBody Apartment apartment) {
+        return service.insert(apartment);
+    }
+
+    @PutMapping
     public Apartment update(@RequestBody Apartment apartment) {
-        return apartmentService.update(apartment);
+        return service.update(apartment);
     }
 
-    @DeleteMapping("/apartments/{apartmentId}")
+    @DeleteMapping("/{apartmentId}")
     public Apartment delete(@PathVariable Long apartmentId) {
-        return apartmentService.delete(apartmentId);
+        return service.delete(apartmentId);
     }
 
-    @DeleteMapping("/apartments")
+    @DeleteMapping
     public void deleteAll() {
-        apartmentService.deleteAll();
-    }
-
-    @PutMapping("/apartments/{apartmentId}/accept")
-    public Apartment acceptApartment(@PathVariable Long apartmentId) {
-        return apartmentService.setApartmentAcceptance(apartmentId, true);
-    }
-
-    @PutMapping("/apartments/{apartmentId}/deny")
-    public Apartment denyApartment(@PathVariable Long apartmentId) {
-        return apartmentService.setApartmentAcceptance(apartmentId, false);
-    }
-
-    @PostMapping("/users/{ownerId}/apartments")
-    public Apartment insert(@PathVariable(value = "ownerId") Long tutorialId, @RequestBody Apartment apartment) {
-        User owner = userService.findUser(tutorialId);
-        if (owner.getRole() != User.Role.OWNER)
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User is not an owner");
-
-        apartment.setOwner(owner);
-        return apartmentService.insert(apartment);
-    }
-
-    @GetMapping("/users/{ownerId}/apartments")
-    public List<Apartment> getApartmentsByOwnerId(@PathVariable Long ownerId) {
-        return apartmentService.findApartmentsByOwnerId(ownerId);
+        service.deleteAll();
     }
 }

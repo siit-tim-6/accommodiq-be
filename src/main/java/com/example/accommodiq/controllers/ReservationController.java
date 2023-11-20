@@ -5,6 +5,7 @@ import com.example.accommodiq.services.interfaces.IApartmentService;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/reservations")
 public class ReservationController {
 
     final
@@ -50,4 +51,15 @@ public class ReservationController {
 
     @DeleteMapping
     public void deleteAll() { reservationService.deleteAll(); }
+
+    @PutMapping("/{reservationId}/accept")
+    public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId) {
+        Reservation reservation = reservationService.findReservation(reservationId);
+        reservation.setStatus(Reservation.Status.ACCEPTED);
+        reservationService.update(reservation);
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
+    }
+
+    @PutMapping("/{reservationId}/deny")
+
 }

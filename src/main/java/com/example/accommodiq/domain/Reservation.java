@@ -92,8 +92,9 @@ public class Reservation {
     }
 
     public enum Status {
-        WAITING,
-        APPROVED,
-        DENIED
+        CANCELLED,
+        ACCEPTED,
+        DECLINED,
+        CREATED
     }
 }
