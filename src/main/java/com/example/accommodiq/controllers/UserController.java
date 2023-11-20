@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/v2/user")
+@RequestMapping("/")
 public class UserController {
 
-    @Autowired
+    final
     IUserService service;
+
+    public UserController(IUserService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public Collection<User> getUsers() {
