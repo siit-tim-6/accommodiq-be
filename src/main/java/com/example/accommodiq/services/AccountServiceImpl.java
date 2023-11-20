@@ -1,6 +1,8 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -84,5 +87,14 @@ public class AccountServiceImpl implements IAccountService {
     public void deleteAll() {
         allAccounts.deleteAll();
         allAccounts.flush();
+    }
+
+    @Override
+    public UserLoginDto login(CredentialsDto credentialsDto) {
+        Account account = allAccounts.findAccountByEmail(credentialsDto.getEmail());
+        if (account == null || !Objects.equals(account.getPassword(), credentialsDto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+        return new UserLoginDto(account);
     }
 }

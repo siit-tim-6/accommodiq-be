@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class Account {
     private AccountStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private User user;
 
     public Account() {
