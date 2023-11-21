@@ -2,13 +2,13 @@ package com.example.accommodiq.dtos;
 
 import java.util.Date;
 
-public class AccommodationListReviewDto {
+public class AccommodationDetailsReviewDto {
     private String author;
     private String comment;
     private double rating;
     private Date date;
 
-    public AccommodationListReviewDto(String author, String comment, double rating, Date date) {
+    public AccommodationDetailsReviewDto(String author, String comment, double rating, Date date) {
         this.author = author;
         this.comment = comment;
         this.rating = rating;
