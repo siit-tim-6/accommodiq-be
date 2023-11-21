@@ -1,9 +1,8 @@
 package com.example.accommodiq.domain;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
+import java.time.Instant;
 
 @Entity
 public class Notification {
@@ -12,8 +11,7 @@ public class Notification {
 
     private String text;
 
-    private long time;
-
+    private Long time;
     @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
@@ -25,6 +23,13 @@ public class Notification {
     }
 
     public Notification() {
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (time == null) {
+            time = Instant.now().getEpochSecond();
+        }
     }
 
     public String getText() {
