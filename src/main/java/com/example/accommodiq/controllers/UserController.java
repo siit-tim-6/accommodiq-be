@@ -2,9 +2,11 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,12 @@ import java.util.Collection;
 public class UserController {
     final
     IAccountService service;
+    final IReportService reportService;
 
     @Autowired
-    public UserController(IAccountService service) {
+    public UserController(IAccountService service, IReportService reportService) {
         this.service = service;
+        this.reportService = reportService;
     }
 
     @GetMapping
@@ -56,14 +60,6 @@ public class UserController {
         service.changeStatus(id, Account.AccountStatus.BLOCKED);
     }
 
-    @PutMapping("/{id}/report")
-    public Account reportUser(@PathVariable Long id) {
-        // Implement the logic to report a user
-        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
-        // Return appropriate response
-        return null;
-    }
-
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
         return service.update(account);
@@ -83,6 +79,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
         service.changePassword(id, passwordDto.getPassword());
+    }
+
+    @PutMapping("/{id}/report")
+    @ResponseStatus(HttpStatus.OK)
+    public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
+        // Implement the logic to report a user
+        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
+        // Return appropriate response
     }
 
 }

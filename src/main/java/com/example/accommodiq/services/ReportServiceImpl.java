@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.IReportService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -77,6 +78,10 @@ public class ReportServiceImpl  implements IReportService {
     public void deleteAll() {
         allReports.deleteAll();
         allReports.flush();
+    }
+
+    @Override
+    public void reportUser(Long reportedUserId, ReportDto reportDto) {
     }
 
 
