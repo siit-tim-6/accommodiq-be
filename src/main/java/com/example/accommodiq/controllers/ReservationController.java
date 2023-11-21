@@ -39,7 +39,6 @@ public class ReservationController {
 
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
-        reservationService.findReservation(reservationId);
         reservationService.delete(reservationId);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
     }
@@ -49,25 +48,19 @@ public class ReservationController {
 
     @PutMapping("/{reservationId}/accept")
     public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId) {
-        Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(ReservationStatus.ACCEPTED);
-        reservationService.update(reservation);
+        reservationService.setReservationStatus(reservationId, ReservationStatus.ACCEPTED);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been accepted.");
     }
 
     @PutMapping("/{reservationId}/deny")
     public ResponseEntity<String> denyReservation(@PathVariable Long reservationId) {
-        Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(ReservationStatus.DECLINED);
-        reservationService.update(reservation);
+        reservationService.setReservationStatus(reservationId, ReservationStatus.DECLINED);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been denied.");
     }
 
     @PutMapping("/{reservationId}/cancel")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
-        Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationService.update(reservation);
+        reservationService.setReservationStatus(reservationId, ReservationStatus.CANCELLED);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been cancelled.");
     }
 
