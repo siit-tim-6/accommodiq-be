@@ -53,7 +53,7 @@ public class AccountServiceImpl implements IAccountService {
             allAccounts.flush();
             return account;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Account cannot be inserted");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be inserted");
         }
     }
 
@@ -71,7 +71,7 @@ public class AccountServiceImpl implements IAccountService {
                 e = c;
             }
             if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Account cannot be updated");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be updated");
             }
             throw ex;
         }
