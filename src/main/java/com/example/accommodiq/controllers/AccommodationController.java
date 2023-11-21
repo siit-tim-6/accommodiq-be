@@ -2,10 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
-import com.example.accommodiq.dtos.AccommodationDetailsDto;
-import com.example.accommodiq.dtos.AccommodationDetailsHostDto;
-import com.example.accommodiq.dtos.AccommodationDetailsReviewDto;
-import com.example.accommodiq.dtos.AccommodationListDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,22 +88,32 @@ public class AccommodationController {
     }
 
     @PutMapping("/{accommodationId}")
-    public Accommodation updateAccommodation(@PathVariable Long accommodationId) {
-        return accommodationService.findById(accommodationId);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateAccommodation(@PathVariable Long accommodationId, @RequestBody AccommodationUpdateDto body) {
     }
 
     @PostMapping("/{accommodationId}/availability")
-    public Accommodation addAccommodationAvailability(@PathVariable Long accommodationId) {
-        return null;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
     }
 
     @DeleteMapping("/{accommodationId}/availability/{availabilityId}")
-    public Accommodation removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
-        return null;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
     }
 
     @GetMapping("/{accommodationId}/report")
-    public Accommodation getAccommodationReport(@PathVariable Long accommodationId) {
-        return null;
+    public AccommodationReportDto getAccommodationReport(@PathVariable Long accommodationId) {
+        ArrayList<AccommodationReportRevenueDto> revenueDtos = new ArrayList<>() {
+            {
+                add(new AccommodationReportRevenueDto("January", 8000));
+            }
+
+            {
+                add(new AccommodationReportRevenueDto("February", 8000));
+            }
+        };
+
+        return new AccommodationReportDto(30, revenueDtos);
     }
 }
