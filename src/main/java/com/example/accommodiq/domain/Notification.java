@@ -7,6 +7,7 @@ import java.time.Instant;
 @Entity
 public class Notification {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String text;

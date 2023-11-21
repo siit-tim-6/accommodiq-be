@@ -89,6 +89,6 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public Collection<Notification> findUsersNotifications(Long userId) {
-        return allNotifications.findNotificationsByUserId(userId);
+        return allNotifications.findByUserId(userId);
     }
 }
