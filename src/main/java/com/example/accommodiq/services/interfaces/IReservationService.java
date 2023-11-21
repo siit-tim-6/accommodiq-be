@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.Collection;
 
@@ -16,5 +17,5 @@ public interface IReservationService {
 
     Collection<Reservation> findReservationsByUserId(Long userId);
 
-    Reservation setReservationStatus(Long reservationId, Reservation.Status status);
+    Reservation setReservationStatus(Long reservationId, ReservationStatus status);
 }

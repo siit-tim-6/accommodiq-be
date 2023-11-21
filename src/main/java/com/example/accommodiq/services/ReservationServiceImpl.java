@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -104,7 +105,7 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation setReservationStatus(Long reservationId, Reservation.Status status) {
+    public Reservation setReservationStatus(Long reservationId, ReservationStatus status) {
         Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
         if(optionalReservation.isPresent()){
             Reservation reservation = optionalReservation.get();

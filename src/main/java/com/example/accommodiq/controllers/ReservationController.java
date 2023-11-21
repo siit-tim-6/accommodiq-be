@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,16 +43,13 @@ public class ReservationController {
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
     }
 
-    //@DeleteMapping("/{reservationId}")
-    //public Reservation delete(@PathVariable Long reservationId) { return reservationService.delete(reservationId); }
-
     @DeleteMapping
     public void deleteAll() { reservationService.deleteAll(); }
 
     @PutMapping("/{reservationId}/accept")
     public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId) {
         Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(Reservation.Status.ACCEPTED);
+        reservation.setStatus(ReservationStatus.ACCEPTED);
         reservationService.update(reservation);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been accepted.");
     }
@@ -59,7 +57,7 @@ public class ReservationController {
     @PutMapping("/{reservationId}/deny")
     public ResponseEntity<String> denyReservation(@PathVariable Long reservationId) {
         Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(Reservation.Status.DECLINED);
+        reservation.setStatus(ReservationStatus.DECLINED);
         reservationService.update(reservation);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been denied.");
     }
@@ -67,7 +65,7 @@ public class ReservationController {
     @PutMapping("/{reservationId}/cancel")
     public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
         Reservation reservation = reservationService.findReservation(reservationId);
-        reservation.setStatus(Reservation.Status.CANCELLED);
+        reservation.setStatus(ReservationStatus.CANCELLED);
         reservationService.update(reservation);
         return ResponseEntity.ok("Reservation with ID " + reservationId + " has been cancelled.");
     }

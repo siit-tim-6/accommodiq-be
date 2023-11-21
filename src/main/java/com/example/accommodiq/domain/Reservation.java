@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.ReservationStatus;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,25 +15,25 @@ public class Reservation {
     private Date startDate;
     private Date endDate;
     private int numberOfGuests;
-    private Status status;
+    private ReservationStatus status;
 
     @ManyToOne(cascade = {CascadeType.REFRESH})
     private User user;
 
     @ManyToOne(cascade = {CascadeType.REFRESH})
-    private Apartment apartment;
+    private Accommodation accommodation;
 
     public Reservation() {
     }
 
-    public Reservation(Long id, Date startDate, Date endDate, int numberOfGuests, Status status, User user, Apartment apartment) {
+    public Reservation(Long id, Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, User user, Accommodation accommodation) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
         this.status = status;
         this.user = user;
-        this.apartment = apartment;
+        this.accommodation = accommodation;
     }
 
     public Long getId() {
@@ -67,11 +68,11 @@ public class Reservation {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public Status getStatus() {
+    public ReservationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(ReservationStatus status) {
         this.status = status;
     }
 
@@ -83,18 +84,11 @@ public class Reservation {
         return user;
     }
 
-    public void setApartment(Apartment apartment) {
-        this.apartment = apartment;
+    public void setApartment(Accommodation apartment) {
+        this.accommodation = accommodation;
     }
 
-    public Apartment getApartment() {
-        return apartment;
-    }
-
-    public enum Status {
-        CANCELLED,
-        ACCEPTED,
-        DECLINED,
-        CREATED
+    public Accommodation getApartment() {
+        return accommodation;
     }
 }
