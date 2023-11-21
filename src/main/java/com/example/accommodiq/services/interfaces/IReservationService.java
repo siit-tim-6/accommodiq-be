@@ -13,7 +13,7 @@ public interface IReservationService {
     public Reservation delete(Long reservationId);
     public void deleteAll();
 
-    Collection<Reservation> findReservationsByApartmentId(Long apartmentId);
+    Collection<Reservation> findReservationsByAccommodationId(Long accommodationId);
 
     Collection<Reservation> findReservationsByUserId(Long userId);
 

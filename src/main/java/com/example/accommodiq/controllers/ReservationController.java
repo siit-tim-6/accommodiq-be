@@ -3,6 +3,7 @@ package com.example.accommodiq.controllers;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.IReservationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +16,9 @@ import java.util.Collection;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    final
     IReservationService reservationService;
 
+    @Autowired
     public ReservationController(IReservationService reservationService) {
         this.reservationService = reservationService;
     }

@@ -85,8 +85,8 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> findReservationsByApartmentId(Long apartmentId) {
-        Collection<Reservation> found = allReservations.findByApartmentId(apartmentId);
+    public Collection<Reservation> findReservationsByAccommodationId(Long accommodationId) {
+        Collection<Reservation> found = allReservations.findByAccommodationId(accommodationId);
         if (found.isEmpty()) {
             String value = bundle.getString("reservationNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);

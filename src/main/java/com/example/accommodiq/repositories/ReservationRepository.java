@@ -7,5 +7,5 @@ import java.util.Collection;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
      Collection<Reservation> findByUserId(Long userId);
-     Collection<Reservation> findByApartmentId(Long apartmentId);
+     Collection<Reservation> findByAccommodationId(Long accommodationId);
 }
