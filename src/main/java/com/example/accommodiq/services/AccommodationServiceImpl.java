@@ -12,4 +12,9 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Collection<Accommodation> findAll() {
         return null;
     }
+
+    @Override
+    public Accommodation findById(Long accommodationId) {
+        return null;
+    }
 }

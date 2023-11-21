@@ -6,4 +6,6 @@ import java.util.Collection;
 
 public interface IAccommodationService {
     public Collection<Accommodation> findAll();
+
+    public Accommodation findById(Long accommodationId);
 }
