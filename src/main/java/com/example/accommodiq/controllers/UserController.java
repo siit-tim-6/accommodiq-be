@@ -59,12 +59,6 @@ public class UserController {
         return service.login(credentialsDto);
     }
 
-    @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@PathVariable Long id) {
-        service.changeStatus(id, Account.AccountStatus.ACTIVE);
-    }
-
     @PutMapping("/{id}/changePassword")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
@@ -79,11 +73,15 @@ public class UserController {
         return null;
     }
 
+    @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseStatus(HttpStatus.OK)
+    public void activateUser(@PathVariable Long id) {
+        service.changeStatus(id, Account.AccountStatus.ACTIVE);
+    }
+
     @PutMapping("/{id}/block")
-    public Account blockUser(@PathVariable Long id) {
-        // Implement the logic to block a user
-        // You can use userService.blockUser(id) to delegate blocking to a service
-        // Return appropriate response
-        return null;
+    @ResponseStatus(HttpStatus.OK)
+    public void blockUser(@PathVariable Long id) {
+        service.changeStatus(id, Account.AccountStatus.BLOCKED);
     }
 }
