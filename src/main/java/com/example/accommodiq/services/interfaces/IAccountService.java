@@ -19,4 +19,8 @@ public interface IAccountService {
     void deleteAll();
 
     UserLoginDto login(CredentialsDto credentialsDto);
+
+    void changeStatus(Long id, Account.AccountStatus accountStatus);
+
+    void changePassword(Long id, String password);
 }

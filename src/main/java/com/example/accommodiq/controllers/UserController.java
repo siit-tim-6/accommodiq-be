@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,8 @@ public class UserController {
 
     @PutMapping("/{id}/changePassword")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable Long id, @RequestBody String newPassword) {
-        // service.changePassword(id, newPassword);
+    public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
+        service.changePassword(id, passwordDto.getPassword());
     }
 
     @PutMapping("/{id}/report")

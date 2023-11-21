@@ -99,4 +99,20 @@ public class AccountServiceImpl implements IAccountService {
         }
         return new UserLoginDto(account);
     }
+
+    @Override
+    public void changeStatus(Long id, Account.AccountStatus accountStatus) {
+        Account account = findAccount(id);
+        account.setStatus(accountStatus);
+        allAccounts.save(account);
+        allAccounts.flush();
+    }
+
+    @Override
+    public void changePassword(Long id, String password) {
+        Account account = findAccount(id);
+        account.setPassword(password);
+        allAccounts.save(account);
+        allAccounts.flush();
+    }
 }
