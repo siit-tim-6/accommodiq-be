@@ -8,4 +8,6 @@ public interface IAccommodationService {
     public Collection<Accommodation> findAll();
 
     public Accommodation findById(Long accommodationId);
+
+    public Accommodation acceptIncomingChanges(Long accommodationId);
 }
