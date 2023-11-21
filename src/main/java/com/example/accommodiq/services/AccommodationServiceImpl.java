@@ -41,7 +41,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         PricingType pricingType = PricingType.PER_GUEST;
         int cancellationDeadline = 7;
 
-        return new Accommodation(id, title, description, location, image, minGuests, maxGuests, type, accepted, pricingType, cancellationDeadline);
+        return new Accommodation(id, title, description, location, image, minGuests, maxGuests, type, accepted, pricingType, true, cancellationDeadline);
     }
 
     @Override

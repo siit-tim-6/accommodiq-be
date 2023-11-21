@@ -20,14 +20,15 @@ public class Accommodation {
     private String type;
     private boolean accepted;
     private PricingType pricingType;
+    private boolean automaticAcceptance;
     private int cancellationDeadline;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Review> reviews = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Availability> available = new HashSet<>();
 
-    public Accommodation(Long id, String title, String description, String location, String image, int minGuests,
-                         int maxGuests, String type, boolean accepted, PricingType pricingType, int cancellationDeadline) {
+    public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
+                         boolean automaticAcceptance, int cancellationDeadline) {
         super();
         this.id = id;
         this.title = title;
@@ -39,6 +40,7 @@ public class Accommodation {
         this.type = type;
         this.accepted = accepted;
         this.pricingType = pricingType;
+        this.automaticAcceptance = automaticAcceptance;
         this.cancellationDeadline = cancellationDeadline;
     }
 
@@ -126,6 +128,14 @@ public class Accommodation {
         this.pricingType = pricingType;
     }
 
+    public boolean isAutomaticAcceptance() {
+        return automaticAcceptance;
+    }
+
+    public void setAutomaticAcceptance(boolean automaticAcceptance) {
+        this.automaticAcceptance = automaticAcceptance;
+    }
+
     public int getCancellationDeadline() {
         return cancellationDeadline;
     }
@@ -142,28 +152,12 @@ public class Accommodation {
         this.reviews = reviews;
     }
 
-    public void addReview(Review review) {
-        reviews.add(review);
-    }
-
-    public void removeReview(Review review) {
-        reviews.remove(review);
-    }
-
     public Set<Availability> getAvailable() {
         return available;
     }
 
     public void setAvailable(Set<Availability> available) {
         this.available = available;
-    }
-
-    public void addAvailability(Availability availability) {
-        available.add(availability);
-    }
-
-    public void removeAvailability(Availability availability) {
-        available.remove(availability);
     }
 }
 
