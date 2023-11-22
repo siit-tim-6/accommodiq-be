@@ -10,7 +10,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String reason;
-    private Date date;
+    private Long time;
     @ManyToOne(cascade = CascadeType.ALL)
     private User from;
     @ManyToOne(cascade = CascadeType.ALL)
@@ -18,10 +18,10 @@ public class Report {
 
     public Report() {}
 
-    public Report(Long id, String reason, Date date, User from, User to) {
+    public Report(Long id, String reason, Long time, User from, User to) {
         this.id = id;
         this.reason = reason;
-        this.date = date;
+        this.time = time;
         this.from = from;
         this.to = to;
     }
@@ -34,8 +34,8 @@ public class Report {
         return reason;
     }
 
-    public Date getDate() {
-        return date;
+    public Long getTime() {
+        return time;
     }
 
     public User getFrom() {
@@ -54,8 +54,8 @@ public class Report {
         this.reason = reason;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Long time) {
+        this.time = time;
     }
 
     public void setFrom(User from) {

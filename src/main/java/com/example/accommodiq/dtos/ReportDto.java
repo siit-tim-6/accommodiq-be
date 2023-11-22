@@ -6,7 +6,7 @@ public class ReportDto {
     private Long id;
     private String reason;
     private Long reportingUserId;
-    private Date date;
+    private Long time;
 
     public ReportDto(String reason) {
         this.reason = reason;
