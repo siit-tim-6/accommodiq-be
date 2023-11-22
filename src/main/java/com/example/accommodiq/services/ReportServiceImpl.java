@@ -7,16 +7,12 @@ import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static com.example.accommodiq.utilities.ReportUtils.throwBadRequest;
 
@@ -54,8 +50,9 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return report;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report cannot be inserted");
+            throwBadRequest("reportInsertFailed");
         }
+        return report;
     }
 
     @Override
@@ -66,8 +63,9 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return report;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report cannot be updated");
+            throwBadRequest("reportUpdateFailed");
         }
+        return report;
     }
 
     @Override
@@ -108,7 +106,6 @@ public class ReportServiceImpl implements IReportService {
             throwBadRequest("reportReasonNull");
         }
     }
-
 
 
 }
