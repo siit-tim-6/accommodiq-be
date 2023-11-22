@@ -8,7 +8,7 @@ public class NotificationSetting {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
     private NotificationType type;
 
