@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
-        return service.insert(account);
+        return accountService.insert(account);
     }
 
     @PostMapping("/login")
@@ -53,16 +53,16 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
+    @PutMapping(value = "/{id}/activate")
     @ResponseStatus(HttpStatus.OK)
     public void activateUser(@PathVariable Long id) {
-        service.changeStatus(id, AccountStatus.ACTIVE);
+        accountService.changeStatus(id, AccountStatus.ACTIVE);
     }
 
     @PutMapping("/{id}/block")
     @ResponseStatus(HttpStatus.OK)
     public void blockUser(@PathVariable Long id) {
-        service.changeStatus(id, AccountStatus.BLOCKED);
+        accountService.changeStatus(id, AccountStatus.BLOCKED);
     }
 
     @PutMapping("/{id}/report")
