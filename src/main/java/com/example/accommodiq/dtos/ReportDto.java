@@ -4,7 +4,14 @@ public class ReportDto {
     private Long id;
     private String reason;
     private Long reportingUserId;
-    private Long time;
+    private Long timestamp;
+
+    public ReportDto(Long id, String reason, Long reportingUserId, Long timestamp) {
+        this.id = id;
+        this.reason = reason;
+        this.reportingUserId = reportingUserId;
+        this.timestamp = timestamp;
+    }
 
     public ReportDto(String reason) {
         this.reason = reason;
@@ -25,8 +32,8 @@ public class ReportDto {
         return reportingUserId;
     }
 
-    public Long getTime() {
-        return time;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
 }
