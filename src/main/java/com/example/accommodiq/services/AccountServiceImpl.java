@@ -3,6 +3,7 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -101,7 +102,7 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public void changeStatus(Long id, Account.AccountStatus accountStatus) {
+    public void changeStatus(Long id, AccountStatus accountStatus) {
         Account account = findAccount(id);
         account.setStatus(accountStatus);
         allAccounts.save(account);
