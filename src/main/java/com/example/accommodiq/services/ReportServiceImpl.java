@@ -106,6 +106,5 @@ public class ReportServiceImpl implements IReportService {
             throwBadRequest("reportReasonNull");
         }
     }
-
-
+    
 }
