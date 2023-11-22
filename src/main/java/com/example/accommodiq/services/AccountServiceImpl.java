@@ -3,6 +3,7 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -53,7 +54,7 @@ public class AccountServiceImpl implements IAccountService {
             allAccounts.flush();
             return account;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be inserted");
         }
     }
 
@@ -71,7 +72,7 @@ public class AccountServiceImpl implements IAccountService {
                 e = c;
             }
             if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "error2");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be updated");
             }
             throw ex;
         }
@@ -98,5 +99,21 @@ public class AccountServiceImpl implements IAccountService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
         return new UserLoginDto(account);
+    }
+
+    @Override
+    public void changeStatus(Long id, AccountStatus accountStatus) {
+        Account account = findAccount(id);
+        account.setStatus(accountStatus);
+        allAccounts.save(account);
+        allAccounts.flush();
+    }
+
+    @Override
+    public void changePassword(Long id, String password) {
+        Account account = findAccount(id);
+        account.setPassword(password);
+        allAccounts.save(account);
+        allAccounts.flush();
     }
 }

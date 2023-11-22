@@ -17,7 +17,6 @@ public class Account {
     private AccountStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
     private User user;
 
     public Account() {
