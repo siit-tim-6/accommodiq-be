@@ -34,8 +34,8 @@ public class ReportController {
         return service.update(report);
     }
 
-    @DeleteMapping
-    public Report deleteReport(Long reportId) {
+    @DeleteMapping("/{reportId}")
+    public Report deleteReport(@PathVariable Long reportId) {
         return service.delete(reportId);
     }
 
