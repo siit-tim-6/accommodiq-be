@@ -14,4 +14,9 @@ public class ReportUtils {
         String value = bundle.getString(messageKey);
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, value);
     }
+
+    public static void throwNotFound(String messageKey) {
+        String value = bundle.getString(messageKey);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+    }
 }

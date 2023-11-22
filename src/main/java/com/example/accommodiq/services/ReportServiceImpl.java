@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ReportUtils.throwBadRequest;
+import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 @Service
 public class ReportServiceImpl implements IReportService {
@@ -38,7 +39,7 @@ public class ReportServiceImpl implements IReportService {
     public Report findReport(Long reportId) {
         Optional<Report> found = allReports.findById(reportId);
         if (found.isEmpty()) {
-            throwBadRequest("reportNotFound");
+            throwNotFound("reportNotFound");
         }
         return found.get();
     }
