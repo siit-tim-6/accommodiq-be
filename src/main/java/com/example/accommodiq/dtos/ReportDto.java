@@ -16,4 +16,17 @@ public class ReportDto {
     public String getReason() {
         return reason;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getReportingUserId() {
+        return reportingUserId;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
 }

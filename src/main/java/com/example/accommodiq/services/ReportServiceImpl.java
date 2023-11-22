@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.IReportService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -11,21 +12,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static com.example.accommodiq.utilities.ReportUtils.throwBadRequest;
+
 @Service
-public class ReportServiceImpl  implements IReportService {
+public class ReportServiceImpl implements IReportService {
 
-    final
-    ReportRepository allReports;
+    final ReportRepository allReports;
 
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+    final IUserService userService;
 
     @Autowired
-    public ReportServiceImpl(ReportRepository allReports) {
+    public ReportServiceImpl(ReportRepository allReports, IUserService userService) {
         this.allReports = allReports;
+        this.userService = userService;
     }
 
     @Override
@@ -37,8 +42,7 @@ public class ReportServiceImpl  implements IReportService {
     public Report findReport(Long reportId) {
         Optional<Report> found = allReports.findById(reportId);
         if (found.isEmpty()) {
-            String value = bundle.getString("reportNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+            throwBadRequest("reportNotFound");
         }
         return found.get();
     }
@@ -82,12 +86,29 @@ public class ReportServiceImpl  implements IReportService {
 
     @Override
     public void reportUser(Long reportedUserId, ReportDto reportDto) {
+
+        validateReportInput(reportedUserId, reportDto);
+
         Report report = new Report();
-        report.setReportedUserId(reportedUserId);
+        report.setReportedUser(userService.findUser(reportedUserId));
         report.setReason(reportDto.getReason());
-        report.setReportedById(reportDto.getReportedById());
+        report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
+        report.setTimestamp(Instant.now().toEpochMilli());
         insert(report);
     }
+
+    private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
+        if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
+            throwBadRequest("reportYourself");
+        }
+        if (reportedUserId == null || reportDto.getReportingUserId() == null) {
+            throwBadRequest("reportNull");
+        }
+        if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
+            throwBadRequest("reportReasonNull");
+        }
+    }
+
 
 
 }

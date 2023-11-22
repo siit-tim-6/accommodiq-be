@@ -8,7 +8,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String reason;
-    private Long time;
+    private Long timestamp;
     @ManyToOne(cascade = CascadeType.ALL)
     private User reportingUser;
     @ManyToOne(cascade = CascadeType.ALL)
@@ -16,10 +16,10 @@ public class Report {
 
     public Report() {}
 
-    public Report(Long id, String reason, Long time, User reportingUser, User reportedUser) {
+    public Report(Long id, String reason, Long timestamp, User reportingUser, User reportedUser) {
         this.id = id;
         this.reason = reason;
-        this.time = time;
+        this.timestamp = timestamp;
         this.reportingUser = reportingUser;
         this.reportedUser = reportedUser;
     }
@@ -32,15 +32,15 @@ public class Report {
         return reason;
     }
 
-    public Long getTime() {
-        return time;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
     public User getReportingUser() {
         return reportingUser;
     }
 
-    public User getTo() {
+    public User getReportedUser() {
         return reportedUser;
     }
 
@@ -52,8 +52,8 @@ public class Report {
         this.reason = reason;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public void setReportingUser(User reportingUser) {
