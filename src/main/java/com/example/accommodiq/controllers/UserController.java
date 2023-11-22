@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class UserController {
 
     @PostMapping
     public Account registerUser(@RequestBody Account account) {
-        account.setStatus(Account.AccountStatus.INACTIVE);
+        account.setStatus(AccountStatus.INACTIVE);
         return service.insert(account);
     }
 
@@ -47,13 +48,13 @@ public class UserController {
     @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseStatus(HttpStatus.OK)
     public void activateUser(@PathVariable Long id) {
-        service.changeStatus(id, Account.AccountStatus.ACTIVE);
+        service.changeStatus(id, AccountStatus.ACTIVE);
     }
 
     @PutMapping("/{id}/block")
     @ResponseStatus(HttpStatus.OK)
     public void blockUser(@PathVariable Long id) {
-        service.changeStatus(id, Account.AccountStatus.BLOCKED);
+        service.changeStatus(id, AccountStatus.BLOCKED);
     }
 
     @PutMapping("/{id}/report")

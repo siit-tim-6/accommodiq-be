@@ -2,12 +2,13 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.User;
+import com.example.accommodiq.enums.AccountRole;
 
 public class UserLoginDto {
     private User user;
-    private Account.Role role;
+    private AccountRole role;
 
-    public UserLoginDto(User user, Account.Role role) {
+    public UserLoginDto(User user, AccountRole role) {
         this.user = user;
         this.role = role;
     }
@@ -28,11 +29,11 @@ public class UserLoginDto {
         this.user = user;
     }
 
-    public Account.Role getRole() {
+    public AccountRole getRole() {
         return role;
     }
 
-    public void setRole(Account.Role role) {
+    public void setRole(AccountRole role) {
         this.role = role;
     }
 }

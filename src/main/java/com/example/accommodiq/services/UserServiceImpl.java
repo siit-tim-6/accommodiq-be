@@ -37,7 +37,7 @@ public class UserServiceImpl implements IUserService {
     public User findUser(Long userId) {
         Optional<User> found = allUsers.findById(userId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("userNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();
