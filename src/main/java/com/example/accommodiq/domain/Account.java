@@ -1,5 +1,7 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.AccountStatus;
+import com.example.accommodiq.enums.AccountRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,7 +13,7 @@ public class Account {
 
     private String email;
     private String password;
-    private Role role;
+    private AccountRole role;
     private AccountStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -21,7 +23,7 @@ public class Account {
     public Account() {
     }
 
-    public Account(Long id, String email, String password, Role role, AccountStatus status, User user) {
+    public Account(Long id, String email, String password, AccountRole role, AccountStatus status, User user) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -46,11 +48,11 @@ public class Account {
         this.password = password;
     }
 
-    public Role getRole() {
+    public AccountRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(AccountRole role) {
         this.role = role;
     }
 
@@ -78,15 +80,5 @@ public class Account {
         this.user = user;
     }
 
-    public enum Role {
-        GUEST,
-        HOST,
-        ADMIN
-    }
 
-    public enum AccountStatus {
-        INACTIVE,
-        ACTIVE,
-        BLOCKED
-    }
 }
