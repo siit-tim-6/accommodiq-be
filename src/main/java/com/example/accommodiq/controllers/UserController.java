@@ -84,9 +84,7 @@ public class UserController {
     @PutMapping("/{id}/report")
     @ResponseStatus(HttpStatus.OK)
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
-        // Implement the logic to report a user
-        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
-        // Return appropriate response
+        reportService.reportUser(id, reportDto);
     }
 
 }

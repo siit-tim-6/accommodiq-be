@@ -82,6 +82,11 @@ public class ReportServiceImpl  implements IReportService {
 
     @Override
     public void reportUser(Long reportedUserId, ReportDto reportDto) {
+        Report report = new Report();
+        report.setReportedUserId(reportedUserId);
+        report.setReason(reportDto.getReason());
+        report.setReportedById(reportDto.getReportedById());
+        insert(report);
     }
 
 
