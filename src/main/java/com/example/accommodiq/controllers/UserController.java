@@ -4,11 +4,13 @@ import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.NotificationDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.INotificationService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,14 @@ public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
     final IUserService userService;
+    final IReportService reportService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.reportService = reportService;
     }
 
     @GetMapping
@@ -65,14 +69,6 @@ public class UserController {
         accountService.changeStatus(id, AccountStatus.BLOCKED);
     }
 
-    @PutMapping("/{id}/report")
-    public Account reportUser(@PathVariable Long id) {
-        // Implement the logic to report a user
-        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
-        // Return appropriate response
-        return null;
-    }
-
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
         return accountService.update(account);
@@ -104,6 +100,12 @@ public class UserController {
     @GetMapping("/{userId}/notifications")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
         return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
+    }
+
+    @PutMapping("/{id}/report")
+    @ResponseStatus(HttpStatus.OK)
+    public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
+        reportService.reportUser(id, reportDto);
     }
 
 }
