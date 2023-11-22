@@ -1,7 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import java.util.Date;
-
 public class ReportDto {
     private Long id;
     private String reason;

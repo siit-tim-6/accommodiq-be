@@ -2,8 +2,6 @@ package com.example.accommodiq.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 @Entity
 public class Report {
     @Id
@@ -12,18 +10,18 @@ public class Report {
     private String reason;
     private Long time;
     @ManyToOne(cascade = CascadeType.ALL)
-    private User from;
+    private User reportingUser;
     @ManyToOne(cascade = CascadeType.ALL)
-    private User to;
+    private User reportedUser;
 
     public Report() {}
 
-    public Report(Long id, String reason, Long time, User from, User to) {
+    public Report(Long id, String reason, Long time, User reportingUser, User reportedUser) {
         this.id = id;
         this.reason = reason;
         this.time = time;
-        this.from = from;
-        this.to = to;
+        this.reportingUser = reportingUser;
+        this.reportedUser = reportedUser;
     }
 
     public Long getId() {
@@ -38,12 +36,12 @@ public class Report {
         return time;
     }
 
-    public User getFrom() {
-        return from;
+    public User getReportingUser() {
+        return reportingUser;
     }
 
     public User getTo() {
-        return to;
+        return reportedUser;
     }
 
     public void setId(Long id) {
@@ -58,12 +56,12 @@ public class Report {
         this.time = time;
     }
 
-    public void setFrom(User from) {
-        this.from = from;
+    public void setReportingUser(User reportingUser) {
+        this.reportingUser = reportingUser;
     }
 
-    public void setTo(User to) {
-        this.to = to;
+    public void setReportedUser(User reportedUser) {
+        this.reportedUser = reportedUser;
     }
 
 
