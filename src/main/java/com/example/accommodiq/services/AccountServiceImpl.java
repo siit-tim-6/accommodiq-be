@@ -6,6 +6,7 @@ import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AccountServiceImpl implements IAccountService {
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
+    @Autowired
     public AccountServiceImpl(AccountRepository allAccounts) {
         this.allAccounts = allAccounts;
     }
@@ -51,7 +53,7 @@ public class AccountServiceImpl implements IAccountService {
             allAccounts.flush();
             return account;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "error");
         }
     }
 
@@ -69,7 +71,7 @@ public class AccountServiceImpl implements IAccountService {
                 e = c;
             }
             if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "error2");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "error2");
             }
             throw ex;
         }

@@ -14,6 +14,7 @@ public class UserController {
     final
     IUserService service;
 
+    @Autowired
     public UserController(IUserService service) {
         this.service = service;
     }

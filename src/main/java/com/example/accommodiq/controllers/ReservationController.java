@@ -23,19 +23,25 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-
-
     @GetMapping
-    public Collection<Reservation> getReservations() { return reservationService.getAll();}
+    public Collection<Reservation> getReservations() {
+        return reservationService.getAll();
+    }
 
     @GetMapping("/{reservationId}")
-    public Reservation findReservationById(@PathVariable Long reservationId) { return reservationService.findReservation(reservationId); }
+    public Reservation findReservationById(@PathVariable Long reservationId) {
+        return reservationService.findReservation(reservationId);
+    }
 
     @PostMapping
-    public Reservation insert(@RequestBody Reservation reservation) { return reservationService.insert(reservation); }
+    public Reservation insert(@RequestBody Reservation reservation) {
+        return reservationService.insert(reservation);
+    }
 
     @PutMapping
-    public Reservation update(@RequestBody Reservation reservation) { return reservationService.update(reservation); }
+    public Reservation update(@RequestBody Reservation reservation) {
+        return reservationService.update(reservation);
+    }
 
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
@@ -44,7 +50,9 @@ public class ReservationController {
     }
 
     @DeleteMapping
-    public void deleteAll() { reservationService.deleteAll(); }
+    public void deleteAll() {
+        reservationService.deleteAll();
+    }
 
     @PutMapping("/{reservationId}/accept")
     public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId) {

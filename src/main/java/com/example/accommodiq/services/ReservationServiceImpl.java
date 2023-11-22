@@ -52,7 +52,7 @@ public class ReservationServiceImpl implements IReservationService {
             allReservations.flush();
             return reservation;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Validation error: " + ex.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public class ReservationServiceImpl implements IReservationService {
             allReservations.flush();
             return reservation;
         } catch (DataIntegrityViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Data integrity violation");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation");
         } catch (EntityNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found");
         }
