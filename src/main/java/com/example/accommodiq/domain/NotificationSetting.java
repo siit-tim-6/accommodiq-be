@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.NotificationType;
 import jakarta.persistence.*;
 
 @Entity
@@ -56,7 +57,5 @@ public class NotificationSetting {
         this.id = id;
     }
 
-    public enum NotificationType {
-        RESERVATIONS, REQUESTS, REPORTS, RATES
-    }
+
 }

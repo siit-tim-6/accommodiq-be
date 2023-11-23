@@ -3,6 +3,7 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.NotificationSettingDto;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationSettingRepository;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -14,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class NotificationSettingServiceImpl implements INotificationSettingService {
@@ -46,7 +46,7 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     @Override
     @Transactional
     public void setNotificationSettingsForUser(User user) {
-        for (NotificationSetting.NotificationType type : NotificationSetting.NotificationType.values()) {
+        for (NotificationType type : NotificationType.values()) {
            insert(new NotificationSetting((long) -1, user, type, true));
         }
     }

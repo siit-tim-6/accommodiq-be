@@ -2,10 +2,11 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
+import com.example.accommodiq.enums.NotificationType;
 
 public class NotificationSettingDto {
     private Long id;
-    private NotificationSetting.NotificationType type;
+    private NotificationType type;
     private boolean isOn;
 
     public NotificationSettingDto(NotificationSetting notificationSetting) {
@@ -22,11 +23,11 @@ public class NotificationSettingDto {
         this.id = id;
     }
 
-    public NotificationSetting.NotificationType getType() {
+    public NotificationType getType() {
         return type;
     }
 
-    public void setType(NotificationSetting.NotificationType type) {
+    public void setType(NotificationType type) {
         this.type = type;
     }
 
