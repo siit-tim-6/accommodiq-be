@@ -1,5 +1,6 @@
 package com.example.accommodiq.controllers;
 
+import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.FinancialReportEntryDto;
@@ -20,6 +21,37 @@ public class HostController {
     @Autowired
     public HostController(IHostService hostService) {
         this.hostService = hostService;
+    }
+
+    @GetMapping
+    public Collection<Host> getAllHosts() {
+        return hostService.getAll();
+    }
+
+    @GetMapping("/{hostId}")
+    public Host getHost(@PathVariable Long hostId) {
+        return hostService.findHost(hostId);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Host createNewHost(@RequestBody Host host) {
+        return hostService.insert(host);
+    }
+
+    @PutMapping
+    public Host updateHost(@RequestBody Host host) {
+        return hostService.update(host);
+    }
+
+    @DeleteMapping("/{hostId}")
+    public Host deleteHost(@PathVariable Long hostId) {
+        return hostService.delete(hostId);
+    }
+
+    @DeleteMapping
+    public void deleteAll() {
+        hostService.deleteAll();
     }
 
     @PostMapping("/{hostId}/accommodations")
