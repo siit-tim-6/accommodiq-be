@@ -11,7 +11,7 @@ public interface IReviewService {
 
     Review findReview(Long reviewId);
 
-    Review insert(Review review);
+    Review insert(Long hostId,Review review);
 
     Review update(Review review);
 
@@ -20,8 +20,6 @@ public interface IReviewService {
     void deleteAll();
 
     void setReviewStatus(Long reviewId, ReviewStatus reviewStatus);
-
-    void addReview(Long hostId, Review review);
 
     Collection<Review> getHostReviews(Long hostId);
 

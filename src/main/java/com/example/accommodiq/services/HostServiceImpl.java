@@ -1,16 +1,54 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Host;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.FinancialReportEntryDto;
 import com.example.accommodiq.dtos.HostReservationDto;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.IHostService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 @Service
 public class HostServiceImpl implements IHostService {
+    @Override
+    public Collection<Host> getAll() {
+        return null;
+    }
+
+    @Override
+    public Host findHost(Long hostId) {
+        return new ArrayList<Host>() {
+            {
+                add(new Host(1,"John", "Doe", "123 Main Street", "555-1234"));
+            }
+        }
+    }
+
+    @Override
+    public Host insert(Host host) {
+        return null;
+    }
+
+    @Override
+    public Host update(Host host) {
+        return null;
+    }
+
+    @Override
+    public Host delete(Long hostId) {
+        return null;
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
     @Override
     public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
         return new ArrayList<AccommodationListDto>() {
@@ -45,5 +83,21 @@ public class HostServiceImpl implements IHostService {
         financialReportEntries.add(new FinancialReportEntryDto("Mountain Lodge", 2500.0, 10));
 
         return financialReportEntries;
+    }
+
+    @Override
+    public Collection<Review> getHostReviews(Long hostId) {
+        return new ArrayList<Review>() {
+            {
+                add(new Review(1L, 5, "Great place!", new Date(), ReviewStatus.ACCEPTED));
+            }
+
+            {
+                add(new Review(2L, 5, "Excellent stay!", new Date(), ReviewStatus.ACCEPTED));
+            }
+        };
+
+        //Host host = findHost(hostId);
+        //return host.getReviews();
     }
 }

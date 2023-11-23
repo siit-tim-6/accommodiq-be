@@ -1,8 +1,11 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
+import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,14 @@ import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 public class ReviewServiceImpl implements IReviewService {
 
     final ReviewRepository allReviews;
+    final IHostService hostService;
+    final IAccommodationService accommodationService;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository allReviews) {
+    public ReviewServiceImpl(ReviewRepository allReviews, IHostService hostService, IAccommodationService accommodationService) {
         this.allReviews = allReviews;
+        this.hostService = hostService;
+        this.accommodationService = accommodationService;
     }
 
     @Override
@@ -38,14 +45,10 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review insert(Review review) {
-        try{
-            allReviews.save(review);
-            allReviews.flush();
-            return review;
-        } catch (Exception ex) {
-            throwNotFound("reviewInsertFailed");
-        }
+    public Review insert(Long hostId,Review review) {
+        Host host = hostService.findHost(hostId);
+        host.getReviews().add(review);
+        hostService.update(host);
         return review;
     }
 
@@ -85,17 +88,12 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public void addReview(Long hostId, Review review) {
-
-    }
-
-    @Override
     public Collection<Review> getHostReviews(Long hostId) {
-        return null;
+        return hostService.getHostReviews(hostId);
     }
 
     @Override
     public Collection<Review> getAccommodationReviews(Long accommodationId) {
-        return null;
+        return accommodationService.getAccommodationReviews(accommodationId);
     }
 }
