@@ -7,6 +7,7 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.INotificationService;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
@@ -68,14 +69,6 @@ public class UserController {
         accountService.changeStatus(id, AccountStatus.BLOCKED);
     }
 
-    @PutMapping("/{id}/report")
-    public Account reportUser(@PathVariable Long id) {
-        // Implement the logic to report a user
-        // You can use userService.reportUser(id, reportData) to delegate reporting to a service
-        // Return appropriate response
-        return null;
-    }
-
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
         return accountService.update(account);
@@ -119,4 +112,10 @@ public class UserController {
         User user = userService.findUser(userId);
         return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
     }
+    @PutMapping("/{id}/report")
+    @ResponseStatus(HttpStatus.OK)
+    public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
+        reportService.reportUser(id, reportDto);
+    }
+
 }
