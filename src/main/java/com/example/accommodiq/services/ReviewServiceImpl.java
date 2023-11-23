@@ -1,41 +1,77 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.IReviewService;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
+
+import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 @Service
 public class ReviewServiceImpl implements IReviewService {
 
+    final ReviewRepository allReviews;
+
+    @Autowired
+    public ReviewServiceImpl(ReviewRepository allReviews) {
+        this.allReviews = allReviews;
+    }
+
     @Override
     public Collection<Review> getAll() {
-        return null;
+        return allReviews.findAll();
     }
 
     @Override
     public Review findReview(Long reviewId) {
-        return null;
+        Optional<Review> found = allReviews.findById(reviewId);
+        if (found.isEmpty()) {
+            throwNotFound("reviewNotFound");
+        }
+        return found.get();
     }
 
     @Override
     public Review insert(Review review) {
-        return null;
+        try{
+            allReviews.save(review);
+            allReviews.flush();
+            return review;
+        } catch (Exception ex) {
+            throwNotFound("reviewInsertFailed");
+        }
+        return review;
     }
 
     @Override
     public Review update(Review review) {
-        return null;
+        try{
+            findReview(review.getId());
+            allReviews.save(review);
+            allReviews.flush();
+            return review;
+        } catch (ConstraintViolationException ex) {
+            throwNotFound("reviewUpdateFailed");
+        }
+        return review;
     }
 
     @Override
     public Review delete(Long reviewId) {
-        return null;
+           Review review = findReview(reviewId);
+            allReviews.delete(review);
+            allReviews.flush();
+            return review;
     }
 
     @Override
     public void deleteAll() {
-
+        allReviews.deleteAll();
+        allReviews.flush();
     }
 }
