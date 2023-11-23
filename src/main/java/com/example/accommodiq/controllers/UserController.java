@@ -2,19 +2,22 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Notification;
+import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.CredentialsDto;
-import com.example.accommodiq.dtos.NotificationDto;
-import com.example.accommodiq.dtos.UpdatePasswordDto;
-import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.INotificationService;
+import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -22,12 +25,14 @@ public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
     final IUserService userService;
+    final INotificationSettingService notificationSettingService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, INotificationSettingService notificationSettingService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.notificationSettingService = notificationSettingService;
     }
 
     @GetMapping
@@ -43,7 +48,9 @@ public class UserController {
     @PostMapping
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(Account.AccountStatus.INACTIVE);
-        return accountService.insert(account);
+        Account savedAccount = accountService.insert(account);
+        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
+        return savedAccount;
     }
 
     @PostMapping("/login")
@@ -105,4 +112,14 @@ public class UserController {
         return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
     }
 
+    @GetMapping("/{userId}/notificationSettings")
+    public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
+        return notificationSettingService.findUsersNotificationSettings(userId);
+    }
+
+    @PutMapping("/{userId}/notificationSettings")
+    public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
+        User user = userService.findUser(userId);
+        return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+    }
 }

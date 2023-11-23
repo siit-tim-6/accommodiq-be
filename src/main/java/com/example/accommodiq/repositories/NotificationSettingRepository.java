@@ -9,4 +9,5 @@ import java.util.Collection;
 @Repository
 public interface NotificationSettingRepository extends JpaRepository<NotificationSetting, Long> {
     Collection<NotificationSetting> findNotificationSettingsByUserId(Long userId);
+    NotificationSetting findNotificationSettingByUserIdAndType(Long userId, NotificationSetting.NotificationType type);
 }
