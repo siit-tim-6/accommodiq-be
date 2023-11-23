@@ -12,15 +12,15 @@ public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date from;
-    private Date to;
+    private Date fromDate;
+    private Date toDate;
     private double price;
 
-    public Availability(Long id, Date from, Date to, double price) {
+    public Availability(Long id, Date fromDate, Date toDate, double price) {
         super();
         this.id = id;
-        this.from = from;
-        this.to = to;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
         this.price = price;
     }
 
@@ -36,20 +36,20 @@ public class Availability {
         this.id = id;
     }
 
-    public Date getFrom() {
-        return from;
+    public Date getFromDate() {
+        return fromDate;
     }
 
-    public void setFrom(Date from) {
-        this.from = from;
+    public void setFromDate(Date from) {
+        this.fromDate = from;
     }
 
-    public Date getTo() {
-        return to;
+    public Date getToDate() {
+        return toDate;
     }
 
-    public void setTo(Date to) {
-        this.to = to;
+    public void setToDate(Date to) {
+        this.toDate = to;
     }
 
     public double getPrice() {

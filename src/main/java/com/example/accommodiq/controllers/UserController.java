@@ -57,7 +57,7 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
+    @PutMapping(value = "/{id}/activate")
     @ResponseStatus(HttpStatus.OK)
     public void activateUser(@PathVariable Long id) {
         accountService.changeStatus(id, AccountStatus.ACTIVE);
