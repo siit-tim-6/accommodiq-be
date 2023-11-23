@@ -5,19 +5,16 @@ import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.INotificationService;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -47,7 +44,7 @@ public class UserController {
 
     @PostMapping
     public Account registerUser(@RequestBody Account account) {
-        account.setStatus(Account.AccountStatus.INACTIVE);
+        account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
         return savedAccount;
@@ -62,13 +59,13 @@ public class UserController {
     @RequestMapping(value = "/{id}/activate", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseStatus(HttpStatus.OK)
     public void activateUser(@PathVariable Long id) {
-        accountService.changeStatus(id, Account.AccountStatus.ACTIVE);
+        accountService.changeStatus(id, AccountStatus.ACTIVE);
     }
 
     @PutMapping("/{id}/block")
     @ResponseStatus(HttpStatus.OK)
     public void blockUser(@PathVariable Long id) {
-        accountService.changeStatus(id, Account.AccountStatus.BLOCKED);
+        accountService.changeStatus(id, AccountStatus.BLOCKED);
     }
 
     @PutMapping("/{id}/report")
