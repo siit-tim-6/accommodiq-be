@@ -1,10 +1,7 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.enums.ReviewStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -17,6 +14,8 @@ public class Review {
     private String comment;
     private Date date;
     private ReviewStatus status;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private User guest;
 
 
     public Review(Long id, int rating, String comment, Date date, ReviewStatus status) {
@@ -71,4 +70,8 @@ public class Review {
     public void setStatus(ReviewStatus status) {
         this.status = status;
     }
+
+    public User getGuest() { return guest; }
+
+    public void setGuest(User guest) { this.guest = guest; }
 }

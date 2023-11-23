@@ -83,4 +83,19 @@ public class ReviewServiceImpl implements IReviewService {
         allReviews.save(review);
         allReviews.flush();
     }
+
+    @Override
+    public void addReview(Long hostId, Review review) {
+
+    }
+
+    @Override
+    public Collection<Review> getHostReviews(Long hostId) {
+        return null;
+    }
+
+    @Override
+    public Collection<Review> getAccommodationReviews(Long accommodationId) {
+        return null;
+    }
 }

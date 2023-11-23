@@ -65,8 +65,9 @@ public class ReviewController {
     }
 
     @PostMapping("/host/{hostId}")
-    public void addReview(@PathVariable Long hostId, @RequestBody Review review) {
+    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody Review review) {
         service.addReview(hostId, review);
+        return ResponseEntity.ok("Review has been added.");
     }
 
     @GetMapping("/host/{hostId}")
