@@ -18,6 +18,7 @@ public class Review {
     private Date date;
     private ReviewStatus status;
 
+
     public Review(Long id, int rating, String comment, Date date, ReviewStatus status) {
         super();
         this.id = id;

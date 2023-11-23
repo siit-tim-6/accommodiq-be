@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -72,6 +73,14 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public void deleteAll() {
         allReviews.deleteAll();
+        allReviews.flush();
+    }
+
+    @Override
+    public void setReviewStatus(Long reviewId, ReviewStatus reviewStatus) {
+        Review review = findReview(reviewId);
+        review.setStatus(reviewStatus);
+        allReviews.save(review);
         allReviews.flush();
     }
 }

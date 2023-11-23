@@ -1,8 +1,10 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -45,19 +47,26 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}/accept")
-    public void acceptReview(@PathVariable Long reviewId) {
+    public ResponseEntity<String> acceptReview(@PathVariable Long reviewId) {
+        service.setReviewStatus(reviewId, ReviewStatus.ACCEPTED);
+        return ResponseEntity.ok("Review with ID " + reviewId + " has been accepted.");
     }
 
     @PutMapping("/{reviewId}/deny")
-    public void denyReview(@PathVariable Long reviewId) {
+    public ResponseEntity<String> denyReview(@PathVariable Long reviewId) {
+        service.setReviewStatus(reviewId, ReviewStatus.DECLINED);
+        return ResponseEntity.ok("Review with ID " + reviewId + " has been denied.");
     }
 
     @PutMapping("/{reviewId}/report")
-    public void reportReview(@PathVariable Long reviewId) {
+    public ResponseEntity<String> reportReview(@PathVariable Long reviewId) {
+        service.setReviewStatus(reviewId, ReviewStatus.REPORTED);
+        return ResponseEntity.ok("Review with ID " + reviewId + " has been reported.");
     }
 
     @PostMapping("/host/{hostId}")
     public void addReview(@PathVariable Long hostId, @RequestBody Review review) {
+        service.addReview(hostId, review);
     }
 
     @GetMapping("/host/{hostId}")

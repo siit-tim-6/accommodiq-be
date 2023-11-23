@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.Collection;
 
@@ -18,4 +19,5 @@ public interface IReviewService {
 
     void deleteAll();
 
+    void setReviewStatus(Long reviewId, ReviewStatus reviewStatus);
 }
