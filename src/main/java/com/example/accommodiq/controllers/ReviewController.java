@@ -26,11 +26,6 @@ public class ReviewController {
         return service.getAll();
     }
 
-    @PostMapping
-    public Review insertReview(@RequestBody Review review) {
-        return service.insert(review);
-    }
-
     @PutMapping
     public Review updateReview(@RequestBody Review review) {
         return service.update(review);
@@ -66,7 +61,7 @@ public class ReviewController {
 
     @PostMapping("/host/{hostId}")
     public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody Review review) {
-        service.addReview(hostId, review);
+        service.insert(hostId, review);
         return ResponseEntity.ok("Review has been added.");
     }
 

@@ -22,11 +22,7 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host findHost(Long hostId) {
-        return new ArrayList<Host>() {
-            {
-                add(new Host(1,"John", "Doe", "123 Main Street", "555-1234"));
-            }
-        }
+        return new Host(1L,"John", "Doe", "123 Main Street", "555-1234",null);
     }
 
     @Override
