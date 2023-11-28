@@ -19,7 +19,8 @@ public class AccommodationController {
     }
 
     @GetMapping()
-    public Collection<AccommodationListDto> getAllAccommodations() {
+    public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String location, @RequestParam(required = false) long availableFrom, @RequestParam(required = false) long availableTo,
+                                                                 @RequestParam(required = false) int priceFrom, @RequestParam(required = false) int priceTo, @RequestParam(required = false) int guests, @RequestParam(required = false) List<String> benefits) {
         return accommodationService.findAll();
     }
 
