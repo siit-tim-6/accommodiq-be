@@ -69,19 +69,13 @@ public class UserController {
         accountService.deleteAll();
     }
 
-    @PutMapping(value = "/{id}/activate")
+    @PutMapping(value = "/{id}/status")
     @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.ACTIVE);
+    public void changeStatus(@PathVariable Long id, @RequestBody UserStatusDto statusDto) {
+        accountService.changeStatus(id, statusDto.getStatus());
     }
 
-    @PutMapping("/{id}/block")
-    @ResponseStatus(HttpStatus.OK)
-    public void blockUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.BLOCKED);
-    }
-
-    @PutMapping("/{id}/changePassword")
+    @PutMapping("/{id}/password")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
         accountService.changePassword(id, passwordDto.getPassword());
@@ -110,7 +104,7 @@ public class UserController {
         return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
     }
 
-    @PutMapping("/{id}/report")
+    @PostMapping("/{id}/reports")
     @ResponseStatus(HttpStatus.OK)
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);
