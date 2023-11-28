@@ -49,7 +49,7 @@ public class AccommodationController {
     public void removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
     }
 
-    @GetMapping("/{accommodationId}/report")
+    @GetMapping("/{accommodationId}/financial-report")
     public AccommodationReportDto getAccommodationReport(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationReport(accommodationId);
     }
