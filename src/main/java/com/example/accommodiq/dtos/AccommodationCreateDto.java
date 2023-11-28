@@ -1,6 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import com.example.accommodiq.controllers.AvailabilityDto;
 import com.example.accommodiq.enums.PricingType;
 
 import java.util.ArrayList;
