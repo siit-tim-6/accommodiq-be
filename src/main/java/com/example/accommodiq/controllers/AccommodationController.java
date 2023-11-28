@@ -34,9 +34,9 @@ public class AccommodationController {
         return accommodationService.findById(accommodationId);
     }
 
-    @PutMapping("/{accommodationId}")
+    @PutMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAccommodation(@PathVariable Long accommodationId, @RequestBody AccommodationUpdateDto body) {
+    public void updateAccommodation(@RequestBody AccommodationUpdateDto body) {
     }
 
     @PostMapping("/{accommodationId}/availability")
