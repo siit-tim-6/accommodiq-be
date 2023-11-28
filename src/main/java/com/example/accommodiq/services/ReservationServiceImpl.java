@@ -1,7 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.enums.ReservationStatus;
+import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,11 +20,11 @@ import java.util.ResourceBundle;
 @Service
 public class ReservationServiceImpl implements IReservationService {
 
-    final
-    ReservationRepository allReservations;
+    final ReservationRepository allReservations;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
+    @Autowired
     public ReservationServiceImpl(ReservationRepository allReservations) {
         this.allReservations = allReservations;
     }
@@ -105,16 +105,15 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation setReservationStatus(Long reservationId, ReservationStatus status) {
+    public Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
         Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
-        if(optionalReservation.isPresent()){
+        if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
-            reservation.setStatus(status);
+            reservation.setStatus(statusDto.getStatus());
             allReservations.save(reservation);
             allReservations.flush();
             return reservation;
-        }
-        else{
+        } else {
             String value = bundle.getString("reservationNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
