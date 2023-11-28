@@ -1,6 +1,8 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.dtos.ReportRequestDto;
+import com.example.accommodiq.dtos.ReportResponseDto;
 import com.example.accommodiq.services.interfaces.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +27,13 @@ public class ReportController {
     }
 
     @PostMapping
-    public Report insertReport(@RequestBody Report report) {
-        return service.insert(report);
+    public ReportResponseDto insertReport(@RequestBody ReportRequestDto reportRequestDto) {
+        return service.insert(reportRequestDto);
     }
 
     @PutMapping
-    public Report updateReport(@RequestBody Report report) {
-        return service.update(report);
+    public ReportResponseDto updateReport(@RequestBody ReportRequestDto reportRequestDto) {
+        return service.update(reportRequestDto);
     }
 
     @DeleteMapping("/{reportId}")

@@ -2,6 +2,8 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
+import com.example.accommodiq.dtos.ReportRequestDto;
+import com.example.accommodiq.dtos.ReportResponseDto;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.IUserService;
@@ -57,16 +59,34 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Report update(Report report) {
+    public ReportResponseDto insert(ReportRequestDto reportDto) {
+        Report report = convertToReport(reportDto);
         try {
-            findReport(report.getId()); // this will throw ResponseStatusException if report is not found
             allReports.save(report);
             allReports.flush();
-            return report;
+            return convertToReportResponseDto(report);
+        } catch (ConstraintViolationException ex) {
+            throwBadRequest("reportInsertFailed");
+        }
+        return convertToReportResponseDto(report);
+    }
+
+    @Override
+    public ReportResponseDto update(ReportRequestDto reportRequestDto) {
+        Report existingReport = findReport(reportRequestDto.getId());
+
+        existingReport.setReason(reportRequestDto.getReason());
+        existingReport.setTimestamp(reportRequestDto.getTimestamp());
+
+        try {
+            findReport(existingReport.getId()); // this will throw ResponseStatusException if report is not found
+            allReports.save(existingReport);
+            allReports.flush();
+            return convertToReportResponseDto(existingReport);
         } catch (ConstraintViolationException ex) {
             throwBadRequest("reportUpdateFailed");
         }
-        return report;
+        return convertToReportResponseDto(existingReport);
     }
 
     @Override
@@ -92,7 +112,7 @@ public class ReportServiceImpl implements IReportService {
         report.setReportedUser(userService.findUser(reportedUserId));
         report.setReason(reportDto.getReason());
         report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
-        report.setTimestamp(Instant.now().toEpochMilli());
+        report.setTimestamp(reportDto.getTimestamp());
         insert(report);
     }
 
@@ -106,6 +126,24 @@ public class ReportServiceImpl implements IReportService {
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
             throwBadRequest("reportReasonNull");
         }
+    }
+
+    private Report convertToReport(ReportRequestDto reportDto) {
+        Report report = new Report();
+        report.setReportedUser(userService.findUser(reportDto.getReportedUserId()));
+        report.setReason(reportDto.getReason());
+        report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
+        report.setTimestamp(reportDto.getTimestamp());
+        return report;
+    }
+
+    private ReportResponseDto convertToReportResponseDto(Report report) {
+        ReportResponseDto reportResponseDto = new ReportResponseDto();
+        reportResponseDto.setReportedUserId(report.getReportedUser().getId());
+        reportResponseDto.setReason(report.getReason());
+        reportResponseDto.setReportingUserId(report.getReportingUser().getId());
+        reportResponseDto.setTimestamp(report.getTimestamp());
+        return reportResponseDto;
     }
     
 }
