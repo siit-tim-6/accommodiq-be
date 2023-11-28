@@ -2,7 +2,6 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.ReviewStatusDto;
-import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
