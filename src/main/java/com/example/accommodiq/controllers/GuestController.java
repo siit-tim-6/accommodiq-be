@@ -1,8 +1,11 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.GuestFavoriteDto;
+import com.example.accommodiq.dtos.ReservationListDto;
+import com.example.accommodiq.services.interfaces.IGuestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +14,16 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/guests")
 public class GuestController {
+    final IGuestService guestService;
+
+    @Autowired
+    public GuestController(IGuestService guestService) {
+        this.guestService = guestService;
+    }
+
     @GetMapping("/{guestId}/reservations")
-    public Collection<Reservation> getReservations(@PathVariable Long guestId) {
-        return null;
+    public Collection<ReservationListDto> getReservations(@PathVariable Long guestId) {
+        return guestService.getReservations(guestId);
     }
 
     @PostMapping("/{guestId}/reservations")
@@ -22,8 +32,8 @@ public class GuestController {
     }
 
     @GetMapping("/{guestId}/favorites")
-    public Collection<Accommodation> getFavorites(@PathVariable Long guestId) {
-        return null;
+    public Collection<AccommodationListDto> getFavorites(@PathVariable Long guestId) {
+        return guestService.getFavorites(guestId);
     }
 
     @PostMapping("/{guestId}/favorites")
