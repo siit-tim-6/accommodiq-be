@@ -2,16 +2,14 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Notification;
+import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.CredentialsDto;
-import com.example.accommodiq.dtos.ReportDto;
-import com.example.accommodiq.dtos.NotificationDto;
-import com.example.accommodiq.dtos.UpdatePasswordDto;
-import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.INotificationService;
+import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,14 +23,14 @@ public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
     final IUserService userService;
-    final IReportService reportService;
+    final INotificationSettingService notificationSettingService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, INotificationSettingService notificationSettingService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
-        this.reportService = reportService;
+        this.notificationSettingService = notificationSettingService;
     }
 
     @GetMapping
@@ -48,7 +46,9 @@ public class UserController {
     @PostMapping
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
-        return accountService.insert(account);
+        Account savedAccount = accountService.insert(account);
+        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
+        return savedAccount;
     }
 
     @PostMapping("/login")
@@ -102,6 +102,16 @@ public class UserController {
         return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
     }
 
+    @GetMapping("/{userId}/notification-settings")
+    public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
+        return notificationSettingService.findUsersNotificationSettings(userId);
+    }
+
+    @PutMapping("/{userId}/notification-settings")
+    public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
+        User user = userService.findUser(userId);
+        return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+    }
     @PutMapping("/{id}/report")
     @ResponseStatus(HttpStatus.OK)
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
