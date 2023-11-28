@@ -54,24 +54,6 @@ public class UserController {
         return savedAccount;
     }
 
-    @PostMapping("/login")
-    public UserLoginDto login(@RequestBody CredentialsDto credentialsDto) {
-        return accountService.login(credentialsDto);
-    }
-
-
-    @PutMapping(value = "/{id}/activate")
-    @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.ACTIVE);
-    }
-
-    @PutMapping("/{id}/block")
-    @ResponseStatus(HttpStatus.OK)
-    public void blockUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.BLOCKED);
-    }
-
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
         return accountService.update(account);
@@ -85,6 +67,18 @@ public class UserController {
     @DeleteMapping
     public void deleteAllUsers() {
         accountService.deleteAll();
+    }
+
+    @PutMapping(value = "/{id}/activate")
+    @ResponseStatus(HttpStatus.OK)
+    public void activateUser(@PathVariable Long id) {
+        accountService.changeStatus(id, AccountStatus.ACTIVE);
+    }
+
+    @PutMapping("/{id}/block")
+    @ResponseStatus(HttpStatus.OK)
+    public void blockUser(@PathVariable Long id) {
+        accountService.changeStatus(id, AccountStatus.BLOCKED);
     }
 
     @PutMapping("/{id}/changePassword")
