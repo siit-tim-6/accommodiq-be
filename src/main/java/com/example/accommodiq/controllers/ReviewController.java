@@ -47,12 +47,6 @@ public class ReviewController {
         return ResponseEntity.ok("Review with ID " + reviewId + " status changed.");
     }
 
-    @PostMapping("/host/{hostId}")
-    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody Review review) {
-        service.insert(hostId, review);
-        return ResponseEntity.ok("Review has been added.");
-    }
-
     @GetMapping("/host/{hostId}")
     public Collection<Review> getHostReviews(@PathVariable Long hostId) {
         return service.getHostReviews(hostId);
