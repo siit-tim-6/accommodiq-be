@@ -47,11 +47,6 @@ public class ReviewController {
         return ResponseEntity.ok("Review with ID " + reviewId + " status changed.");
     }
 
-    @GetMapping("/host/{hostId}")
-    public Collection<Review> getHostReviews(@PathVariable Long hostId) {
-        return service.getHostReviews(hostId);
-    }
-
     @GetMapping("/accommodation/{accommodationId}")
     public Collection<Review> getAccommodationReviews(@PathVariable Long accommodationId) {
         return service.getAccommodationReviews(accommodationId);

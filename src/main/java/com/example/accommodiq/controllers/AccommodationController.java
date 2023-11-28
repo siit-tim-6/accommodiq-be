@@ -1,9 +1,11 @@
 package com.example.accommodiq.controllers;
 
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -52,5 +54,10 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}/financial-report")
     public AccommodationReportDto getAccommodationReport(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationReport(accommodationId);
+    }
+
+    @PostMapping("{accommodationId}/reviews")
+    public ResponseEntity<String> addReview(@PathVariable Long accommodationId, @RequestBody Review review) {
+        return ResponseEntity.ok("Review has been added.");
     }
 }
