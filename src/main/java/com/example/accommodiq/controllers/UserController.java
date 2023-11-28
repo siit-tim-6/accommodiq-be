@@ -102,12 +102,12 @@ public class UserController {
         return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
     }
 
-    @GetMapping("/{userId}/notificationSettings")
+    @GetMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
         return notificationSettingService.findUsersNotificationSettings(userId);
     }
 
-    @PutMapping("/{userId}/notificationSettings")
+    @PutMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
         User user = userService.findUser(userId);
         return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
