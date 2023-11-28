@@ -24,13 +24,15 @@ public class UserController {
     final INotificationService notificationService;
     final IUserService userService;
     final INotificationSettingService notificationSettingService;
+    final IReportService reportService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, INotificationSettingService notificationSettingService) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, INotificationSettingService notificationSettingService, IReportService reportService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
+        this.reportService = reportService;
     }
 
     @GetMapping
