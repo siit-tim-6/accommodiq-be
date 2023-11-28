@@ -24,14 +24,9 @@ public class AccommodationController {
         return accommodationService.findAll();
     }
 
-    @PutMapping("/{accommodationId}/accept")
+    @PutMapping("/{accommodationId}/status")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void acceptAccommodationChange(@PathVariable Long accommodationId) {
-    }
-
-    @PutMapping("/{accommodationId}/deny")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void declineAccommodationChange(@PathVariable Long accommodationId) {
+    public void changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
     }
 
     @GetMapping("/{accommodationId}")
