@@ -2,6 +2,7 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
@@ -94,5 +95,21 @@ public class AccommodationServiceImpl implements IAccommodationService {
         };
 
         return new AccommodationReportDto(30, revenueDtos);
+    }
+
+    @Override
+    public Collection<Review> getAccommodationReviews(Long accommodationId) {
+        return new ArrayList<Review>() {
+            {
+                add(new Review(1L, 5, "Great place!", new Date(), null));
+            }
+
+            {
+                add(new Review(2L, 5, "Excellent stay!", new Date(), null));
+            }
+        };
+
+        //Accommodation accommodation = accommodationRepository.findById(accommodationId);
+        //return accommodation.getReviews();
     }
 }

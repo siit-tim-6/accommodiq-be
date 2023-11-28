@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.AccommodationDetailsDto;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.AccommodationReportDto;
@@ -15,4 +16,6 @@ public interface IAccommodationService {
     public Accommodation acceptIncomingChanges(Long accommodationId);
 
     public AccommodationReportDto getAccommodationReport(Long accommodationId);
+
+    Collection<Review> getAccommodationReviews(Long accommodationId);
 }
