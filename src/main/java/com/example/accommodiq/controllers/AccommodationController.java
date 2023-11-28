@@ -39,12 +39,12 @@ public class AccommodationController {
     public void updateAccommodation(@RequestBody AccommodationUpdateDto body) {
     }
 
-    @PostMapping("/{accommodationId}/availability")
+    @PostMapping("/{accommodationId}/availabilities")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
     }
 
-    @DeleteMapping("/{accommodationId}/availability/{availabilityId}")
+    @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
     }
