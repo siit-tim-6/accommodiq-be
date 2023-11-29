@@ -58,7 +58,7 @@ public class ReservationServiceImpl implements IReservationService {
             String value = bundle.getString("reservationNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
-        return convertToReservationDto(found.get());
+        return new ReservationDto(found.get());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ReservationServiceImpl implements IReservationService {
         try {
             allReservations.save(reservation);
             allReservations.flush();
-            return convertToReservationDto(reservation);
+            return new ReservationDto(reservation);
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
         }
@@ -97,7 +97,7 @@ public class ReservationServiceImpl implements IReservationService {
             findReservation(existingReservation.getId()); // this will throw ResponseStatusException if reservation is not found
             allReservations.save(existingReservation);
             allReservations.flush();
-            return convertToReservationDto(existingReservation);
+            return new ReservationDto(existingReservation);
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation");
         } catch (EntityNotFoundException ex) {
@@ -166,17 +166,4 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setAccommodation(accommodationService.findAccommodation(reservationDto.getAccommodationId()));
         return reservation;
     }
-
-    private ReservationDto convertToReservationDto(Reservation reservation) {
-        ReservationDto reservationDto = new ReservationDto();
-        reservationDto.setId(reservation.getId());
-        reservationDto.setStartDate(reservation.getStartDate());
-        reservationDto.setEndDate(reservation.getEndDate());
-        reservationDto.setNumberOfGuests(reservation.getNumberOfGuests());
-        reservationDto.setStatus(reservation.getStatus());
-        reservationDto.setUserId(reservation.getUser().getId());
-        reservationDto.setAccommodationId(reservation.getAccommodation().getId());
-        return reservationDto;
-    }
-
 }

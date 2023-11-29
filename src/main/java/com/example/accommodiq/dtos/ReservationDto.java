@@ -1,5 +1,6 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.Date;
@@ -24,6 +25,16 @@ public class ReservationDto {
         this.status = status;
         this.userId = userId;
         this.accommodationId = accommodationId;
+    }
+
+    public ReservationDto(Reservation reservation) {
+        this.id = reservation.getId();
+        this.startDate = reservation.getStartDate();
+        this.endDate = reservation.getEndDate();
+        this.numberOfGuests = reservation.getNumberOfGuests();
+        this.status = reservation.getStatus();
+        this.userId = reservation.getUser().getId();
+        this.accommodationId = reservation.getAccommodation().getId();
     }
 
     public Long getId() {
