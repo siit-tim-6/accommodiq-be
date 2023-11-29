@@ -87,5 +87,6 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
         for (NotificationType type : NotificationType.values()) {
             user.getNotificationSettings().add(new NotificationSetting((long) -1, type, true));
         }
+        userService.update(user);
     }
 }

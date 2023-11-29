@@ -52,7 +52,7 @@ public class UserController {
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
-        notificationSettingService.setNotificationSettingsForUser(account.getUser().getId());
+        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
         return savedAccount;
     }
 
