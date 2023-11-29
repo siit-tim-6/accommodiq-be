@@ -1,7 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,7 @@ import java.util.Collection;
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    final
-    IReviewService service;
+    final IReviewService service;
 
     @Autowired
     public ReviewController(IReviewService service) {
@@ -41,38 +40,9 @@ public class ReviewController {
         service.deleteAll();
     }
 
-    @PutMapping("/{reviewId}/accept")
-    public ResponseEntity<String> acceptReview(@PathVariable Long reviewId) {
-        service.setReviewStatus(reviewId, ReviewStatus.ACCEPTED);
-        return ResponseEntity.ok("Review with ID " + reviewId + " has been accepted.");
+    @PutMapping("/{reviewId}/status")
+    public ResponseEntity<String> acceptReview(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        service.setReviewStatus(reviewId, body);
+        return ResponseEntity.ok("Review with ID " + reviewId + " status changed.");
     }
-
-    @PutMapping("/{reviewId}/deny")
-    public ResponseEntity<String> denyReview(@PathVariable Long reviewId) {
-        service.setReviewStatus(reviewId, ReviewStatus.DECLINED);
-        return ResponseEntity.ok("Review with ID " + reviewId + " has been denied.");
-    }
-
-    @PutMapping("/{reviewId}/report")
-    public ResponseEntity<String> reportReview(@PathVariable Long reviewId) {
-        service.setReviewStatus(reviewId, ReviewStatus.REPORTED);
-        return ResponseEntity.ok("Review with ID " + reviewId + " has been reported.");
-    }
-
-    @PostMapping("/host/{hostId}")
-    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody Review review) {
-        service.insert(hostId, review);
-        return ResponseEntity.ok("Review has been added.");
-    }
-
-    @GetMapping("/host/{hostId}")
-    public Collection<Review> getHostReviews(@PathVariable Long hostId) {
-        return service.getHostReviews(hostId);
-    }
-
-    @GetMapping("/accommodation/{accommodationId}")
-    public Collection<Review> getAccommodationReviews(@PathVariable Long accommodationId) {
-        return service.getAccommodationReviews(accommodationId);
-    }
-
 }

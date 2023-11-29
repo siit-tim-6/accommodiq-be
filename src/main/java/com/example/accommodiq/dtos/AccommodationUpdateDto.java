@@ -3,6 +3,7 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.enums.PricingType;
 
 public class AccommodationUpdateDto {
+    private Long id;
     private String title;
     private String description;
     private String location;
@@ -11,8 +12,8 @@ public class AccommodationUpdateDto {
     private PricingType pricingType;
     private boolean automaticAcceptance;
 
-    public AccommodationUpdateDto(String title, String description, String location, int minGuests,
-                                  int maxGuests, PricingType pricingType, boolean automaticAcceptance) {
+    public AccommodationUpdateDto(Long id, String title, String description, String location, int minGuests, int maxGuests, PricingType pricingType, boolean automaticAcceptance) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.location = location;
@@ -20,6 +21,14 @@ public class AccommodationUpdateDto {
         this.maxGuests = maxGuests;
         this.pricingType = pricingType;
         this.automaticAcceptance = automaticAcceptance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
