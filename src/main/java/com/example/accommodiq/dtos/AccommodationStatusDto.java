@@ -7,6 +7,8 @@ public class AccommodationStatusDto {
         this.accepted = accepted;
     }
 
+    public AccommodationStatusDto() {}
+
     public boolean isAccepted() {
         return accepted;
     }
