@@ -5,18 +5,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.util.Date;
-
 @Entity
 public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date fromDate;
-    private Date toDate;
+    private Long fromDate;
+    private Long toDate;
     private double price;
 
-    public Availability(Long id, Date fromDate, Date toDate, double price) {
+    public Availability(Long id, Long fromDate, Long toDate, double price) {
         super();
         this.id = id;
         this.fromDate = fromDate;
@@ -36,19 +34,19 @@ public class Availability {
         this.id = id;
     }
 
-    public Date getFromDate() {
+    public Long getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Date from) {
+    public void setFromDate(Long from) {
         this.fromDate = from;
     }
 
-    public Date getToDate() {
+    public Long getToDate() {
         return toDate;
     }
 
-    public void setToDate(Date to) {
+    public void setToDate(Long to) {
         this.toDate = to;
     }
 

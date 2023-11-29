@@ -43,12 +43,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
         AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
         ArrayList<Availability> availabilities = new ArrayList<>() {
             {
-                add(new Availability(1L, new Date(), new Date(), 150.0));
+                add(new Availability(1L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 150.0));
 
             }
 
             {
-                add(new Availability(2L, new Date(), new Date(), 120.0));
+                add(new Availability(2L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 120.0));
             }
         };
         ArrayList<AccommodationDetailsReviewDto> detailsReviewDtos = new ArrayList<>() {
