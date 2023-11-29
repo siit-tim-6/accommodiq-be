@@ -3,6 +3,7 @@ package com.example.accommodiq.controllers;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.GuestFavoriteDto;
+import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class GuestController {
     }
 
     @PostMapping("/{guestId}/reservations")
-    public Reservation addReservation(@PathVariable Long guestId, @RequestBody Reservation reservation) {
-        return reservation;
+    public ReservationDto addReservation(@PathVariable Long guestId, @RequestBody ReservationDto reservationDto) {
+        return reservationDto;
     }
 
     @GetMapping("/{guestId}/favorites")

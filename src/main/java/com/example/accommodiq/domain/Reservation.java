@@ -80,6 +80,7 @@ public class Reservation {
 
     public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
+    }
 
      public void setUser(User user) {
         this.user = user;
@@ -87,9 +88,5 @@ public class Reservation {
 
     public Accommodation getAccommodation() {
         return accommodation;
-    }
-
-    public void setAccommodation(Accommodation accommodation) {
-        this.accommodation = accommodation;
     }
 }
