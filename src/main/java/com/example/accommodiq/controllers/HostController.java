@@ -2,12 +2,10 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.AccommodationCreateDto;
-import com.example.accommodiq.dtos.AccommodationListDto;
-import com.example.accommodiq.dtos.FinancialReportEntryDto;
-import com.example.accommodiq.dtos.HostReservationDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +19,13 @@ import java.util.Date;
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
+    final private IUserService userService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService) {
+    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService) {
         this.hostService = hostService;
         this.reviewService = reviewService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -81,7 +81,8 @@ public class HostController {
     }
 
     @PostMapping("{hostId}/reviews")
-    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody Review review) {
+    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody ReviewDto reviewDto) {
+        Review review = convertToReview(reviewDto);
         reviewService.insert(hostId, review);
         return ResponseEntity.ok("Review has been added.");
     }
@@ -89,5 +90,15 @@ public class HostController {
     @GetMapping("{hostId}/reviews")
     public Collection<Review> getHostReviews(@PathVariable Long hostId) {
         return reviewService.getHostReviews(hostId);
+    }
+
+    private Review convertToReview(ReviewDto reviewDto) {
+        Review review = new Review();
+        review.setRating(reviewDto.getRating());
+        review.setComment(reviewDto.getComment());
+        review.setDate(reviewDto.getDate());
+        review.setStatus(reviewDto.getStatus());
+        review.setGuest(userService.findUser(reviewDto.getGuestId()));
+        return review;
     }
 }
