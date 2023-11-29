@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -105,11 +106,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Collection<Review> getAccommodationReviews(Long accommodationId) {
         return new ArrayList<Review>() {
             {
-                add(new Review(1L, 5, "Great place!", new Date(), null));
+                add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), null));
             }
 
             {
-                add(new Review(2L, 5, "Excellent stay!", new Date(), null));
+                add(new Review(2L, 5, "Excellent stay!", Instant.now().toEpochMilli(), null));
             }
         };
 
