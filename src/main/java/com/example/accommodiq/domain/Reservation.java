@@ -84,11 +84,11 @@ public class Reservation {
         return user;
     }
 
-    public void setApartment(Accommodation apartment) {
+    public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
     }
 
-    public Accommodation getApartment() {
+    public Accommodation getAccommodation() {
         return accommodation;
     }
 }

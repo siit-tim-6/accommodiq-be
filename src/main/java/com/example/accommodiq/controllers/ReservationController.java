@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +30,18 @@ public class ReservationController {
     }
 
     @GetMapping("/{reservationId}")
-    public Reservation findReservationById(@PathVariable Long reservationId) {
-        return reservationService.findReservation(reservationId);
+    public ReservationDto findReservationById(@PathVariable Long reservationId) {
+        return reservationService.findReservationDto(reservationId);
     }
 
     @PostMapping
-    public Reservation insert(@RequestBody Reservation reservation) {
-        return reservationService.insert(reservation);
+    public ReservationDto insert(@RequestBody ReservationDto reservationDto) {
+        return reservationService.insert(reservationDto);
     }
 
     @PutMapping
-    public Reservation update(@RequestBody Reservation reservation) {
-        return reservationService.update(reservation);
+    public ReservationDto update(@RequestBody ReservationDto reservationDto) {
+        return reservationService.update(reservationDto);
     }
 
     @DeleteMapping("/{reservationId}")

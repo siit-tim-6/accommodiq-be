@@ -4,7 +4,6 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +74,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 "A charming cottage with a beautiful garden.",
                 detailsReviewDtos
         );
+    }
+
+    @Override
+    public Accommodation findAccommodation(Long accommodationId) {
+        return null;
     }
 
     @Override

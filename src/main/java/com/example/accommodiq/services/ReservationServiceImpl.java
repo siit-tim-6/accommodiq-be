@@ -1,12 +1,14 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IReservationService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,11 +24,15 @@ public class ReservationServiceImpl implements IReservationService {
 
     final
     ReservationRepository allReservations;
+    final IAccommodationService accommodationService;
+    final IUserService userService;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public ReservationServiceImpl(ReservationRepository allReservations) {
+    public ReservationServiceImpl(ReservationRepository allReservations, IAccommodationService accommodationService, IUserService userService) {
         this.allReservations = allReservations;
+        this.accommodationService = accommodationService;
+        this.userService = userService;
     }
 
     @Override
@@ -46,6 +52,16 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
+    public ReservationDto findReservationDto(Long reservationId) {
+        Optional<Reservation> found = allReservations.findById(reservationId);
+        if (found.isEmpty()) {
+            String value = bundle.getString("reservationNotFound");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
+        return convertToReservationDto(found.get());
+    }
+
+    @Override
     public Reservation insert(Reservation reservation) {
         try {
             allReservations.save(reservation);
@@ -57,12 +73,31 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation update(Reservation reservation) {
+    public ReservationDto insert(ReservationDto reservationDto) {
+        Reservation reservation = convertToReservation(reservationDto);
         try {
-            findReservation(reservation.getId()); // this will throw ResponseStatusException if reservation is not found
             allReservations.save(reservation);
             allReservations.flush();
-            return reservation;
+            return convertToReservationDto(reservation);
+        } catch (ConstraintViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public ReservationDto update(ReservationDto reservationDto) {
+        Reservation existingReservation = findReservation(reservationDto.getId());
+
+        existingReservation.setStartDate(reservationDto.getStartDate());
+        existingReservation.setEndDate(reservationDto.getEndDate());
+        existingReservation.setNumberOfGuests(reservationDto.getNumberOfGuests());
+        existingReservation.setStatus(reservationDto.getStatus());
+
+        try {
+            findReservation(existingReservation.getId()); // this will throw ResponseStatusException if reservation is not found
+            allReservations.save(existingReservation);
+            allReservations.flush();
+            return convertToReservationDto(existingReservation);
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation");
         } catch (EntityNotFoundException ex) {
@@ -120,5 +155,28 @@ public class ReservationServiceImpl implements IReservationService {
         }
     }
 
+    private Reservation convertToReservation(ReservationDto reservationDto) {
+        Reservation reservation = new Reservation();
+        reservation.setId(reservationDto.getId());
+        reservation.setStartDate(reservationDto.getStartDate());
+        reservation.setEndDate(reservationDto.getEndDate());
+        reservation.setNumberOfGuests(reservationDto.getNumberOfGuests());
+        reservation.setStatus(reservationDto.getStatus());
+        reservation.setUser(userService.findUser(reservationDto.getUserId()));
+        reservation.setAccommodation(accommodationService.findAccommodation(reservationDto.getAccommodationId()));
+        return reservation;
+    }
+
+    private ReservationDto convertToReservationDto(Reservation reservation) {
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setId(reservation.getId());
+        reservationDto.setStartDate(reservation.getStartDate());
+        reservationDto.setEndDate(reservation.getEndDate());
+        reservationDto.setNumberOfGuests(reservation.getNumberOfGuests());
+        reservationDto.setStatus(reservation.getStatus());
+        reservationDto.setUserId(reservation.getUser().getId());
+        reservationDto.setAccommodationId(reservation.getAccommodation().getId());
+        return reservationDto;
+    }
 
 }
