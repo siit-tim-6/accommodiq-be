@@ -4,8 +4,10 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,8 +39,33 @@ public class AccommodationServiceImpl implements IAccommodationService {
         };
     }
 
+    public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        return new Accommodation(1L,
+                "Cozy Cottage",
+                "A charming place to relax",
+                "Green Valley",
+                "cottage_image.jpg",
+                2,
+                4,
+                "Cottage",
+                true,
+                PricingType.PER_GUEST,
+                true,
+                7,
+                null
+        );
+    }
+
     @Override
     public AccommodationDetailsDto findById(Long accommodationId) {
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
         AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
         ArrayList<Availability> availabilities = new ArrayList<>() {
             {
@@ -82,8 +109,73 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation acceptIncomingChanges(Long accommodationId) {
-        return null;
+    public Accommodation updateAccommodation(AccommodationUpdateDto updateDto) {
+        if (updateDto.getId() == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        return new Accommodation(1L,
+                "Cozy Cottage",
+                "A charming place to relax",
+                "Green Valley",
+                "cottage_image.jpg",
+                2,
+                4,
+                "Cottage",
+                true,
+                PricingType.PER_GUEST,
+                true,
+                7,
+                null
+        );
+    }
+
+    @Override
+    public Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto) {
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        return new Accommodation(1L,
+                "Cozy Cottage",
+                "A charming place to relax",
+                "Green Valley",
+                "cottage_image.jpg",
+                2,
+                4,
+                "Cottage",
+                true,
+                PricingType.PER_GUEST,
+                true,
+                7,
+                null
+        );
+    }
+
+    @Override
+    public Accommodation removeAccommodationAvailability(Long accommodationId, Long availabilityId) {
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        if (availabilityId == 4L) {
+            ReportUtils.throwNotFound("availabilityNotFound");
+        }
+
+        return new Accommodation(1L,
+                "Cozy Cottage",
+                "A charming place to relax",
+                "Green Valley",
+                "cottage_image.jpg",
+                2,
+                4,
+                "Cottage",
+                true,
+                PricingType.PER_GUEST,
+                true,
+                7,
+                null
+        );
     }
 
     @Override
@@ -115,5 +207,27 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         //Accommodation accommodation = accommodationRepository.findById(accommodationId);
         //return accommodation.getReviews();
+    }
+
+    @Override
+    public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) {
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        return new Accommodation(1L,
+                "Cozy Cottage",
+                "A charming place to relax",
+                "Green Valley",
+                "cottage_image.jpg",
+                2,
+                4,
+                "Cottage",
+                true,
+                PricingType.PER_GUEST,
+                true,
+                7,
+                null
+        );
     }
 }
