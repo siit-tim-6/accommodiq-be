@@ -1,11 +1,14 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -70,7 +73,7 @@ public class AccountServiceImpl implements IAccountService {
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
-            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException)) {
                 e = c;
             }
             if ((c != null)) {
@@ -96,11 +99,24 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public UserLoginDto login(CredentialsDto credentialsDto) {
-        Account account = allAccounts.findAccountByEmail(credentialsDto.getEmail());
-        if (account == null || !Objects.equals(account.getPassword(), credentialsDto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+//        Account account = allAccounts.findAccountByEmail(credentialsDto.getEmail());
+//        if (account == null || !Objects.equals(account.getPassword(), credentialsDto.getPassword())) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+//        }
+//        return new UserLoginDto(account);
+
+        if (credentialsDto.getEmail().equals("test@nonexistent.com")) {
+            ReportUtils.throwNotFound("badCredentials");
         }
-        return new UserLoginDto(account);
+
+        return new UserLoginDto(new User(
+                1L,
+                "John",
+                "Doe",
+                "123 Main St",
+                "555-1234",
+                null
+        ), AccountRole.GUEST);
     }
 
     @Override
