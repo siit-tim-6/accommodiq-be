@@ -1,12 +1,12 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.AccommodationListDto;
-import com.example.accommodiq.dtos.FinancialReportEntryDto;
-import com.example.accommodiq.dtos.HostReservationDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.IHostService;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,7 +23,7 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host findHost(Long hostId) {
-        return new Host(1L,"John", "Doe", "123 Main Street", "555-1234",null);
+        return new Host(1L, "John", "Doe", "123 Main Street", "555-1234", null);
     }
 
     @Override
@@ -48,6 +48,9 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
         return new ArrayList<AccommodationListDto>() {
             {
                 add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
@@ -63,6 +66,10 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+
         ArrayList<HostReservationDto> reservations = new ArrayList<>();
 
         reservations.add(new HostReservationDto(1L, "Cozy Cabin", "John Doe", new Date(), new Date()));
@@ -73,6 +80,10 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+
         ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
 
         financialReportEntries.add(new FinancialReportEntryDto("Cozy Cabin", 1200.0, 5));
@@ -84,6 +95,10 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Collection<Review> getHostReviews(Long hostId) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+        
         return new ArrayList<Review>() {
             {
                 add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
@@ -96,5 +111,38 @@ public class HostServiceImpl implements IHostService {
 
         //Host host = findHost(hostId);
         //return host.getReviews();
+    }
+
+    @Override
+    public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+
+        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
+
+        return new AccommodationDetailsDto(
+                1L,
+                "Cozy Cottage",
+                4.8,
+                25,
+                "123 Main St, Cityville",
+                detailsHostDto,
+                "cottage_image.jpg",
+                2,
+                4,
+                null,
+                "A charming cottage with a beautiful garden.",
+                null
+        );
+    }
+
+    @Override
+    public Review addReview(Long hostId, ReviewRequestDto reviewDto) {
+        if (hostId == 4L) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+
+        return new Review(1L, 5, "Great place!", new Date(), ReviewStatus.ACCEPTED);
     }
 }

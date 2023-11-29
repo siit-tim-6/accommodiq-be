@@ -1,13 +1,13 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.GuestFavoriteDto;
 import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -28,8 +28,8 @@ public class GuestController {
     }
 
     @PostMapping("/{guestId}/reservations")
-    public ReservationDto addReservation(@PathVariable Long guestId, @RequestBody ReservationDto reservationDto) {
-        return reservationDto;
+    public Reservation addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
+        return guestService.addReservation(guestId, reservationDto);
     }
 
     @GetMapping("/{guestId}/favorites")
@@ -38,13 +38,12 @@ public class GuestController {
     }
 
     @PostMapping("/{guestId}/favorites")
-    public GuestFavoriteDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
-        return guestFavoriteDto;
+    public AccommodationListDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
+        return guestService.addFavorite(guestId, guestFavoriteDto);
     }
 
     @DeleteMapping("/{guestId}/favorites/{accommodationId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void removeFavorite(@PathVariable Long guestId, @PathVariable Long accommodationId) {
-
+    public MessageDto removeFavorite(@PathVariable Long guestId, @PathVariable Long accommodationId) {
+        return guestService.removeFavorite(guestId, accommodationId);
     }
 }

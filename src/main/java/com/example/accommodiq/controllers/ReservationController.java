@@ -2,7 +2,9 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
 
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
+import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-
     IReservationService reservationService;
 
     @Autowired
@@ -36,7 +37,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ReservationDto insert(@RequestBody ReservationDto reservationDto) {
+    public Reservation insert(@RequestBody ReservationRequestDto reservationDto) {
         return reservationService.insert(reservationDto);
     }
 
@@ -45,20 +46,18 @@ public class ReservationController {
         return reservationService.update(reservationDto);
     }
 
-    @DeleteMapping("/{reservationId}")
-    public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
-        reservationService.delete(reservationId);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been deleted.");
-    }
-
     @DeleteMapping
     public void deleteAll() {
         reservationService.deleteAll();
     }
 
+    @DeleteMapping("/{reservationId}")
+    public MessageDto deleteReservation(@PathVariable Long reservationId) {
+        return reservationService.delete(reservationId);
+    }
+
     @PutMapping("/{reservationId}/status")
-    public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
-        reservationService.setReservationStatus(reservationId, body);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " status changed.");
+    public Reservation acceptReservation(@PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
+        return reservationService.setReservationStatus(reservationId, body);
     }
 }

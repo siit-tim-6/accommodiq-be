@@ -1,7 +1,9 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
+import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
@@ -62,23 +64,12 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation insert(Reservation reservation) {
-        try {
-            allReservations.save(reservation);
-            allReservations.flush();
-            return reservation;
-        } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public ReservationDto insert(ReservationDto reservationDto) {
+    public Reservation insert(ReservationRequestDto reservationDto) {
         Reservation reservation = convertToReservation(reservationDto);
         try {
             allReservations.save(reservation);
             allReservations.flush();
-            return new ReservationDto(reservation);
+            return reservation;
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
         }
@@ -106,11 +97,11 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation delete(Long reservationId) {
+    public MessageDto delete(Long reservationId) {
         Reservation found = findReservation(reservationId);
         allReservations.delete(found);
         allReservations.flush();
-        return found;
+        return new MessageDto("Reservation deleted successfully");
     }
 
     @Override
@@ -154,15 +145,15 @@ public class ReservationServiceImpl implements IReservationService {
         }
     }
 
-    private Reservation convertToReservation(ReservationDto reservationDto) {
+    private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
-        reservation.setId(reservationDto.getId());
+        reservation.setId(null);
         reservation.setStartDate(reservationDto.getStartDate());
         reservation.setEndDate(reservationDto.getEndDate());
         reservation.setNumberOfGuests(reservationDto.getNumberOfGuests());
         reservation.setStatus(reservationDto.getStatus());
-        reservation.setUser(userService.findUser(reservationDto.getUserId()));
-        reservation.setAccommodation(accommodationService.findAccommodation(reservationDto.getAccommodationId()));
+        reservation.setUser(null);
+        reservation.setAccommodation(null);
         return reservation;
     }
 }

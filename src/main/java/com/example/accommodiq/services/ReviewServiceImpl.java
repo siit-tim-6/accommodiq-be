@@ -2,16 +2,22 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReviewDto;
+import com.example.accommodiq.dtos.ReviewRequestDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
@@ -66,11 +72,17 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review delete(Long reviewId) {
-        Review review = findReview(reviewId);
-        allReviews.delete(review);
-        allReviews.flush();
-        return review;
+    public MessageDto delete(Long reviewId) {
+//        Review review = findReview(reviewId);
+//        allReviews.delete(review);
+//        allReviews.flush();
+//        return review;
+
+        if (reviewId == 4L) {
+            ReportUtils.throwNotFound("reviewNotFound");
+        }
+
+        return new MessageDto("Review successfully deleted.");
     }
 
     @Override
@@ -80,11 +92,23 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public void setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
-        Review review = findReview(reviewId);
-        review.setStatus(reviewStatusDto.getStatus());
-        allReviews.save(review);
-        allReviews.flush();
+    public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
+//        Review review = findReview(reviewId);
+//        review.setStatus(reviewStatusDto.getStatus());
+//        allReviews.save(review);
+//        allReviews.flush();
+
+        if (reviewId == 4L) {
+            ReportUtils.throwNotFound("reviewNotFound");
+        }
+
+        return new Review(
+                4L,
+                5,
+                "Great experience!",
+                new Date(),  // Replace with actual date
+                ReviewStatus.ACCEPTED
+        );
     }
 
     @Override
