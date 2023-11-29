@@ -9,6 +9,7 @@ import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -153,7 +154,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation removeAccommodationAvailability(Long accommodationId, Long availabilityId) {
+    public MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId) {
         if (accommodationId == 4L) {
             ReportUtils.throwNotFound("accommodationNotFound");
         }
@@ -162,20 +163,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
             ReportUtils.throwNotFound("availabilityNotFound");
         }
 
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                "cottage_image.jpg",
-                2,
-                4,
-                "Cottage",
-                true,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+        return new MessageDto("Availability successfully deleted");
     }
 
     @Override

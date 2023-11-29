@@ -19,7 +19,7 @@ public interface IAccommodationService {
 
     Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
-    Accommodation removeAccommodationAvailability(Long accommodationId, Long availabilityId);
+    MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
 
     AccommodationReportDto getAccommodationReport(Long accommodationId);
 

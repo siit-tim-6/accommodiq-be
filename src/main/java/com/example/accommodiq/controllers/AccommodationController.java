@@ -45,7 +45,7 @@ public class AccommodationController {
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
-    public Accommodation removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
+    public MessageDto removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
         return accommodationService.removeAccommodationAvailability(accommodationId, availabilityId);
     }
 
