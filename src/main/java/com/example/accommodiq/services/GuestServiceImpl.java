@@ -1,7 +1,9 @@
 package com.example.accommodiq.services;
 
-import com.example.accommodiq.dtos.AccommodationListDto;
-import com.example.accommodiq.dtos.ReservationListDto;
+import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.domain.Guest;
+import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import com.example.accommodiq.utilities.ReportUtils;
@@ -68,7 +70,28 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
+    public Reservation addReservation(Long guestId, ReservationRequestDto reservationDto) {
+        if (guestId == 4L) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+
+        return new Reservation(
+                1L,
+                new Date(),
+                new Date(),
+                2,
+                ReservationStatus.CREATED,
+                null,
+                null
+        );
+    }
+
+    @Override
     public Collection<AccommodationListDto> getFavorites(Long guestId) {
+        if (guestId == 4L) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+
         ArrayList<AccommodationListDto> accommodationListDtos = new ArrayList<>();
         AccommodationListDto accommodation1 = new AccommodationListDto() {{
             setId(1L);
@@ -99,5 +122,36 @@ public class GuestServiceImpl implements IGuestService {
         accommodationListDtos.add(accommodation2);
 
         return accommodationListDtos;
+    }
+
+    @Override
+    public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) {
+        if (guestId == 4L) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+        return new AccommodationListDto() {{
+            setId(2L);
+            setTitle("Seaside Villa");
+            setImage("/images/seaside_villa.jpg");
+            setRating(4.8);
+            setReviewCount(45);
+            setLocation("Malibu, CA");
+            setMinPrice(200.0);
+            setMinGuests(4);
+            setMaxGuests(8);
+        }};
+    }
+
+    @Override
+    public MessageDto removeFavorite(Long guestId, Long accommodationId) {
+        if (guestId == 4L) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+
+        if (accommodationId == 4L) {
+            ReportUtils.throwNotFound("favoriteNotFound");
+        }
+
+        return new MessageDto("Favorite removed successfully");
     }
 }
