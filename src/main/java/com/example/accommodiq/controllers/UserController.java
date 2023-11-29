@@ -61,12 +61,7 @@ public class UserController {
 
     @DeleteMapping("/{accountId}")
     public Account deleteUser(@PathVariable Long accountId) {
-        return accountService.delete(accountId);
-    }
-
-    @DeleteMapping
-    public void deleteAllUsers() {
-        accountService.deleteAll();
+        return null;
     }
 
     @PutMapping(value = "/{id}/status")
