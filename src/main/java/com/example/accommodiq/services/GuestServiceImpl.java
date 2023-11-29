@@ -4,6 +4,7 @@ import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.IGuestService;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,10 @@ import java.util.Date;
 public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<ReservationListDto> getReservations(Long guestId) {
+        if (guestId == 4L) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+
         ArrayList<ReservationListDto> reservationListDtos = new ArrayList<>();
         AccommodationListDto accommodation1 = new AccommodationListDto() {{
             setId(1L);
