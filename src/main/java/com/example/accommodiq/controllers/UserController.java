@@ -13,6 +13,7 @@ import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -47,10 +48,11 @@ public class UserController {
     }
 
     @PostMapping
+    @Transactional
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
-        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
+        notificationSettingService.setNotificationSettingsForUser(account.getUser().getId());
         return savedAccount;
     }
 
@@ -95,13 +97,15 @@ public class UserController {
 
     @GetMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
-        return notificationSettingService.findUsersNotificationSettings(userId);
+        User user = userService.findUser(userId);
+        return user.getNotificationSettings().stream().map(NotificationSettingDto::new).toList();
     }
 
     @PutMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
         User user = userService.findUser(userId);
-        return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+        //return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+        return notificationSettings.stream().map(NotificationSettingDto::new).toList();
     }
 
     @PostMapping("/{id}/reports")
