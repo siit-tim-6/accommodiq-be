@@ -11,6 +11,10 @@ public class AccommodationListDto {
     private int minGuests;
     private int maxGuests;
 
+    public AccommodationListDto() {
+        super();
+    }
+
     public AccommodationListDto(Long id, String title, String image, Double rating,
                                 int reviewCount, String location, double minPrice, int minGuests, int maxGuests) {
         this.id = id;

@@ -1,45 +1,26 @@
-package com.example.accommodiq.domain;
+package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.enums.ReservationStatus;
-import jakarta.persistence.*;
 
 import java.util.Date;
 
-
-@Entity
-public class Reservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class ReservationListDto {
     private Date startDate;
     private Date endDate;
     private int numberOfGuests;
     private ReservationStatus status;
+    private AccommodationListDto accommodation;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH})
-    private User user;
-    @ManyToOne(cascade = {CascadeType.REFRESH})
-    private Accommodation accommodation;
-
-    public Reservation() {
+    public ReservationListDto() {
+        super();
     }
 
-    public Reservation(Long id, Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, User user, Accommodation accommodation) {
-        this.id = id;
+    public ReservationListDto(Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, AccommodationListDto accommodation) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
         this.status = status;
-        this.user = user;
         this.accommodation = accommodation;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Date getStartDate() {
@@ -74,22 +55,11 @@ public class Reservation {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setAccommodation(Accommodation accommodation) {
-        this.accommodation = accommodation;
-
-     public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Accommodation getAccommodation() {
+    public AccommodationListDto getAccommodation() {
         return accommodation;
     }
 
-    public void setAccommodation(Accommodation accommodation) {
+    public void setAccommodation(AccommodationListDto accommodation) {
         this.accommodation = accommodation;
     }
 }
