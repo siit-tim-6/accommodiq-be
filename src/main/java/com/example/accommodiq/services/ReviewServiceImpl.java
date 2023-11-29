@@ -106,7 +106,7 @@ public class ReviewServiceImpl implements IReviewService {
                 4L,
                 5,
                 "Great experience!",
-                new Date(),  // Replace with actual date
+                new Date().getTime(),  // Replace with actual date
                 ReviewStatus.ACCEPTED
         );
     }

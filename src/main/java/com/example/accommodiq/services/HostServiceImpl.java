@@ -98,7 +98,7 @@ public class HostServiceImpl implements IHostService {
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }
-        
+
         return new ArrayList<Review>() {
             {
                 add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
@@ -143,6 +143,6 @@ public class HostServiceImpl implements IHostService {
             ReportUtils.throwNotFound("hostNotFound");
         }
 
-        return new Review(1L, 5, "Great place!", new Date(), ReviewStatus.ACCEPTED);
+        return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);
     }
 }

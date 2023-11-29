@@ -77,8 +77,8 @@ public class GuestServiceImpl implements IGuestService {
 
         return new Reservation(
                 1L,
-                new Date(),
-                new Date(),
+                new Date().getTime(),
+                new Date().getTime(),
                 2,
                 ReservationStatus.CREATED,
                 null,
