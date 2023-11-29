@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import jakarta.persistence.*;
 
@@ -25,6 +26,15 @@ public class Review {
         this.comment = comment;
         this.date = date;
         this.status = status;
+    }
+
+    public Review(ReviewDto reviewDto, User guest) {
+        this.id = reviewDto.getId();
+        this.rating = reviewDto.getRating();
+        this.comment = reviewDto.getComment();
+        this.date = reviewDto.getDate();
+        this.status = reviewDto.getStatus();
+        this.guest = guest;
     }
 
     public Review() {
