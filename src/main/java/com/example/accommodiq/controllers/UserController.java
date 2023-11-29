@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -77,15 +79,25 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/notifications")
-    public Notification createNotification(@PathVariable Long userId, @RequestBody Notification notification) {
-        User user = userService.findUser(userId);
-        notification.setUser(user);
-        return notificationService.insert(notification);
+    public Notification createNotification(@PathVariable Long userId, @RequestBody NotificationRequestDto notification) {
+//        User user = userService.findUser(userId);
+//        notification.setUser(user);
+//        return notificationService.insert(notification);
+        return new Notification(1L, notification.getText(), System.currentTimeMillis(), null);
     }
 
     @GetMapping("/{userId}/notifications")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
-        return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
+//        return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
+        List<NotificationDto> messages = new ArrayList<>();
+
+        // Creating the first Message object
+        messages.add(new NotificationDto(1L, "Hello, how are you?", System.currentTimeMillis()));
+
+        // Creating the second Message object
+        messages.add(new NotificationDto(2L, "I'm doing well, thank you!", System.currentTimeMillis()));
+
+        return messages;
     }
 
     @GetMapping("/{userId}/notification-settings")
