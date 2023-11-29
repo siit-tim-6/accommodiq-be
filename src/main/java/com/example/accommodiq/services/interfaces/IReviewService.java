@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.enums.ReviewStatus;
 
@@ -16,11 +17,11 @@ public interface IReviewService {
 
     Review update(Review review);
 
-    Review delete(Long reviewId);
+    MessageDto delete(Long reviewId);
 
     void deleteAll();
 
-    void setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
+    Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
 
     Collection<Review> getHostReviews(Long hostId);
 

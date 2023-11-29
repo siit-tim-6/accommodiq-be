@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.services.interfaces.IReviewService;
@@ -24,11 +25,6 @@ public class ReviewController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public Collection<Review> getReviews() {
-        return reviewService.getAll();
-    }
-
     @PutMapping
     public ReviewDto updateReview(@RequestBody ReviewDto reviewDto) {
         Review existingReview = reviewService.findReview(reviewDto.getId());
@@ -43,19 +39,23 @@ public class ReviewController {
         return new ReviewDto(updatedReview);
     }
 
-    @DeleteMapping("/{reviewId}")
-    public Review deleteReview(@PathVariable Long reviewId) {
-        return reviewService.delete(reviewId);
-    }
-
     @DeleteMapping
     public void deleteAll() {
         reviewService.deleteAll();
     }
 
+    @GetMapping
+    public Collection<Review> getReviews() {
+        return reviewService.getAll();
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public MessageDto deleteReview(@PathVariable Long reviewId) {
+        return reviewService.delete(reviewId);
+    }
+
     @PutMapping("/{reviewId}/status")
-    public ResponseEntity<String> acceptReview(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
-        reviewService.setReviewStatus(reviewId, body);
-        return ResponseEntity.ok("Review with ID " + reviewId + " status changed.");
+    public Review acceptReview(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        return reviewService.setReviewStatus(reviewId, body);
     }
 }
