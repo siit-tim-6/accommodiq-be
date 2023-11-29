@@ -7,6 +7,8 @@ public class GuestFavoriteDto {
         this.favoriteId = favoriteId;
     }
 
+    public GuestFavoriteDto() {}
+
     public Long getFavoriteId() {
         return favoriteId;
     }
