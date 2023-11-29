@@ -78,7 +78,10 @@ public class Reservation {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
+
+     public void setUser(User user) {
         this.user = user;
     }
 

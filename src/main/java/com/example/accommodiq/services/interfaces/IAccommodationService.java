@@ -13,6 +13,8 @@ public interface IAccommodationService {
 
     public AccommodationDetailsDto findById(Long accommodationId);
 
+    Accommodation findAccommodation(Long accommodationId);
+
     public Accommodation acceptIncomingChanges(Long accommodationId);
 
     public AccommodationReportDto getAccommodationReport(Long accommodationId);

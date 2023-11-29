@@ -2,6 +2,7 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
+import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.IUserService;
@@ -9,7 +10,6 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,16 +57,34 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Report update(Report report) {
+    public ReportModificationDto insert(ReportModificationDto reportDto) {
+        Report report = convertToReport(reportDto);
         try {
-            findReport(report.getId()); // this will throw ResponseStatusException if report is not found
             allReports.save(report);
             allReports.flush();
-            return report;
+            return new ReportModificationDto(report);
+        } catch (ConstraintViolationException ex) {
+            throwBadRequest("reportInsertFailed");
+        }
+        return new ReportModificationDto(report);
+    }
+
+    @Override
+    public ReportModificationDto update(ReportModificationDto reportModificationDto) {
+        Report existingReport = findReport(reportModificationDto.getId());
+
+        existingReport.setReason(reportModificationDto.getReason());
+        existingReport.setTimestamp(reportModificationDto.getTimestamp());
+
+        try {
+            findReport(existingReport.getId()); // this will throw ResponseStatusException if report is not found
+            allReports.save(existingReport);
+            allReports.flush();
+            return new ReportModificationDto(existingReport);
         } catch (ConstraintViolationException ex) {
             throwBadRequest("reportUpdateFailed");
         }
-        return report;
+        return new ReportModificationDto(existingReport);
     }
 
     @Override
@@ -92,7 +110,7 @@ public class ReportServiceImpl implements IReportService {
         report.setReportedUser(userService.findUser(reportedUserId));
         report.setReason(reportDto.getReason());
         report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
-        report.setTimestamp(Instant.now().toEpochMilli());
+        report.setTimestamp(reportDto.getTimestamp());
         insert(report);
     }
 
@@ -106,6 +124,15 @@ public class ReportServiceImpl implements IReportService {
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
             throwBadRequest("reportReasonNull");
         }
+    }
+
+    private Report convertToReport(ReportModificationDto reportDto) {
+        Report report = new Report();
+        report.setReportedUser(userService.findUser(reportDto.getReportedUserId()));
+        report.setReason(reportDto.getReason());
+        report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
+        report.setTimestamp(reportDto.getTimestamp());
+        return report;
     }
     
 }
