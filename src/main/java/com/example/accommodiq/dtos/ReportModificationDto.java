@@ -1,13 +1,15 @@
 package com.example.accommodiq.dtos;
 
-public class ReportRequestDto {
+import com.example.accommodiq.domain.Report;
+
+public class ReportModificationDto {
     private Long id;
     private String reason;
     private Long timestamp;
     private Long reportingUserId;
     private Long reportedUserId;
 
-    public ReportRequestDto(Long id,String reason, Long timestamp, Long reportingUserId, Long reportedUserId) {
+    public ReportModificationDto(Long id, String reason, Long timestamp, Long reportingUserId, Long reportedUserId) {
         this.id = id;
         this.reason = reason;
         this.timestamp = timestamp;
@@ -15,7 +17,15 @@ public class ReportRequestDto {
         this.reportedUserId = reportedUserId;
     }
 
-    public ReportRequestDto() {
+    public ReportModificationDto(Report report) {
+        this.id = report.getId();
+        this.reason = report.getReason();
+        this.timestamp = report.getTimestamp();
+        this.reportingUserId = report.getReportingUser().getId();
+        this.reportedUserId = report.getReportedUser().getId();
+    }
+
+    public ReportModificationDto() {
     }
 
     public Long getId() {

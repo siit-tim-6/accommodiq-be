@@ -2,8 +2,7 @@ package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
-import com.example.accommodiq.dtos.ReportRequestDto;
-import com.example.accommodiq.dtos.ReportResponseDto;
+import com.example.accommodiq.dtos.ReportModificationDto;
 
 import java.util.Collection;
 
@@ -14,9 +13,9 @@ public interface IReportService {
 
     Report insert(Report report);
 
-    ReportResponseDto insert(ReportRequestDto report);
+    ReportModificationDto insert(ReportModificationDto report);
 
-    ReportResponseDto update(ReportRequestDto report);
+    ReportModificationDto update(ReportModificationDto report);
 
     Report delete(Long reportId);
 
