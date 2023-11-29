@@ -4,6 +4,7 @@ import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -13,13 +14,13 @@ public class Review {
     public Long id;
     private int rating;
     private String comment;
-    private Date date;
+    private Long date = Instant.now().toEpochMilli();
     private ReviewStatus status;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User guest;
 
 
-    public Review(Long id, int rating, String comment, Date date, ReviewStatus status) {
+    public Review(Long id, int rating, String comment, Long date, ReviewStatus status) {
         super();
         this.id = id;
         this.rating = rating;
@@ -65,11 +66,11 @@ public class Review {
         this.comment = comment;
     }
 
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 

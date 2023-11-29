@@ -3,12 +3,10 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 
-import java.util.Date;
-
 public class ReservationDto {
     private Long id;
-    private Date startDate;
-    private Date endDate;
+    private Long startDate;
+    private Long endDate;
     private int numberOfGuests;
     private ReservationStatus status;
     private Long userId;
@@ -17,7 +15,7 @@ public class ReservationDto {
     public ReservationDto() {
     }
 
-    public ReservationDto(Long id, Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, Long userId, Long accommodationId) {
+    public ReservationDto(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, Long userId, Long accommodationId) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -41,11 +39,11 @@ public class ReservationDto {
         return id;
     }
 
-    public Date getStartDate() {
+    public Long getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public Long getEndDate() {
         return endDate;
     }
 
@@ -69,11 +67,11 @@ public class ReservationDto {
         this.id = id;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Long startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Long endDate) {
         this.endDate = endDate;
     }
 

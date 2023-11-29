@@ -3,16 +3,14 @@ package com.example.accommodiq.domain;
 import com.example.accommodiq.enums.ReservationStatus;
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 
 @Entity
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date startDate;
-    private Date endDate;
+    private Long startDate;
+    private Long endDate;
     private int numberOfGuests;
     private ReservationStatus status;
 
@@ -24,7 +22,7 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Long id, Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, User user, Accommodation accommodation) {
+    public Reservation(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, User user, Accommodation accommodation) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -42,19 +40,19 @@ public class Reservation {
         this.id = id;
     }
 
-    public Date getStartDate() {
+    public Long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Long startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Long endDate) {
         this.endDate = endDate;
     }
 
