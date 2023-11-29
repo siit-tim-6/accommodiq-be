@@ -9,6 +9,8 @@ public class ReservationStatusDto {
         this.status = status;
     }
 
+    public ReservationStatusDto() {}
+
     public ReservationStatus getStatus() {
         return status;
     }
