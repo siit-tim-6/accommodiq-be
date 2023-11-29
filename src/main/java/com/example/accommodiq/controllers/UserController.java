@@ -27,7 +27,8 @@ public class UserController {
     final IReportService reportService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, INotificationSettingService notificationSettingService, IReportService reportService) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService,
+                          INotificationSettingService notificationSettingService, IReportService reportService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -53,24 +54,6 @@ public class UserController {
         return savedAccount;
     }
 
-    @PostMapping("/login")
-    public UserLoginDto login(@RequestBody CredentialsDto credentialsDto) {
-        return accountService.login(credentialsDto);
-    }
-
-
-    @PutMapping(value = "/{id}/activate")
-    @ResponseStatus(HttpStatus.OK)
-    public void activateUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.ACTIVE);
-    }
-
-    @PutMapping("/{id}/block")
-    @ResponseStatus(HttpStatus.OK)
-    public void blockUser(@PathVariable Long id) {
-        accountService.changeStatus(id, AccountStatus.BLOCKED);
-    }
-
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
         return accountService.update(account);
@@ -86,7 +69,13 @@ public class UserController {
         accountService.deleteAll();
     }
 
-    @PutMapping("/{id}/changePassword")
+    @PutMapping(value = "/{id}/status")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeStatus(@PathVariable Long id, @RequestBody UserStatusDto statusDto) {
+        accountService.changeStatus(id, statusDto.getStatus());
+    }
+
+    @PutMapping("/{id}/password")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
         accountService.changePassword(id, passwordDto.getPassword());
@@ -114,7 +103,8 @@ public class UserController {
         User user = userService.findUser(userId);
         return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
     }
-    @PutMapping("/{id}/report")
+
+    @PostMapping("/{id}/reports")
     @ResponseStatus(HttpStatus.OK)
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);

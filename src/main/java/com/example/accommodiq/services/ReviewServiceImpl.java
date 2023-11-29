@@ -2,7 +2,7 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IHostService;
@@ -45,7 +45,7 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review insert(Long hostId,Review review) {
+    public Review insert(Long hostId, Review review) {
         Host host = hostService.findHost(hostId);
         host.getReviews().add(review);
         hostService.update(host);
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public Review update(Review review) {
-        try{
+        try {
             findReview(review.getId());
             allReviews.save(review);
             allReviews.flush();
@@ -67,10 +67,10 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public Review delete(Long reviewId) {
-           Review review = findReview(reviewId);
-            allReviews.delete(review);
-            allReviews.flush();
-            return review;
+        Review review = findReview(reviewId);
+        allReviews.delete(review);
+        allReviews.flush();
+        return review;
     }
 
     @Override
@@ -80,9 +80,9 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public void setReviewStatus(Long reviewId, ReviewStatus reviewStatus) {
+    public void setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
         Review review = findReview(reviewId);
-        review.setStatus(reviewStatus);
+        review.setStatus(reviewStatusDto.getStatus());
         allReviews.save(review);
         allReviews.flush();
     }

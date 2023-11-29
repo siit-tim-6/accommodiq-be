@@ -1,8 +1,9 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
+
 import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.enums.ReservationStatus;
+import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.services.interfaces.IReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,22 +56,9 @@ public class ReservationController {
         reservationService.deleteAll();
     }
 
-    @PutMapping("/{reservationId}/accept")
-    public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId) {
-        reservationService.setReservationStatus(reservationId, ReservationStatus.ACCEPTED);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been accepted.");
+    @PutMapping("/{reservationId}/status")
+    public ResponseEntity<String> acceptReservation(@PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
+        reservationService.setReservationStatus(reservationId, body);
+        return ResponseEntity.ok("Reservation with ID " + reservationId + " status changed.");
     }
-
-    @PutMapping("/{reservationId}/deny")
-    public ResponseEntity<String> denyReservation(@PathVariable Long reservationId) {
-        reservationService.setReservationStatus(reservationId, ReservationStatus.DECLINED);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been denied.");
-    }
-
-    @PutMapping("/{reservationId}/cancel")
-    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
-        reservationService.setReservationStatus(reservationId, ReservationStatus.CANCELLED);
-        return ResponseEntity.ok("Reservation with ID " + reservationId + " has been cancelled.");
-    }
-
 }
