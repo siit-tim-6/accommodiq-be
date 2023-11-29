@@ -1,28 +1,28 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
+import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 
 
 import java.util.Collection;
 
 public interface IReservationService {
-    public Collection<Reservation> getAll();
+    Collection<Reservation> getAll();
 
-    public Reservation findReservation(Long reservationId);
+    Reservation findReservation(Long reservationId);
 
     ReservationDto findReservationDto(Long reservationId);
 
-    public Reservation insert(Reservation reservation);
-
-    ReservationDto insert(ReservationDto reservationDto);
+    Reservation insert(ReservationRequestDto reservationDto);
 
     ReservationDto update(ReservationDto reservationDto);
 
-    public Reservation delete(Long reservationId);
+    MessageDto delete(Long reservationId);
 
-    public void deleteAll();
+    void deleteAll();
 
     Collection<Reservation> findReservationsByAccommodationId(Long accommodationId);
 
