@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
@@ -93,12 +94,7 @@ public class HostController {
     }
 
     private Review convertToReview(ReviewDto reviewDto) {
-        Review review = new Review();
-        review.setRating(reviewDto.getRating());
-        review.setComment(reviewDto.getComment());
-        review.setDate(reviewDto.getDate());
-        review.setStatus(reviewDto.getStatus());
-        review.setGuest(userService.findUser(reviewDto.getGuestId()));
-        return review;
+        User guest = userService.findUser(reviewDto.getGuestId());
+        return new Review(reviewDto, guest);
     }
 }
