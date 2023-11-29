@@ -9,6 +9,7 @@ import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -100,11 +101,11 @@ public class HostServiceImpl implements IHostService {
         
         return new ArrayList<Review>() {
             {
-                add(new Review(1L, 5, "Great place!", new Date(), ReviewStatus.ACCEPTED));
+                add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
             }
 
             {
-                add(new Review(2L, 5, "Excellent stay!", new Date(), ReviewStatus.ACCEPTED));
+                add(new Review(2L, 5, "Excellent stay!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
             }
         };
 

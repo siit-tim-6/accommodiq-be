@@ -2,8 +2,10 @@ package com.example.accommodiq.domain;
 
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.enums.AccountRole;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Account {
@@ -14,6 +16,8 @@ public class Account {
     private String password;
     private AccountRole role;
     private AccountStatus status;
+    private Long activationExpires = Instant.now().plus(24, ChronoUnit.HOURS).toEpochMilli();
+
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
@@ -21,12 +25,13 @@ public class Account {
     public Account() {
     }
 
-    public Account(Long id, String email, String password, AccountRole role, AccountStatus status, User user) {
+    public Account(Long id, String email, String password, AccountRole role, AccountStatus status, Long activationExpires, User user) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
         this.status = status;
+        this.activationExpires = activationExpires;
         this.user = user;
     }
 
@@ -79,4 +84,11 @@ public class Account {
     }
 
 
+    public Long getActivationExpires() {
+        return activationExpires;
+    }
+
+    public void setActivationExpires(Long activationExpires) {
+        this.activationExpires = activationExpires;
+    }
 }
