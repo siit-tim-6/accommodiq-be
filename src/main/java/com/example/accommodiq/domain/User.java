@@ -15,7 +15,7 @@ public class User {
     private String lastName;
     private String address;
     private String phoneNumber;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<NotificationSetting> notificationSettings = new HashSet<>();
 
     public User() {
