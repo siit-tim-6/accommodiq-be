@@ -13,7 +13,7 @@ public class Notification {
     private String text;
 
     private Long time;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     private User user;
 
     public Notification(Long id, String text, long time, User user) {

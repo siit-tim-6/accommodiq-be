@@ -15,8 +15,8 @@ public class Host extends User {
         super();
     }
 
-    public Host(Long id, String firstName, String lastName, String address, String phoneNumber, Account account) {
-        super(id, firstName, lastName, address, phoneNumber, account);
+    public Host(Long id, String firstName, String lastName, String address, String phoneNumber) {
+        super(id, firstName, lastName, address, phoneNumber);
     }
 
     public Set<Review> getReviews() {
