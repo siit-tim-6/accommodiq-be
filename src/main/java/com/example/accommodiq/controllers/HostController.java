@@ -62,8 +62,8 @@ public class HostController {
 
     @PostMapping("/{hostId}/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewAccommodation(@PathVariable Long hostId, @RequestBody AccommodationCreateDto accommodation) {
-
+    public AccommodationDetailsDto createNewAccommodation(@PathVariable Long hostId, @RequestBody AccommodationCreateDto accommodation) {
+        return hostService.createAccommodation(hostId, accommodation);
     }
 
     @GetMapping("/{hostId}/accommodations")
@@ -82,10 +82,8 @@ public class HostController {
     }
 
     @PostMapping("{hostId}/reviews")
-    public ResponseEntity<String> addReview(@PathVariable Long hostId, @RequestBody ReviewDto reviewDto) {
-        Review review = convertToReview(reviewDto);
-        reviewService.insert(hostId, review);
-        return ResponseEntity.ok("Review has been added.");
+    public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
+        return hostService.addReview(hostId, reviewDto);
     }
 
     @GetMapping("{hostId}/reviews")
