@@ -17,6 +17,8 @@ public class User {
     private String phoneNumber;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<NotificationSetting> notificationSettings = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Notification> notifications = new HashSet<>();
 
     public User() {
 
@@ -77,5 +79,13 @@ public class User {
 
     public void setNotificationSettings(Set<NotificationSetting> notificationSettings) {
         this.notificationSettings = notificationSettings;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

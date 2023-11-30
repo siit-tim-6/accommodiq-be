@@ -85,14 +85,13 @@ public class UserController {
 
     @PostMapping("/{userId}/notifications")
     public Notification createNotification(@PathVariable Long userId, @RequestBody Notification notification) {
-        User user = userService.findUser(userId);
-        notification.setUser(user);
-        return notificationService.insert(notification);
+        return notificationService.insert(userId, notification);
     }
 
     @GetMapping("/{userId}/notifications")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
-        return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
+        User user = userService.findUser(userId);
+        return user.getNotifications().stream().map(NotificationDto::new).toList();
     }
 
     @GetMapping("/{userId}/notification-settings")

@@ -1,6 +1,9 @@
 package com.example.accommodiq.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -12,15 +15,20 @@ public class Notification {
 
     private String text;
 
-    private Long time;
-    @ManyToOne()
-    private User user;
+    public Long getTime() {
+        return time;
+    }
 
-    public Notification(Long id, String text, long time, User user) {
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    private Long time;
+
+    public Notification(Long id, String text, Long time) {
         this.id = id;
         this.text = text;
         this.time = time;
-        this.user = user;
     }
 
     public Notification() {
@@ -41,14 +49,6 @@ public class Notification {
         this.text = text;
     }
 
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
     public Long getId() {
         return id;
     }
@@ -57,11 +57,4 @@ public class Notification {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

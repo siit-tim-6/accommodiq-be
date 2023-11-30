@@ -63,7 +63,6 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
         } catch (ConstraintViolationException ex) {
             throwNotFound("reviewUpdateFailed");
         }
-
         return notificationSetting;
     }
 
