@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,7 @@ public class Account implements UserDetails {
     private User user;
     @Transient
     private String jwt;
+    private Long lastPasswordResetDate;
 
     public Account() {
     }
@@ -40,6 +42,7 @@ public class Account implements UserDetails {
         this.activationExpires = activationExpires;
         this.user = user;
         this.jwt = jwt;
+        this.lastPasswordResetDate = Instant.now().toEpochMilli();
     }
 
     @JsonIgnore
@@ -139,5 +142,21 @@ public class Account implements UserDetails {
 
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    public Long getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+
+    public void setLastPasswordResetDate(Long lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
+    }
+
+    @PrePersist
+    @PostLoad
+    public void prePersist() {
+        if (lastPasswordResetDate == null) {
+            lastPasswordResetDate = Instant.now().toEpochMilli();
+        }
     }
 }
