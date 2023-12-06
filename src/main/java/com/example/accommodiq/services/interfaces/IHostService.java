@@ -2,7 +2,7 @@ package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.AccommodationListDto;
+import com.example.accommodiq.dtos.AccommodationHostDto;
 import com.example.accommodiq.dtos.FinancialReportEntryDto;
 import com.example.accommodiq.dtos.HostReservationDto;
 
@@ -23,7 +23,7 @@ public interface IHostService {
 
     public void deleteAll();
 
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId);
+    public ArrayList<AccommodationHostDto> getHostAccommodations(Long hostId);
 
     public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId);
 

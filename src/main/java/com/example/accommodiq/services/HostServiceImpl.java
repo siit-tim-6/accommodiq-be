@@ -2,7 +2,7 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.AccommodationListDto;
+import com.example.accommodiq.dtos.AccommodationHostDto;
 import com.example.accommodiq.dtos.FinancialReportEntryDto;
 import com.example.accommodiq.dtos.HostReservationDto;
 import com.example.accommodiq.enums.ReviewStatus;
@@ -47,16 +47,16 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
-        return new ArrayList<AccommodationListDto>() {
+    public ArrayList<AccommodationHostDto> getHostAccommodations(Long hostId) {
+        return new ArrayList<AccommodationHostDto>() {
             {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, true));
             }
 
             {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, false));
             }
         };
     }
