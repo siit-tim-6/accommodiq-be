@@ -1,11 +1,7 @@
 package com.example.accommodiq.specifications;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.enums.PriceSearch;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
