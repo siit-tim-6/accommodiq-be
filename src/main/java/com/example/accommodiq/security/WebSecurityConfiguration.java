@@ -32,9 +32,9 @@ public class WebSecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/*").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/accommodations").permitAll()
+                        .requestMatchers("/accommodations/*").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
