@@ -9,13 +9,11 @@ public interface INotificationService {
 
     Notification findNotification(Long notificationId);
 
-    Notification insert(Notification notification);
+    Notification insert(Long userId, Notification notification);
 
     Notification update(Notification notification);
 
     Notification delete(Long notificationId);
-
-    Collection<Notification> findUsersNotifications(Long userId);
 
     void deleteAll();
 }

@@ -9,28 +9,17 @@ public class NotificationSetting {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private User user;
     private NotificationType type;
 
     private boolean isOn;
 
-    public NotificationSetting(Long id, User user, NotificationType type, boolean isOn) {
+    public NotificationSetting(Long id, NotificationType type, boolean isOn) {
         this.id = id;
-        this.user = user;
         this.type = type;
         this.isOn = isOn;
     }
 
     public NotificationSetting() {
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public NotificationType getType() {

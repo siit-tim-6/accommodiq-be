@@ -13,6 +13,7 @@ import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,10 +50,11 @@ public class UserController {
     }
 
     @PostMapping
+    @Transactional
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
-        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
+        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
         return savedAccount;
     }
 
@@ -79,36 +81,27 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/notifications")
-    public Notification createNotification(@PathVariable Long userId, @RequestBody NotificationRequestDto notification) {
-//        User user = userService.findUser(userId);
-//        notification.setUser(user);
-//        return notificationService.insert(notification);
-        return new Notification(1L, notification.getText(), System.currentTimeMillis(), null);
+    public Notification createNotification(@PathVariable Long userId, @RequestBody Notification notification) {
+        return notificationService.insert(userId, notification);
     }
 
     @GetMapping("/{userId}/notifications")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
-//        return notificationService.findUsersNotifications(userId).stream().map(NotificationDto::new).toList();
-        List<NotificationDto> messages = new ArrayList<>();
-
-        // Creating the first Message object
-        messages.add(new NotificationDto(1L, "Hello, how are you?", System.currentTimeMillis()));
-
-        // Creating the second Message object
-        messages.add(new NotificationDto(2L, "I'm doing well, thank you!", System.currentTimeMillis()));
-
-        return messages;
+        User user = userService.findUser(userId);
+        return user.getNotifications().stream().map(NotificationDto::new).toList();
     }
 
     @GetMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
-        return notificationSettingService.findUsersNotificationSettings(userId);
+        User user = userService.findUser(userId);
+        return user.getNotificationSettings().stream().map(NotificationSettingDto::new).toList();
     }
 
     @PutMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
         User user = userService.findUser(userId);
-        return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+        //return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+        return notificationSettings.stream().map(NotificationSettingDto::new).toList();
     }
 
     @PostMapping("/{id}/reports")

@@ -2,19 +2,18 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.NotificationSettingDto;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationSettingRepository;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
+
+import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 @Service
 public class NotificationSettingServiceImpl implements INotificationSettingService {
@@ -22,46 +21,71 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     final
     NotificationSettingRepository allNotificationSettings;
 
+    final
+    IUserService userService;
+
     @Autowired
-    public NotificationSettingServiceImpl(NotificationSettingRepository allNotificationSettings) {
+    public NotificationSettingServiceImpl(NotificationSettingRepository allNotificationSettings, IUserService userService) {
         this.allNotificationSettings = allNotificationSettings;
+        this.userService = userService;
+    }
+
+
+    @Override
+    public Collection<NotificationSetting> getAll() {
+        return allNotificationSettings.findAll();
     }
 
     @Override
-    public Collection<NotificationSettingDto> findUsersNotificationSettings(Long userId) {
-        return allNotificationSettings.findNotificationSettingsByUserId(userId).stream().map(NotificationSettingDto::new).toList();
+    public NotificationSetting findNotificationSetting(Long notificationSettingId) {
+        Optional<NotificationSetting> found = allNotificationSettings.findById(notificationSettingId);
+        if (found.isEmpty()) {
+            throwNotFound("reviewNotFound");
+        }
+        return found.get();
     }
 
     @Override
-    public NotificationSetting insert(NotificationSetting notificationSetting) {
+    public NotificationSetting insert(Long userId, NotificationSetting notificationSetting) {
+        User user = userService.findUser(userId);
+        user.getNotificationSettings().add(notificationSetting);
+        userService.update(user);
+        return notificationSetting;
+    }
+
+    @Override
+    public NotificationSetting update(NotificationSetting notificationSetting) {
         try {
+            findNotificationSetting(notificationSetting.getId());
             allNotificationSettings.save(notificationSetting);
             allNotificationSettings.flush();
             return notificationSetting;
         } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Notification setting cannot be inserted");
+            throwNotFound("reviewUpdateFailed");
         }
+        return notificationSetting;
     }
 
     @Override
-    @Transactional
-    public void setNotificationSettingsForUser(User user) {
+    public NotificationSetting delete(Long reviewId) {
+        NotificationSetting notificationSetting = findNotificationSetting(reviewId);
+        allNotificationSettings.delete(notificationSetting);
+        allNotificationSettings.flush();
+        return notificationSetting;
+    }
+
+    @Override
+    public void deleteAll() {
+        allNotificationSettings.deleteAll();
+        allNotificationSettings.flush();
+    }
+
+    @Override
+    public void setNotificationSettingsForUser(Long userId) {
+        User user = userService.findUser(userId);
         for (NotificationType type : NotificationType.values()) {
-           insert(new NotificationSetting((long) -1, user, type, true));
+            user.getNotificationSettings().add(new NotificationSetting((long) -1, type, true));
         }
-    }
-
-    @Override
-    @Transactional
-    public Collection<NotificationSettingDto> updateNotificationSettingsForUser(User user, Collection<NotificationSetting> notificationSettings) {
-        Collection<NotificationSettingDto> updatedSettingDtos = new ArrayList<>();
-
-        for (NotificationSetting notificationSetting : notificationSettings) {
-                NotificationSetting existingNotification = allNotificationSettings.findNotificationSettingByUserIdAndType(user.getId(), notificationSetting.getType());
-                existingNotification.setOn(notificationSetting.isOn());
-                allNotificationSettings.save(existingNotification);
-                updatedSettingDtos.add(new NotificationSettingDto(existingNotification));
-        }
-        return updatedSettingDtos;
+        userService.update(user);
     }
 }
