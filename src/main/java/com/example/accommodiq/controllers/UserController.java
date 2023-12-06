@@ -6,11 +6,7 @@ import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountStatus;
-import com.example.accommodiq.services.interfaces.IAccountService;
-import com.example.accommodiq.services.interfaces.IReportService;
-import com.example.accommodiq.services.interfaces.INotificationService;
-import com.example.accommodiq.services.interfaces.INotificationSettingService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +23,17 @@ public class UserController {
     final IUserService userService;
     final INotificationSettingService notificationSettingService;
     final IReportService reportService;
+    final IEmailService emailService;
 
     @Autowired
     public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService,
-                          INotificationSettingService notificationSettingService, IReportService reportService) {
+                          INotificationSettingService notificationSettingService, IReportService reportService, IEmailService emailService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
         this.reportService = reportService;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -52,6 +50,7 @@ public class UserController {
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
+        emailService.sendVerificationEmail(savedAccount);
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
         return savedAccount;
     }
