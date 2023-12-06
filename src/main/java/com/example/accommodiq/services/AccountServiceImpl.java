@@ -13,6 +13,9 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,7 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Service
-public class AccountServiceImpl implements IAccountService {
+public class AccountServiceImpl implements IAccountService, UserDetailsService {
 
     final
     AccountRepository allAccounts;
@@ -114,8 +117,7 @@ public class AccountServiceImpl implements IAccountService {
                 "John",
                 "Doe",
                 "123 Main St",
-                "555-1234",
-                null
+                "555-1234"
         ), AccountRole.GUEST);
     }
 
@@ -133,5 +135,15 @@ public class AccountServiceImpl implements IAccountService {
         account.setPassword(password);
         allAccounts.save(account);
         allAccounts.flush();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account user = allAccounts.findAccountByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+        } else {
+            return user;
+        }
     }
 }
