@@ -88,6 +88,7 @@ public class UserController {
     @GetMapping("/{userId}/notifications")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
         User user = userService.findUser(userId);
+        return user.getNotifications().stream().map(NotificationDto::new).toList();
     }
 
     @GetMapping("/{userId}/notification-settings")
