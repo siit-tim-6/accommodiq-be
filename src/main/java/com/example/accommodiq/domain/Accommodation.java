@@ -30,7 +30,7 @@ public class Accommodation {
     private Host host;
 
     public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
-                         boolean automaticAcceptance, int cancellationDeadline,Host host) {
+                         boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
         this.title = title;

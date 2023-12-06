@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/accommodations")
 public class AccommodationController {
     final private IAccommodationService accommodationService;
@@ -19,9 +21,9 @@ public class AccommodationController {
     }
 
     @GetMapping()
-    public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
-                                                                 @RequestParam(required = false) Integer priceFrom, @RequestParam(required = false) Integer priceTo, @RequestParam(required = false) Integer guests, @RequestParam(required = false) List<String> benefits) {
-        return accommodationService.findAll();
+    public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
+                                                                 @RequestParam(required = false) Integer priceFrom, @RequestParam(required = false) Integer priceTo, @RequestParam(required = false) PriceSearch priceSearchType, @RequestParam(required = false) Integer guests, @RequestParam(required = false) List<String> benefits) {
+        return accommodationService.findByFilter(title, location, availableFrom, availableTo, priceFrom, priceTo, priceSearchType, guests, benefits);
     }
 
     @PutMapping("/{accommodationId}/status")
