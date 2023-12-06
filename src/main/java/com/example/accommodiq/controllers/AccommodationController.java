@@ -1,11 +1,9 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,8 +26,8 @@ public class AccommodationController {
     }
 
     @PutMapping("/{accommodationId}/status")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
+    public Accommodation changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
+        return accommodationService.changeAccommodationStatus(accommodationId, body);
     }
 
     @GetMapping("/{accommodationId}")
@@ -38,18 +36,18 @@ public class AccommodationController {
     }
 
     @PutMapping()
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+    public Accommodation updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+        return accommodationService.updateAccommodation(body);
     }
 
     @PostMapping("/{accommodationId}/availabilities")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+    public Accommodation addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+        return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
+    public MessageDto removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
+        return accommodationService.removeAccommodationAvailability(accommodationId, availabilityId);
     }
 
     @GetMapping("/{accommodationId}/financial-report")
@@ -58,7 +56,7 @@ public class AccommodationController {
     }
 
     @PostMapping("{accommodationId}/reviews")
-    public ResponseEntity<String> addReview(@PathVariable Long accommodationId, @RequestBody Review review) {
-        return ResponseEntity.ok("Review has been added.");
+    public Accommodation addReview(@PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
+        return accommodationService.addReview(accommodationId, reviewDto);
     }
 }

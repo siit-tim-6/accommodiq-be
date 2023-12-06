@@ -2,22 +2,28 @@ package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.AccommodationDetailsDto;
-import com.example.accommodiq.dtos.AccommodationListDto;
-import com.example.accommodiq.dtos.AccommodationReportDto;
+import com.example.accommodiq.dtos.*;
 
 import java.util.Collection;
 
 public interface IAccommodationService {
-    public Collection<AccommodationListDto> findAll();
+    Collection<AccommodationListDto> findAll();
 
-    public AccommodationDetailsDto findById(Long accommodationId);
+    Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
+
+    AccommodationDetailsDto findById(Long accommodationId);
 
     Accommodation findAccommodation(Long accommodationId);
 
-    public Accommodation acceptIncomingChanges(Long accommodationId);
+    Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
 
-    public AccommodationReportDto getAccommodationReport(Long accommodationId);
+    Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
+
+    MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
+
+    AccommodationReportDto getAccommodationReport(Long accommodationId);
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
+
+    Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
 }

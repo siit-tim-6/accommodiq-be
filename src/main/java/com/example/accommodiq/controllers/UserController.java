@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -63,12 +65,7 @@ public class UserController {
 
     @DeleteMapping("/{accountId}")
     public Account deleteUser(@PathVariable Long accountId) {
-        return accountService.delete(accountId);
-    }
-
-    @DeleteMapping
-    public void deleteAllUsers() {
-        accountService.deleteAll();
+        return null;
     }
 
     @PutMapping(value = "/{id}/status")
