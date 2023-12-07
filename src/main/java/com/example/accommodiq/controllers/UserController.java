@@ -50,7 +50,7 @@ public class UserController {
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
         Account savedAccount = accountService.insert(account);
-        emailService.sendVerificationEmail(account.getId(),account.getEmail());
+        emailService.sendVerificationEmail(savedAccount.getId(),savedAccount.getEmail());
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser());
         return savedAccount;
     }
