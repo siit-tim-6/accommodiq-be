@@ -1,6 +1,5 @@
 package com.example.accommodiq.services;
 
-import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
@@ -47,7 +46,7 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
+    public Collection<AccommodationListDto> getHostAccommodations(Long hostId) {
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }

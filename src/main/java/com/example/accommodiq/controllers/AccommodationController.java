@@ -20,7 +20,6 @@ public class AccommodationController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
                                                                  @RequestParam(required = false) Integer priceFrom, @RequestParam(required = false) Integer priceTo, @RequestParam(required = false) Integer guests, @RequestParam(required = false) List<String> benefits) {
         return accommodationService.findAll();

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Service
-public class AccountServiceImpl implements IAccountService, UserDetailsService {
+public class AccountServiceImpl implements IAccountService {
 
     final
     AccountRepository allAccounts;
