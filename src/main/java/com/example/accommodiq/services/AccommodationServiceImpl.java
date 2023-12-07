@@ -48,6 +48,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, PriceSearch priceSearchType, Integer guests, List<String> benefits) {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests));
 
+        if (availableFrom != null && availableTo != null) {
+            searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
+        }
+
         return searchedAccommodations.stream().map(AccommodationListDto::new).toList();
     }
 

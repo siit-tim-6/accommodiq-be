@@ -3,7 +3,9 @@ package com.example.accommodiq.domain;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -180,6 +182,36 @@ public class Accommodation {
 
     public void setBenefits(Set<Benefit> benefits) {
         this.benefits = benefits;
+    }
+
+    public boolean isAvailable(Long from, Long to) {
+        Long finalFrom = from;
+        Long oneDay = (long) (1000 * 60 * 60 * 24);
+
+        if (this.available == null) {
+            return false;
+        }
+
+        List<Availability> availabilityCandidates = this.available.stream().filter(availability ->
+                (availability.getFromDate() <= finalFrom && finalFrom <= availability.getToDate())
+                        || (availability.getFromDate() <= to && to <= availability.getToDate())
+        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
+
+        if (availabilityCandidates.isEmpty()) {
+            return false;
+        }
+
+        for (Availability availabilityCandidate : availabilityCandidates) {
+            if (availabilityCandidate.getFromDate() <= from && to <= availabilityCandidate.getToDate()) {
+                return true;
+            } else if (availabilityCandidate.getFromDate() <= from && to > availabilityCandidate.getToDate()) {
+                from = availabilityCandidate.getFromDate() + oneDay;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
     }
 }
 
