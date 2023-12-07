@@ -13,6 +13,7 @@ import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,15 +29,17 @@ public class UserController {
     final IUserService userService;
     final INotificationSettingService notificationSettingService;
     final IReportService reportService;
+    final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService,
-                          INotificationSettingService notificationSettingService, IReportService reportService) {
+                          INotificationSettingService notificationSettingService, IReportService reportService, PasswordEncoder passwordEncoder) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
         this.reportService = reportService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -53,6 +56,7 @@ public class UserController {
     @Transactional
     public Account registerUser(@RequestBody Account account) {
         account.setStatus(AccountStatus.INACTIVE);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         Account savedAccount = accountService.insert(account);
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
         return savedAccount;
