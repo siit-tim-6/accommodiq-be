@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @RestController
@@ -31,7 +32,7 @@ public class EmailVerificationController {
     public ResponseEntity<String> activateAccount(@RequestParam("token") String verificationToken, @RequestParam("accountId") Long accountId) {
         Optional<Account> optionalAccount = Optional.ofNullable(accountService.findAccount(accountId));
 
-        if (optionalAccount.isPresent()) {
+        if (optionalAccount.isPresent() && optionalAccount.get().getActivationExpires() > Instant.now().toEpochMilli()) {
             Account account = optionalAccount.get();
             if (verificationTokenService.verifyVerificationToken(accountId, account.getEmail(), verificationToken)) {
                 if (account.getStatus() == AccountStatus.INACTIVE) {
