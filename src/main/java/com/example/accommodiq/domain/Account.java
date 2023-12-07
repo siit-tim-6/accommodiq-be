@@ -9,10 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Account implements UserDetails {
@@ -48,7 +45,8 @@ public class Account implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(AccountRole.values());
+        // return List.of(AccountRole.values());
+        return Collections.singleton(this.role);
     }
 
     @JsonIgnore
