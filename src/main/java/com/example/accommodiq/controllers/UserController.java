@@ -10,6 +10,7 @@ import com.example.accommodiq.services.interfaces.*;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,9 +103,11 @@ public class UserController {
         return user.getNotifications().stream().map(NotificationDto::new).toList();
     }
 
-    @GetMapping("/{userId}/notification-settings")
-    public Collection<NotificationSettingDto> getUsersNotificationSettings(@PathVariable Long userId) {
-        User user = userService.findUser(userId);
+    @GetMapping("/notification-settings")
+    public Collection<NotificationSettingDto> getUsersNotificationSettings() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        User user = account.getUser();
         return user.getNotificationSettings().stream().map(NotificationSettingDto::new).toList();
     }
 

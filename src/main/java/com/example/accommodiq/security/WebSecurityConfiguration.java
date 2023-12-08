@@ -35,6 +35,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/accommodations").permitAll()
                         .requestMatchers("/sessions").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers("/users/*").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
