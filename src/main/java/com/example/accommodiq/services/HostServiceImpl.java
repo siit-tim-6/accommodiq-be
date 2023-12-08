@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
@@ -15,15 +16,19 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class HostServiceImpl implements IHostService {
 
     final private IAccommodationService accommodationService;
 
+    final private HostRepository hostRepository;
+
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository) {
         this.accommodationService = accommodationService;
+        this.hostRepository = hostRepository;
     }
 
     @Override
@@ -33,7 +38,12 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host findHost(Long hostId) {
-        return new Host(1L, "John", "Doe", "123 Main St", "555-1234");
+        Optional<Host> found = hostRepository.findById(hostId);
+        if (found.isEmpty()) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+        return found.get();
+        //return new Host(1L, "John", "Doe", "123 Main St", "555-1234");
     }
 
     @Override
