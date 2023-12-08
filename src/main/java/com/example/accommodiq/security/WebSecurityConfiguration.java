@@ -1,6 +1,7 @@
 package com.example.accommodiq.security;
 
 import com.example.accommodiq.security.jwt.JwtRequestFilter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/accommodations").permitAll()
                         .requestMatchers("/sessions").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
