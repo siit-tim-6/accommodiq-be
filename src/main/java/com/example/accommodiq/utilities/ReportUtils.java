@@ -19,4 +19,9 @@ public class ReportUtils {
         String value = bundle.getString(messageKey);
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
     }
+
+    public static void throwForbidden(String messageKey) {
+        String value = bundle.getString(messageKey);
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, value);
+    }
 }
