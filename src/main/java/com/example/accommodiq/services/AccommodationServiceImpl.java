@@ -97,11 +97,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
         };
         ArrayList<AccommodationDetailsReviewDto> detailsReviewDtos = new ArrayList<>() {
             {
-                add(new AccommodationDetailsReviewDto("John Doe", "Great place!", 4.5, new Date()));
+                add(new AccommodationDetailsReviewDto("John Doe", "Great place!", 4.5, null));
             }
 
             {
-                add(new AccommodationDetailsReviewDto("Jane Smith", "Excellent stay!", 5.0, new Date()));
+                add(new AccommodationDetailsReviewDto("Jane Smith", "Excellent stay!", 5.0, null));
             }
         };
 

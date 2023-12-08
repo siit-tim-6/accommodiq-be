@@ -27,4 +27,10 @@ public class Host extends User {
         this.reviews = reviews;
     }
 
+    public double getRating() {
+        return reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0);
+    }
 }

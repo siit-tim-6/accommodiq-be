@@ -1,5 +1,7 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Host;
+
 public class AccommodationDetailsHostDto {
     private Long id;
     private String name;
@@ -11,6 +13,13 @@ public class AccommodationDetailsHostDto {
         this.name = name;
         this.rating = rating;
         this.reviewCount = reviewCount;
+    }
+
+    public AccommodationDetailsHostDto(Host host) {
+        this.id = host.getId();
+        this.name = host.getFirstName() + " " + host.getLastName();
+        this.rating = host.getRating();
+        this.reviewCount = host.getReviews().size();
     }
 
     public Long getId() {

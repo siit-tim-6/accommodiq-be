@@ -1,5 +1,6 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
@@ -136,27 +137,29 @@ public class HostServiceImpl implements IHostService {
     @Override
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
         Host host = findHost(hostId);
-        accommodationService.insert(host, accommodationDto);
+        Accommodation accomodation = accommodationService.insert(host, accommodationDto);
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }
 
-        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
+        return new AccommodationDetailsDto(accomodation)
 
-        return new AccommodationDetailsDto(
-                1L,
-                "Cozy Cottage",
-                4.8,
-                25,
-                "123 Main St, Cityville",
-                detailsHostDto,
-                "cottage_image.jpg",
-                2,
-                4,
-                null,
-                "A charming cottage with a beautiful garden.",
-                null
-        );
+//        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
+//
+//        return new AccommodationDetailsDto(
+//                1L,
+//                "Cozy Cottage",
+//                4.8,
+//                25,
+//                "123 Main St, Cityville",
+//                detailsHostDto,
+//                "cottage_image.jpg",
+//                2,
+//                4,
+//                null,
+//                "A charming cottage with a beautiful garden.",
+//                null
+//        );
     }
 
     @Override

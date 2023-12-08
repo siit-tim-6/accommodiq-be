@@ -178,5 +178,12 @@ public class Accommodation {
     public Host getHost() { return host; }
 
     public void setHost(Host host) { this.host = host; }
+
+    public double getRating() {
+        return reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0);
+    }
 }
 

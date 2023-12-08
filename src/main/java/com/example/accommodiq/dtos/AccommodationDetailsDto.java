@@ -1,5 +1,6 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 
 import java.util.ArrayList;
@@ -32,6 +33,22 @@ public class AccommodationDetailsDto {
         this.available = available;
         this.description = description;
         this.reviews = reviews;
+    }
+
+    public AccommodationDetailsDto(Accommodation accomodation) {
+        this.id = accomodation.getId();
+        this.title = accomodation.getTitle();
+        this.rating = accomodation.getRating();
+        this.reviewCount = accomodation.getReviews().size();
+        this.address = accomodation.getLocation();
+        this.host = new AccommodationDetailsHostDto(accomodation.getHost());
+        this.image = accomodation.getImage();
+        this.minGuests = accomodation.getMinGuests();
+        this.maxGuests = accomodation.getMaxGuests();
+        this.available = new ArrayList<>(accomodation.getAvailable());
+        this.description = accomodation.getDescription();
+        this.reviews = new ArrayList<>();
+        accomodation.getReviews().forEach(review -> this.reviews.add(new AccommodationDetailsReviewDto(review)));
     }
 
     public Long getId() {
