@@ -114,8 +114,7 @@ public class AccountServiceImpl implements IAccountService {
                 "John",
                 "Doe",
                 "123 Main St",
-                "555-1234",
-                null
+                "555-1234"
         ), AccountRole.GUEST);
     }
 
