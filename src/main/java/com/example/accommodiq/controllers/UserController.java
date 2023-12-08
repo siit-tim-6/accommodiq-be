@@ -6,20 +6,17 @@ import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountStatus;
-import com.example.accommodiq.services.interfaces.IAccountService;
-import com.example.accommodiq.services.interfaces.IReportService;
-import com.example.accommodiq.services.interfaces.INotificationService;
-import com.example.accommodiq.services.interfaces.INotificationSettingService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.*;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -64,12 +61,19 @@ public class UserController {
 
     @PutMapping
     public Account manageUserAccount(@RequestBody Account account) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!Objects.equals(email, account.getEmail())) {
+            ReportUtils.throwForbidden("forbiddenChange");
+        }
         return accountService.update(account);
     }
 
-    @DeleteMapping("/{accountId}")
-    public Account deleteUser(@PathVariable Long accountId) {
-        return null;
+    @DeleteMapping()
+    public Account deleteUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        accountService.delete(account.getId());
+        return account;
     }
 
     @PutMapping(value = "/{id}/status")
