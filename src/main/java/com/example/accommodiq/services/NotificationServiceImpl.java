@@ -1,18 +1,19 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Notification;
+import com.example.accommodiq.domain.NotificationSetting;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.INotificationService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.ResourceBundle;
+
+import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 @Service
 public class NotificationServiceImpl implements INotificationService {
@@ -20,11 +21,12 @@ public class NotificationServiceImpl implements INotificationService {
     final
     NotificationRepository allNotifications;
 
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+    final IUserService userService;
 
     @Autowired
-    public NotificationServiceImpl(NotificationRepository allNotifications) {
+    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService) {
         this.allNotifications = allNotifications;
+        this.userService = userService;
     }
 
     @Override
@@ -36,49 +38,38 @@ public class NotificationServiceImpl implements INotificationService {
     public Notification findNotification(Long notificationId) {
         Optional<Notification> found = allNotifications.findById(notificationId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+            throwNotFound("reviewNotFound");
         }
         return found.get();
     }
 
     @Override
-    public Notification insert(Notification notification) {
-        try {
-            allNotifications.save(notification);
-            allNotifications.flush();
-            return notification;
-        } catch (ConstraintViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Notification cannot be inserted");
-        }
+    public Notification insert(Long userId, Notification notification) {
+        User user = userService.findUser(userId);
+        user.getNotifications().add(notification);
+        userService.update(user);
+        return notification;
     }
 
     @Override
     public Notification update(Notification notification) {
         try {
-            findNotification(notification.getId()); // this will throw ResponseStatusException if notification is not found
+            findNotification(notification.getId());
             allNotifications.save(notification);
             allNotifications.flush();
             return notification;
-        } catch (RuntimeException ex) {
-            Throwable e = ex;
-            Throwable c = null;
-            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
-                e = c;
-            }
-            if ((c != null)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Notification cannot be updated");
-            }
-            throw ex;
+        } catch (ConstraintViolationException ex) {
+            throwNotFound("reviewUpdateFailed");
         }
+        return notification;
     }
 
     @Override
     public Notification delete(Long notificationId) {
-        Notification found = findNotification(notificationId); // this will throw NotificationNotFoundException if Notification is not found
-        allNotifications.delete(found);
+        Notification notification = findNotification(notificationId);
+        allNotifications.delete(notification);
         allNotifications.flush();
-        return found;
+        return notification;
     }
 
     @Override
@@ -87,8 +78,5 @@ public class NotificationServiceImpl implements INotificationService {
         allNotifications.flush();
     }
 
-    @Override
-    public Collection<Notification> findUsersNotifications(Long userId) {
-        return allNotifications.findByUserId(userId);
-    }
+
 }

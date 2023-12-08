@@ -17,8 +17,8 @@ public class Guest extends User {
         super();
     }
 
-    public Guest(Long id, String firstName, String lastName, String address, String phoneNumber, Account account) {
-        super(id, firstName, lastName, address, phoneNumber, account);
+    public Guest(Long id, String firstName, String lastName, String address, String phoneNumber) {
+        super(id, firstName, lastName, address, phoneNumber);
     }
 
     public Set<Reservation> getReservations() {

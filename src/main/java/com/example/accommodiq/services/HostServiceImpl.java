@@ -23,7 +23,7 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host findHost(Long hostId) {
-        return new Host(1L, "John", "Doe", "123 Main Street", "555-1234", null);
+        return new Host(1L, "John", "Doe", "123 Main Street", "555-1234");
     }
 
     @Override
@@ -53,13 +53,13 @@ public class HostServiceImpl implements IHostService {
         }
         return new ArrayList<AccommodationListDto>() {
             {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, true));
             }
 
             {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, false));
             }
         };
     }
