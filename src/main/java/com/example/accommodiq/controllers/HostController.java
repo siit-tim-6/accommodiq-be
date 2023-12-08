@@ -17,6 +17,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/hosts")
+@CrossOrigin
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;

@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
 
@@ -30,7 +31,7 @@ public class Accommodation {
     private Host host;
 
     public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
-                         boolean automaticAcceptance, int cancellationDeadline,Host host) {
+                         boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
         this.title = title;
@@ -45,6 +46,17 @@ public class Accommodation {
         this.automaticAcceptance = automaticAcceptance;
         this.cancellationDeadline = cancellationDeadline;
         this.host = host;
+    }
+
+    public Accommodation(AccommodationCreateDto accommodationDto) {
+        this.title = accommodationDto.getTitle();
+        this.description = accommodationDto.getDescription();
+        this.location = accommodationDto.getLocation();
+        this.minGuests = accommodationDto.getMinGuests();
+        this.maxGuests = accommodationDto.getMaxGuests();
+        this.available = accommodationDto.getAvailable();
+        this.pricingType = accommodationDto.getPricingType();
+        this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
     }
 
     public Accommodation() {
@@ -162,5 +174,9 @@ public class Accommodation {
     public void setAvailable(Set<Availability> available) {
         this.available = available;
     }
+
+    public Host getHost() { return host; }
+
+    public void setHost(Host host) { this.host = host; }
 }
 

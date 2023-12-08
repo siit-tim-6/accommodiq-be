@@ -5,8 +5,10 @@ import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,6 +18,14 @@ import java.util.Date;
 
 @Service
 public class HostServiceImpl implements IHostService {
+
+    final private IAccommodationService accommodationService;
+
+    @Autowired
+    public HostServiceImpl(IAccommodationService accommodationService) {
+        this.accommodationService = accommodationService;
+    }
+
     @Override
     public Collection<Host> getAll() {
         return null;
@@ -115,6 +125,8 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
+        Host host = findHost(hostId);
+        accommodationService.insert(host, accommodationDto);
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }

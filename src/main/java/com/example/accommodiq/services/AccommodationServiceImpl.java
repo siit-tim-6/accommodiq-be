@@ -2,16 +2,19 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.utilities.ReportUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
@@ -39,6 +42,19 @@ public class AccommodationServiceImpl implements IAccommodationService {
                         202, "Novi Sad", 540, 2, 5));
             }
         };
+    }
+
+    @Override
+    public Accommodation insert(Host host, AccommodationCreateDto accommodationDto) {
+        Accommodation accommodation = new Accommodation(accommodationDto);
+        accommodation.setHost(host);
+        try {
+            accommodationRepository.save(accommodation);
+            accommodationRepository.flush();
+            return accommodation;
+        } catch (ConstraintViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
+        }
     }
 
     public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
