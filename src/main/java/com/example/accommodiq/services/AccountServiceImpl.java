@@ -45,7 +45,7 @@ public class AccountServiceImpl implements IAccountService {
     public Account findAccount(Long accountId) {
         Optional<Account> found = allAccounts.findById(accountId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("userNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();
@@ -114,8 +114,7 @@ public class AccountServiceImpl implements IAccountService {
                 "John",
                 "Doe",
                 "123 Main St",
-                "555-1234",
-                null
+                "555-1234"
         ), AccountRole.GUEST);
     }
 
