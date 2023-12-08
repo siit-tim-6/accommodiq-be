@@ -82,10 +82,13 @@ public class UserController {
         accountService.changeStatus(id, statusDto.getStatus());
     }
 
-    @PutMapping("/{id}/password")
+    @PutMapping("/password")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable Long id, @RequestBody UpdatePasswordDto passwordDto) {
-        accountService.changePassword(id, passwordDto.getPassword());
+    public void changePassword(@RequestBody UpdatePasswordDto passwordDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        String encodedPassword = passwordEncoder.encode(passwordDto.getPassword());
+        accountService.changePassword(account.getId(), encodedPassword);
     }
 
     @PostMapping("/{userId}/notifications")
