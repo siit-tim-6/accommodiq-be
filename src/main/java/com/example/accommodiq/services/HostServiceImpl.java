@@ -140,28 +140,7 @@ public class HostServiceImpl implements IHostService {
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
         Host host = findHost(hostId);
         Accommodation accommodation = accommodationService.insert(host, accommodationDto);
-        if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
-        }
-
         return new AccommodationDetailsDto(accommodation);
-
-//        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
-//
-//        return new AccommodationDetailsDto(
-//                1L,
-//                "Cozy Cottage",
-//                4.8,
-//                25,
-//                "123 Main St, Cityville",
-//                detailsHostDto,
-//                "cottage_image.jpg",
-//                2,
-//                4,
-//                null,
-//                "A charming cottage with a beautiful garden.",
-//                null
-//        );
     }
 
     @Override
