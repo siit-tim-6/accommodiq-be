@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin()
 public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
@@ -47,6 +49,13 @@ public class UserController {
         return accountService.getAll();
     }
 
+    @GetMapping("/personal")
+    public AccountDetailsDto getPersonalAccount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        return new AccountDetailsDto(account);
+    }
+
     @GetMapping("/{accountId}")
     public Account findAccountById(@PathVariable Long accountId) {
         return accountService.findAccount(accountId);
@@ -64,12 +73,11 @@ public class UserController {
     }
 
     @PutMapping
-    public Account manageUserAccount(@RequestBody Account account) {
+    public Account manageUserAccount(@RequestBody AccountDetailsDto accountDetails) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!Objects.equals(email, account.getEmail())) {
-            ReportUtils.throwForbidden("forbiddenChange");
-        }
-        return accountService.update(account);
+        Account accountToManage = (Account) accountService.loadUserByUsername(email);
+        accountDetails.putDetailsIntoAccount(accountToManage);
+        return accountService.update(accountToManage);
     }
 
     @DeleteMapping()
@@ -91,8 +99,8 @@ public class UserController {
     public void changePassword(@RequestBody UpdatePasswordDto passwordDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
-        String encodedPassword = passwordEncoder.encode(passwordDto.getPassword());
-        accountService.changePassword(account.getId(), encodedPassword);
+
+        accountService.changePassword(account, passwordDto);
     }
 
     @PostMapping("/{userId}/notifications")
