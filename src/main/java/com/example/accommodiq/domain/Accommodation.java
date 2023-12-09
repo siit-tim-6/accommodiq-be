@@ -3,6 +3,7 @@ package com.example.accommodiq.domain;
 import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -180,6 +181,7 @@ public class Accommodation {
     public void setHost(Host host) { this.host = host; }
 
     public double getRating() {
+        Hibernate.initialize(reviews);
         return reviews.stream()
                 .mapToDouble(Review::getRating)
                 .average()

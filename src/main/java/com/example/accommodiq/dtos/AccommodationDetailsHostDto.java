@@ -1,5 +1,6 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
 
 public class AccommodationDetailsHostDto {

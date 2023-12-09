@@ -12,6 +12,7 @@ import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -135,14 +136,15 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
+    @Transactional
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
         Host host = findHost(hostId);
-        Accommodation accomodation = accommodationService.insert(host, accommodationDto);
+        Accommodation accommodation = accommodationService.insert(host, accommodationDto);
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }
 
-        return new AccommodationDetailsDto(accomodation)
+        return new AccommodationDetailsDto(accommodation);
 
 //        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
 //
