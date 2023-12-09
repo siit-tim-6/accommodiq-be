@@ -19,7 +19,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/hosts")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
