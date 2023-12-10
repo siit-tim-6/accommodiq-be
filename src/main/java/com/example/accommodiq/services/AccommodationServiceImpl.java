@@ -47,7 +47,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
-        List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type));
+        List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits));
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
         boolean priceRangeSpecified = priceFrom != null && priceTo != null;
 
