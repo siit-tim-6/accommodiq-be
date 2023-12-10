@@ -11,7 +11,7 @@ import java.util.List;
 public interface IAccommodationService {
     Collection<AccommodationListDto> findAll();
 
-    Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, PriceSearch priceSearchType, Integer guests, List<String> benefits);
+    Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, List<String> benefits);
 
     Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
