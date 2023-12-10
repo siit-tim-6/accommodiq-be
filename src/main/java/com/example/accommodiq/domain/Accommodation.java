@@ -30,9 +30,8 @@ public class Accommodation {
     private Set<Availability> available = new HashSet<>();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Host host;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    private Set<Benefit> benefits = new HashSet<>();
+    @ElementCollection
+    private Set<String> benefits = new HashSet<>();
 
     public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
                          boolean automaticAcceptance, int cancellationDeadline, Host host) {
@@ -176,11 +175,11 @@ public class Accommodation {
         this.host = host;
     }
 
-    public Set<Benefit> getBenefits() {
+    public Set<String> getBenefits() {
         return benefits;
     }
 
-    public void setBenefits(Set<Benefit> benefits) {
+    public void setBenefits(Set<String> benefits) {
         this.benefits = benefits;
     }
 
