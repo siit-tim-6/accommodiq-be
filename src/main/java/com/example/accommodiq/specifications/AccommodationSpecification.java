@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccommodationSpecification {
-    public static Specification<Accommodation> searchAndFilter(String title, String location, Integer guests) {
+    public static Specification<Accommodation> searchAndFilter(String title, String location, Integer guests, String type) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (title != null) {
