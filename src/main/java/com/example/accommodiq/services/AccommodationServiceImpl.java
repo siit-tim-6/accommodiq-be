@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
@@ -50,7 +51,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
         boolean priceRangeSpecified = priceFrom != null && priceTo != null;
 
-        if (availableFrom != null && availableTo != null) {
+        if (dateRangeSpecified) {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
         }
 
@@ -91,7 +92,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                statusDto.getStatus(),
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -161,7 +162,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -183,7 +184,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -249,7 +250,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
