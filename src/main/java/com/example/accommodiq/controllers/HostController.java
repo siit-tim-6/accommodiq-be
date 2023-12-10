@@ -5,15 +5,18 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IHostService;
+import com.example.accommodiq.services.interfaces.IImageService;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/hosts")
@@ -22,12 +25,14 @@ public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
     final private IUserService userService;
+    final private IImageService imagesService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService) {
+    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService, IImageService imagesService) {
         this.hostService = hostService;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.imagesService = imagesService;
     }
 
     @GetMapping
@@ -90,6 +95,11 @@ public class HostController {
     @GetMapping("{hostId}/reviews")
     public Collection<Review> getHostReviews(@PathVariable Long hostId) {
         return reviewService.getHostReviews(hostId);
+    }
+
+    @PostMapping("/upload")
+    public List<String> uploadImages(@RequestParam("images") List<MultipartFile> images) {
+        return imagesService.uploadImages(images);
     }
 
     private Review convertToReview(ReviewDto reviewDto) {
