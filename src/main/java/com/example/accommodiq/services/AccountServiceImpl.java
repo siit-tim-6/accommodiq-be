@@ -3,6 +3,7 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,9 +130,8 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public void changePassword(Long id, String password) {
-        Account account = findAccount(id);
-        account.setPassword(password);
+    public void changePassword(Account account, UpdatePasswordDto passwordDto) {
+        account.setPassword(passwordDto.getNewPassword());
         allAccounts.save(account);
         allAccounts.flush();
     }

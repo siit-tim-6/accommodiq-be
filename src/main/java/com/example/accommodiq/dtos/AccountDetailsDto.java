@@ -17,6 +17,9 @@ public class AccountDetailsDto {
         this.phoneNumber = account.getUser().getPhoneNumber();
     }
 
+    public AccountDetailsDto() {
+    }
+
     public String getEmail() {
         return email;
     }

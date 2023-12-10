@@ -1,5 +1,7 @@
 package com.example.accommodiq.dtos;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 public class UpdatePasswordDto {
     private String oldPassword;
     private String newPassword;
@@ -26,5 +28,10 @@ public class UpdatePasswordDto {
 
     public void setOldPassword(String oldPassword) {
         this.oldPassword = oldPassword;
+    }
+
+    public void encode(PasswordEncoder passwordEncoder) {
+        this.oldPassword = passwordEncoder.encode(this.oldPassword);
+        this.newPassword = passwordEncoder.encode(this.newPassword);
     }
 }
