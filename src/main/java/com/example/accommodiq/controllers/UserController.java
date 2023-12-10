@@ -100,6 +100,11 @@ public class UserController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
 
+        if (!passwordEncoder.matches(passwordDto.getOldPassword(), account.getPassword())) {
+            ReportUtils.throwBadRequest("wrongOldPassword");
+        }
+
+        passwordDto.encode(passwordEncoder);
         accountService.changePassword(account, passwordDto);
     }
 
