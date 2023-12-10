@@ -17,10 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ResourceBundle;
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
+    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE = 1; // in days
     AccommodationRepository accommodationRepository;
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
@@ -48,6 +51,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation insert(Host host, AccommodationCreateDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
+        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE);
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();

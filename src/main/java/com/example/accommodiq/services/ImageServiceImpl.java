@@ -19,8 +19,7 @@ public class ImageServiceImpl implements IImageService {
 
     @Override
     public List<String> uploadImages(List<MultipartFile> images) {
-       List<String> imagesPaths = images.stream().map(this::uploadImage).collect(Collectors.toList());
-        return imagesPaths;
+        return images.stream().map(this::uploadImage).collect(Collectors.toList());
     }
 
     private String uploadImage(MultipartFile file) {
