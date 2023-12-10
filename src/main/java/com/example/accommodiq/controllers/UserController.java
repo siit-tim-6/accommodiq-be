@@ -28,16 +28,18 @@ public class UserController {
     final INotificationSettingService notificationSettingService;
     final IReportService reportService;
     final PasswordEncoder passwordEncoder;
+    final IEmailService emailService;
 
     @Autowired
     public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService,
-                          INotificationSettingService notificationSettingService, IReportService reportService, PasswordEncoder passwordEncoder) {
+                          INotificationSettingService notificationSettingService, IReportService reportService, PasswordEncoder passwordEncoder, IEmailService emailService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
         this.reportService = reportService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -56,6 +58,7 @@ public class UserController {
         account.setStatus(AccountStatus.INACTIVE);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         Account savedAccount = accountService.insert(account);
+        emailService.sendVerificationEmail(savedAccount.getId(),savedAccount.getEmail());
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
         return savedAccount;
     }

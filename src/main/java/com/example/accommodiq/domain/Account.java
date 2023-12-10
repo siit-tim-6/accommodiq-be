@@ -20,7 +20,8 @@ public class Account implements UserDetails {
     private String password;
     private AccountRole role;
     private AccountStatus status;
-    private Long activationExpires = Instant.now().plus(24, ChronoUnit.HOURS).toEpochMilli();
+    private Long activationExpires = Instant.now().plus(1, ChronoUnit.MINUTES).toEpochMilli();
+
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
     @Transient

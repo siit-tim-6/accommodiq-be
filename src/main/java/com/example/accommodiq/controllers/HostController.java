@@ -19,6 +19,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/hosts")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
@@ -75,6 +76,7 @@ public class HostController {
     public Collection<AccommodationListDto> getHostAccommodations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
+
         return hostService.getHostAccommodations(hostId);
     }
 
