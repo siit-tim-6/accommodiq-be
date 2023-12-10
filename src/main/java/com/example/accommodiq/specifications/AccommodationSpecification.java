@@ -23,6 +23,9 @@ public class AccommodationSpecification {
                         criteriaBuilder.greaterThanOrEqualTo(root.get("maxGuests"), guests)
                 ));
             }
+            if (type != null) {
+                predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("type")), type.toLowerCase()));
+            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
