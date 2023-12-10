@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.services.interfaces.IImageService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,8 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
-    public Collection<String> uploadImages(@RequestParam("images") List<MultipartFile> images) {
-        return imagesService.uploadImages(images);
+    public ResponseEntity<List<String>> uploadImages(@RequestParam("images") List<MultipartFile> images) {
+        List<String> uploadedImages = imagesService.uploadImages(images);
+        return ResponseEntity.ok(uploadedImages);
     }
 }
