@@ -5,6 +5,7 @@ import com.example.accommodiq.enums.PricingType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AccommodationCreateDto {
@@ -16,6 +17,7 @@ public class AccommodationCreateDto {
     private Set<AvailabilityDto> available;
     private PricingType pricingType;
     private boolean automaticAcceptance;
+    private List<String> images;
 
     public AccommodationCreateDto() {
     }

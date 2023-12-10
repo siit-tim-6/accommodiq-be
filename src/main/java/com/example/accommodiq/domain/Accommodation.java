@@ -5,7 +5,9 @@ import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,7 +18,8 @@ public class Accommodation {
     private String title;
     private String description;
     private String location;
-    private String image;
+    @ElementCollection
+    private List<String> images = new ArrayList<>();
     private int minGuests;
     private int maxGuests;
     private String type;
@@ -31,14 +34,14 @@ public class Accommodation {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Host host;
 
-    public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
+    public Accommodation(Long id, String title, String description, String location, List<String> images, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
                          boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
         this.title = title;
         this.description = description;
         this.location = location;
-        this.image = image;
+        this.images = images;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.type = type;
@@ -96,12 +99,12 @@ public class Accommodation {
         this.location = location;
     }
 
-    public String getImage() {
-        return image;
+    public List<String> getImage() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImage(List<String> images) {
+        this.images = images;
     }
 
     public int getMinGuests() {

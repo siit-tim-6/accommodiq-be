@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccommodationDetailsDto {
     private Long id;
@@ -12,14 +13,14 @@ public class AccommodationDetailsDto {
     private int reviewCount;
     private String address;
     private AccommodationDetailsHostDto host;
-    private String image;
+    private List<String> images;
     private int minGuests;
     private int maxGuests;
     private ArrayList<Availability> available;
     private String description;
     private ArrayList<AccommodationDetailsReviewDto> reviews;
 
-    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String address, AccommodationDetailsHostDto host, String image,
+    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String address, AccommodationDetailsHostDto host, List<String> images,
                                    int minGuests, int maxGuests, ArrayList<Availability> available, String description, ArrayList<AccommodationDetailsReviewDto> reviews) {
         this.id = id;
         this.title = title;
@@ -27,7 +28,7 @@ public class AccommodationDetailsDto {
         this.reviewCount = reviewCount;
         this.address = address;
         this.host = host;
-        this.image = image;
+        this.images = images;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.available = available;
@@ -42,7 +43,7 @@ public class AccommodationDetailsDto {
         this.reviewCount = accomodation.getReviews().size();
         this.address = accomodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accomodation.getHost());
-        this.image = accomodation.getImage();
+        this.images = accomodation.getImage();
         this.minGuests = accomodation.getMinGuests();
         this.maxGuests = accomodation.getMaxGuests();
         this.available = new ArrayList<>(accomodation.getAvailable());
@@ -99,12 +100,12 @@ public class AccommodationDetailsDto {
         this.host = host;
     }
 
-    public String getImage() {
-        return image;
+    public List<String> getImage() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImage(List<String> images) {
+        this.images = images;
     }
 
     public int getMinGuests() {
