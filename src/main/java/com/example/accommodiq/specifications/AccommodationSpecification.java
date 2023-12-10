@@ -11,6 +11,10 @@ public class AccommodationSpecification {
     public static Specification<Accommodation> searchAndFilter(String title, String location, Integer guests, String type) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("status")), "accepted"));
+            predicates.add(criteriaBuilder.greaterThan(criteriaBuilder.count(root.get("available")), 0L));
+
             if (title != null) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
             }
