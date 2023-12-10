@@ -25,14 +25,12 @@ public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
     final private IUserService userService;
-    final private IImageService imagesService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService, IImageService imagesService) {
+    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService) {
         this.hostService = hostService;
         this.reviewService = reviewService;
         this.userService = userService;
-        this.imagesService = imagesService;
     }
 
     @GetMapping
@@ -95,11 +93,6 @@ public class HostController {
     @GetMapping("{hostId}/reviews")
     public Collection<Review> getHostReviews(@PathVariable Long hostId) {
         return reviewService.getHostReviews(hostId);
-    }
-
-    @PostMapping("/upload")
-    public List<String> uploadImages(@RequestParam("images") List<MultipartFile> images) {
-        return imagesService.uploadImages(images);
     }
 
     private Review convertToReview(ReviewDto reviewDto) {
