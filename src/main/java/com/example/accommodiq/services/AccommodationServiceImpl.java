@@ -52,7 +52,24 @@ public class AccommodationServiceImpl implements IAccommodationService {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
         }
 
-        return searchedAccommodations.stream().map(AccommodationListDto::new).toList();
+        List<AccommodationListDto> accommodationListDtos;
+        if (availableFrom == null && availableTo == null && priceFrom != null && priceTo != null) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .filter(accommodationListDto -> accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
+                    .toList();
+        } else if (availableFrom != null && availableTo != null && priceFrom != null && priceTo != null) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
+                    .toList();
+        } else {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .toList();
+        }
+
+        return accommodationListDtos;
     }
 
     public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
