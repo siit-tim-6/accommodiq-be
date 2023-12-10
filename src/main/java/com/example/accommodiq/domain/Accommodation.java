@@ -61,6 +61,7 @@ public class Accommodation {
         this.available = accommodationDto.getAvailable();
         this.pricingType = accommodationDto.getPricingType();
         this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
+        this.images = accommodationDto.getImages();
     }
 
     public Accommodation() {
