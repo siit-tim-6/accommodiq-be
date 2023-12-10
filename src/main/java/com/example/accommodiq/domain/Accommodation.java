@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
 
@@ -20,7 +21,7 @@ public class Accommodation {
     private int minGuests;
     private int maxGuests;
     private String type;
-    private boolean accepted;
+    private AccommodationStatus status;
     private PricingType pricingType;
     private boolean automaticAcceptance;
     private int cancellationDeadline;
@@ -33,7 +34,7 @@ public class Accommodation {
     @ElementCollection
     private Set<String> benefits = new HashSet<>();
 
-    public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
+    public Accommodation(Long id, String title, String description, String location, String image, int minGuests, int maxGuests, String type, AccommodationStatus status, PricingType pricingType,
                          boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
@@ -44,7 +45,7 @@ public class Accommodation {
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.type = type;
-        this.accepted = accepted;
+        this.status = status;
         this.pricingType = pricingType;
         this.automaticAcceptance = automaticAcceptance;
         this.cancellationDeadline = cancellationDeadline;
@@ -119,12 +120,12 @@ public class Accommodation {
         this.type = type;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public AccommodationStatus getStatus() {
+        return status;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
     }
 
     public PricingType getPricingType() {
