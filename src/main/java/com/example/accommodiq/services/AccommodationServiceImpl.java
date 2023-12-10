@@ -45,23 +45,29 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, PriceSearch priceSearchType, Integer guests, List<String> benefits) {
+    public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, List<String> benefits) {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests));
+        boolean dateRangeSpecified = availableFrom != null && availableTo != null;
+        boolean priceRangeSpecified = priceFrom != null && priceTo != null;
 
         if (availableFrom != null && availableTo != null) {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
         }
 
         List<AccommodationListDto> accommodationListDtos;
-        if (availableFrom == null && availableTo == null && priceFrom != null && priceTo != null) {
+        if (!dateRangeSpecified && priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
                     .map(AccommodationListDto::new)
-                    .filter(accommodationListDto -> accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
+                    .filter(accommodationListDto -> accommodationListDto.getMinPrice() != 0 && accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
                     .toList();
-        } else if (availableFrom != null && availableTo != null && priceFrom != null && priceTo != null) {
+        } else if (dateRangeSpecified && priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
                     .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
                     .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
+                    .toList();
+        } else if (dateRangeSpecified && !priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
                     .toList();
         } else {
             accommodationListDtos = searchedAccommodations.stream()
