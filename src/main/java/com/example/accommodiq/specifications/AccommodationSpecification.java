@@ -1,6 +1,7 @@
 package com.example.accommodiq.specifications;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.enums.AccommodationStatus;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,8 +14,7 @@ public class AccommodationSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("status")), "accepted"));
-            predicates.add(criteriaBuilder.greaterThan(criteriaBuilder.count(root.get("available")), 0L));
+            predicates.add(criteriaBuilder.equal((root.get("status")), AccommodationStatus.ACCEPTED));
 
             if (title != null) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
