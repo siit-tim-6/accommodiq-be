@@ -1,17 +1,22 @@
 package com.example.accommodiq.services.interfaces;
 
-import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.NotificationSettingDto;
-import com.example.accommodiq.repositories.NotificationSettingRepository;
 
 import java.util.Collection;
 
 public interface INotificationSettingService {
-    Collection<NotificationSettingDto> findUsersNotificationSettings(Long userId);
-    NotificationSetting insert(NotificationSetting notificationSetting);
-    void setNotificationSettingsForUser(User user);
+    Collection<NotificationSetting> getAll();
 
-    Collection<NotificationSettingDto> updateNotificationSettingsForUser(User user, Collection<NotificationSetting> notificationSettings);
+    NotificationSetting findNotificationSetting(Long notificationSettingId);
+
+    NotificationSetting insert(Long userId, NotificationSetting review);
+
+    NotificationSetting update(NotificationSetting review);
+
+    NotificationSetting delete(Long reviewId);
+
+    void deleteAll();
+
+    void setNotificationSettingsForUser(Long userId);
 }

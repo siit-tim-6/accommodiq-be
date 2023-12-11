@@ -12,6 +12,7 @@ import java.util.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/accommodations")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 
