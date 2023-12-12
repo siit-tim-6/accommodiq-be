@@ -49,7 +49,7 @@ public class UserController {
         return accountService.getAll();
     }
 
-    @GetMapping("/personal")
+    @GetMapping("/me")
     public AccountDetailsDto getPersonalAccount() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
