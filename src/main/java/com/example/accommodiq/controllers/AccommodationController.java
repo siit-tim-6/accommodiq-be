@@ -39,9 +39,9 @@ public class AccommodationController {
         return accommodationService.updateAccommodation(body);
     }
 
-    @PostMapping("/{accommodationId}/availabilities")
-    public Accommodation addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
-        return accommodationService.addAccommodationAvailability(accommodationId, body);
+    @PutMapping("/{accommodationId}/availabilities")
+    public Accommodation updateAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityPricingDto body) {
+        return accommodationService.updateAccommodationAvailability(accommodationId, body);
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")

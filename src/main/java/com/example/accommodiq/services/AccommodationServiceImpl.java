@@ -8,18 +8,23 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.utilities.AvailabilityConverter;
 import com.example.accommodiq.utilities.ReportUtils;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
@@ -58,6 +63,20 @@ public class AccommodationServiceImpl implements IAccommodationService {
             return accommodation;
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation error: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public Accommodation update(Accommodation accommodation) {
+        try {
+            findAccommodation(accommodation.getId()); // this will throw ResponseStatusException if accommodation is not found
+            accommodationRepository.save(accommodation);
+            accommodationRepository.flush();
+            return accommodation;
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation");
+        } catch (EntityNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found");
         }
     }
 
@@ -153,25 +172,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto) {
-        if (accommodationId == 4L) {
-            ReportUtils.throwNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                true,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    @Transactional
+    public Accommodation updateAccommodationAvailability(Long accommodationId, AvailabilityPricingDto availabilityPricingDto) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        Set<Availability> availabilities = AvailabilityConverter.convertToEntities(availabilityPricingDto.getAvailable());
+        accommodation.setAvailable(availabilities);
+        accommodation.setCancellationDeadline(availabilityPricingDto.getCancellationDeadline());
+        accommodation.setPricingType(availabilityPricingDto.getPricingType());
+        return update(accommodation);
     }
 
     @Override

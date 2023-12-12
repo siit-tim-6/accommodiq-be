@@ -12,6 +12,8 @@ public interface IAccommodationService {
 
     Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
 
+    Accommodation update(Accommodation accommodation);
+
     Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
     AccommodationDetailsDto findById(Long accommodationId);
@@ -20,7 +22,7 @@ public interface IAccommodationService {
 
     Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
 
-    Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
+    Accommodation updateAccommodationAvailability(Long accommodationId, AvailabilityPricingDto availabilityDto);
 
     MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
 
