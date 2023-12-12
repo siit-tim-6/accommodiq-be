@@ -4,14 +4,18 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccommodationStatus;
+import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.util.*;
@@ -41,6 +45,40 @@ public class AccommodationServiceImpl implements IAccommodationService {
         };
     }
 
+    @Override
+    public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
+        List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
+        boolean dateRangeSpecified = availableFrom != null && availableTo != null;
+        boolean priceRangeSpecified = priceFrom != null && priceTo != null;
+
+        if (dateRangeSpecified) {
+            searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
+        }
+
+        List<AccommodationListDto> accommodationListDtos;
+        if (!dateRangeSpecified && priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .filter(accommodationListDto -> accommodationListDto.getMinPrice() != 0 && accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
+                    .toList();
+        } else if (dateRangeSpecified && priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
+                    .toList();
+        } else if (dateRangeSpecified && !priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .toList();
+        } else {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .toList();
+        }
+
+        return accommodationListDtos;
+    }
+
     public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
         if (accommodationId == 4L) {
             ReportUtils.throwNotFound("accommodationNotFound");
@@ -54,7 +92,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                statusDto.getStatus(),
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -124,7 +162,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -146,7 +184,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -212,7 +250,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
