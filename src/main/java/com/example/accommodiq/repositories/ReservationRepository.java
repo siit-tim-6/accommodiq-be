@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId " +
             "AND r.startDate < :availabilityEnd AND r.endDate > :availabilityStart")
     Long countOverlappingReservations(@Param("accommodationId") Long accommodationId,
-                                      @Param("availabilityStart") Date availabilityStart,
-                                      @Param("availabilityEnd") Date availabilityEnd);
+                                      @Param("availabilityStart") Long availabilityStart,
+                                      @Param("availabilityEnd") Long availabilityEnd);
 
 }

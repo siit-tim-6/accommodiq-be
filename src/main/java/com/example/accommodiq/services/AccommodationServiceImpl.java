@@ -1,12 +1,14 @@
 package com.example.accommodiq.services;
 
-import com.example.accommodiq.domain.*;
+import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Host;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
-import com.example.accommodiq.services.interfaces.IReservationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +77,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data integrity violation");
         } catch (EntityNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Accommodation not found");
         }
     }
 
@@ -146,7 +148,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Accommodation findAccommodation(Long accommodationId) {
         Optional<Accommodation> found = accommodationRepository.findById(accommodationId);
-        if(found.isEmpty()) {
+        if (found.isEmpty()) {
             throwNotFound("accommodationNotFound");
         }
         return found.get();
@@ -176,11 +178,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public Accommodation updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto accommodationBookingDetailsDto) {
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto accommodationBookingDetailsDto) {
         Accommodation accommodation = findAccommodation(accommodationId);
         accommodation.setCancellationDeadline(accommodationBookingDetailsDto.getCancellationDeadline());
         accommodation.setPricingType(accommodationBookingDetailsDto.getPricingType());
-        return update(accommodation);
+        Accommodation updatedAccommodation = update(accommodation);
+        return ResponseEntity.ok(new AccommodationBookingDetailsDto(updatedAccommodation));
     }
 
     @Override
@@ -215,7 +218,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         Availability availabilityToRemove = availability.get();
 
-        if(hasActiveReservations(accommodation,availabilityToRemove)) {
+        if (hasActiveReservations(accommodation, availabilityToRemove)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot remove availability as there are active reservations in this period.");
         }
 
@@ -277,6 +280,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 null
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
+        return ResponseEntity.ok(accommodationDetails);
+    }
+
     private boolean isOverlapping(Availability existing, Availability newAvailability) {
         long existingStart = existing.getFromDate();
         long existingEnd = existing.getToDate();
@@ -287,13 +299,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {
-        Date availabilityStartDate = new Date(availability.getFromDate());
-        Date availabilityEndDate = new Date(availability.getToDate());
 
         Long count = reservationRepository.countOverlappingReservations(
                 accommodation.getId(),
-                availabilityStartDate,
-                availabilityEndDate
+                availability.getFromDate(),
+                availability.getToDate()
         );
         return count != null && count > 0;
     }

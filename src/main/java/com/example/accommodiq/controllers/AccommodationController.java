@@ -12,6 +12,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/accommodations")
+@CrossOrigin
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 
@@ -43,13 +44,11 @@ public class AccommodationController {
 
     @GetMapping("/{accommodationId}/booking-details")
     public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
-        Accommodation accommodation = accommodationService.findAccommodation(accommodationId);
-        AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
-        return ResponseEntity.ok(accommodationDetails);
+        return accommodationService.getAccommodationBookingDetails(accommodationId);
     }
 
     @PutMapping("/{accommodationId}/booking-details")
-    public Accommodation updateAccommodationBookingDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
         return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
     }
 

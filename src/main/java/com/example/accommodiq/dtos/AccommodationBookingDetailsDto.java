@@ -1,5 +1,6 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.enums.PricingType;
 
 public class AccommodationBookingDetailsDto {
@@ -13,6 +14,11 @@ public class AccommodationBookingDetailsDto {
     public AccommodationBookingDetailsDto(int cancellationDeadline, PricingType pricingType) {
         this.cancellationDeadline = cancellationDeadline;
         this.pricingType = pricingType;
+    }
+
+    public AccommodationBookingDetailsDto(Accommodation accommodation) {
+        this.cancellationDeadline = accommodation.getCancellationDeadline();
+        this.pricingType = accommodation.getPricingType();
     }
 
     public int getCancellationDeadline() {

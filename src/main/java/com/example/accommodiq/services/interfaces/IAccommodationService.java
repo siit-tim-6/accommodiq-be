@@ -27,7 +27,7 @@ public interface IAccommodationService {
 
     ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
-    Accommodation updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto availabilityDto);
+    ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto availabilityDto);
 
     MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
 
@@ -36,4 +36,6 @@ public interface IAccommodationService {
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
     Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
+
+    ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId);
 }
