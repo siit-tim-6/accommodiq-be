@@ -2,21 +2,17 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.enums.PricingType;
 
-import java.util.Set;
-
-public class AvailabilityPricingDto {
+public class AccommodationBookingDetailsDto {
     private int cancellationDeadline;
     private PricingType pricingType;
-    private Set<AvailabilityDto> available;
 
-    public AvailabilityPricingDto() {
+    public AccommodationBookingDetailsDto() {
         super();
     }
 
-    public AvailabilityPricingDto(int cancellationDeadline, PricingType pricingType, Set<AvailabilityDto> available) {
+    public AccommodationBookingDetailsDto(int cancellationDeadline, PricingType pricingType) {
         this.cancellationDeadline = cancellationDeadline;
         this.pricingType = pricingType;
-        this.available = available;
     }
 
     public int getCancellationDeadline() {
@@ -33,13 +29,5 @@ public class AvailabilityPricingDto {
 
     public void setPricingType(PricingType pricingType) {
         this.pricingType = pricingType;
-    }
-
-    public Set<AvailabilityDto> getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(Set<AvailabilityDto> available) {
-        this.available = available;
     }
 }

@@ -173,12 +173,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public Accommodation updateAccommodationAvailability(Long accommodationId, AvailabilityPricingDto availabilityPricingDto) {
+    public Accommodation updateAccommodationAvailability(Long accommodationId, AccommodationBookingDetailsDto accommodationBookingDetailsDto) {
         Accommodation accommodation = findAccommodation(accommodationId);
-        Set<Availability> availabilities = AvailabilityConverter.convertToEntities(availabilityPricingDto.getAvailable());
+        Set<Availability> availabilities = AvailabilityConverter.convertToEntities(accommodationBookingDetailsDto.getAvailable());
         accommodation.setAvailable(availabilities);
-        accommodation.setCancellationDeadline(availabilityPricingDto.getCancellationDeadline());
-        accommodation.setPricingType(availabilityPricingDto.getPricingType());
+        accommodation.setCancellationDeadline(accommodationBookingDetailsDto.getCancellationDeadline());
+        accommodation.setPricingType(accommodationBookingDetailsDto.getPricingType());
         return update(accommodation);
     }
 

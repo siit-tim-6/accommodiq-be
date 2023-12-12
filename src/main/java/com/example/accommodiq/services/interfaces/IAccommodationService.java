@@ -22,7 +22,9 @@ public interface IAccommodationService {
 
     Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
 
-    Accommodation updateAccommodationAvailability(Long accommodationId, AvailabilityPricingDto availabilityDto);
+    Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
+
+    Accommodation updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto availabilityDto);
 
     MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
 
