@@ -3,7 +3,6 @@ package com.example.accommodiq.dtos;
 public class CredentialsDto {
     private String email;
     private String password;
-    private String jwt;
 
     public CredentialsDto(String email, String password) {
         this.email = email;
@@ -27,13 +26,5 @@ public class CredentialsDto {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getJwt() {
-        return jwt;
     }
 }
