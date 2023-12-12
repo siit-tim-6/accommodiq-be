@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
 
@@ -22,7 +23,7 @@ public interface IAccommodationService {
 
     Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
 
-    Accommodation addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
+    ResponseEntity<Accommodation> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
     Accommodation updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto availabilityDto);
 

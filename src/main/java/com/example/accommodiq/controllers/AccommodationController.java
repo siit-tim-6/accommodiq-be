@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -39,14 +40,21 @@ public class AccommodationController {
         return accommodationService.updateAccommodation(body);
     }
 
-    @PostMapping("/{accommodationId}/availabilities")
-    public Accommodation addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
-        return accommodationService.addAccommodationAvailability(accommodationId, body);
+    @GetMapping("/{accommodationId}/booking-details")
+    public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
+        Accommodation accommodation = accommodationService.findAccommodation(accommodationId);
+        AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
+        return ResponseEntity.ok(accommodationDetails);
     }
 
-    @PatchMapping("/{accommodationId}")
-    public Accommodation updateAccommodationAvailabilityDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
+    @PutMapping("/{accommodationId}/booking-details")
+    public Accommodation updateAccommodationBookingDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
         return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
+    }
+
+    @PostMapping("/{accommodationId}/availabilities")
+    public ResponseEntity<Accommodation> addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+        return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
