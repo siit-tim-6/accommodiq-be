@@ -1,12 +1,14 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface IAccommodationService {
     Collection<AccommodationListDto> findAll();
@@ -23,7 +25,7 @@ public interface IAccommodationService {
 
     Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
 
-    ResponseEntity<Accommodation> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
+    ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
     Accommodation updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto availabilityDto);
 

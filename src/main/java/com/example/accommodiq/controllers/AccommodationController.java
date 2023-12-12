@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class AccommodationController {
     }
 
     @PostMapping("/{accommodationId}/availabilities")
-    public ResponseEntity<Accommodation> addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+    public ResponseEntity<List<Availability>> addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
         return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 

@@ -185,7 +185,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public ResponseEntity<Accommodation> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto) {
+    public ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto) {
         Accommodation accommodation = findAccommodation(accommodationId);
         Availability newAvailability = new Availability(availabilityDto);
 
@@ -201,7 +201,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Accommodation updatedAccommodation = update(accommodation);
 
         return ResponseEntity
-                .ok(updatedAccommodation);
+                .ok(updatedAccommodation.getAvailable().stream().toList());
     }
 
     @Override
