@@ -1,18 +1,27 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Review;
+
 import java.util.Date;
 
 public class AccommodationDetailsReviewDto {
     private String author;
     private String comment;
     private double rating;
-    private Date date;
+    private Long date;
 
-    public AccommodationDetailsReviewDto(String author, String comment, double rating, Date date) {
+    public AccommodationDetailsReviewDto(String author, String comment, double rating, Long date) {
         this.author = author;
         this.comment = comment;
         this.rating = rating;
         this.date = date;
+    }
+
+    public AccommodationDetailsReviewDto(Review review) {
+        this.author = review.getGuest().getFirstName() + review.getGuest().getLastName();
+        this.comment = review.getComment();
+        this.rating = review.getRating();
+        this.date = review.getDate();
     }
 
     public String getAuthor() {
@@ -39,11 +48,11 @@ public class AccommodationDetailsReviewDto {
         this.rating = rating;
     }
 
-    public Date getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 }
