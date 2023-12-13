@@ -68,6 +68,7 @@ public class AccommodationListDto {
         this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
+        this.totalPrice = 0;
     }
 
     public Long getId() {
