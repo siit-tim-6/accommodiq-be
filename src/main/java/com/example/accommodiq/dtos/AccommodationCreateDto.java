@@ -18,11 +18,12 @@ public class AccommodationCreateDto {
     private PricingType pricingType;
     private boolean automaticAcceptance;
     private List<String> images;
+    private String type;
 
     public AccommodationCreateDto() {
     }
 
-    public AccommodationCreateDto(String title, String description, String location, int minGuests, int maxGuests, Set<AvailabilityDto> available, PricingType pricingType, boolean automaticAcceptance, List<String> images) {
+    public AccommodationCreateDto(String title, String description, String location, int minGuests, int maxGuests, Set<AvailabilityDto> available, PricingType pricingType, boolean automaticAcceptance, List<String> images, String type) {
         this.title = title;
         this.description = description;
         this.location = location;
@@ -32,6 +33,7 @@ public class AccommodationCreateDto {
         this.pricingType = pricingType;
         this.automaticAcceptance = automaticAcceptance;
         this.images = images;
+        this.type = type;
     }
 
     public String getTitle() {
@@ -109,4 +111,8 @@ public class AccommodationCreateDto {
     public List<String> getImages() { return images; }
 
     public void setImages(List<String> images) { this.images = images; }
+
+    public String getType() { return type; }
+
+    public void setType(String type) { this.type = type; }
 }
