@@ -6,6 +6,7 @@ import com.example.accommodiq.domain.Review;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.Set;
 
 public class AccommodationDetailsDto {
     private Long id;
@@ -19,9 +20,10 @@ public class AccommodationDetailsDto {
     private int maxGuests;
     private String description;
     private List<AccommodationDetailsReviewDto> reviews;
+    private Set<String> benefits;
 
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, String image,
-                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews) {
+                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits) {
         this.id = id;
         this.title = title;
         this.rating = rating;
@@ -33,6 +35,7 @@ public class AccommodationDetailsDto {
         this.maxGuests = maxGuests;
         this.description = description;
         this.reviews = reviews;
+        this.benefits = benefits;
     }
 
     public AccommodationDetailsDto(Accommodation accommodation) {
@@ -49,6 +52,7 @@ public class AccommodationDetailsDto {
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
         this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
+        this.benefits = accommodation.getBenefits();
     }
 
     public Long getId() {
@@ -135,7 +139,15 @@ public class AccommodationDetailsDto {
         return reviews;
     }
 
-    public void setReviews(ArrayList<AccommodationDetailsReviewDto> reviews) {
+    public void setReviews(List<AccommodationDetailsReviewDto> reviews) {
         this.reviews = reviews;
+    }
+
+    public Set<String> getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(Set<String> benefits) {
+        this.benefits = benefits;
     }
 }
