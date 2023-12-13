@@ -129,7 +129,8 @@ public class HostServiceImpl implements IHostService {
                 4,
                 "A charming cottage with a beautiful garden.",
                 null,
-                null
+                null,
+                "Test Type"
         );
     }
 

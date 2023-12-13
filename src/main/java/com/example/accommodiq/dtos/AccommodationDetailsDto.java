@@ -22,8 +22,10 @@ public class AccommodationDetailsDto {
     private List<AccommodationDetailsReviewDto> reviews;
     private Set<String> benefits;
 
+    private String type;
+
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, String image,
-                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits) {
+                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type) {
         this.id = id;
         this.title = title;
         this.rating = rating;
@@ -36,6 +38,7 @@ public class AccommodationDetailsDto {
         this.description = description;
         this.reviews = reviews;
         this.benefits = benefits;
+        this.type = type;
     }
 
     public AccommodationDetailsDto(Accommodation accommodation) {
@@ -53,6 +56,7 @@ public class AccommodationDetailsDto {
         this.description = accommodation.getDescription();
         this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
         this.benefits = accommodation.getBenefits();
+        this.type = accommodation.getType();
     }
 
     public Long getId() {
@@ -149,5 +153,13 @@ public class AccommodationDetailsDto {
 
     public void setBenefits(Set<String> benefits) {
         this.benefits = benefits;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
