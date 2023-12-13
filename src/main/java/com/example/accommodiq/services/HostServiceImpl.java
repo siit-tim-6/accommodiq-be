@@ -69,19 +69,19 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
+    public ArrayList<AccommodationHostDto> getHostAccommodations(Long hostId) {
         if (hostId == 4L) {
             ReportUtils.throwNotFound("hostNotFound");
         }
-        return new ArrayList<AccommodationListDto>() {
+        return new ArrayList<>() {
             {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, true));
             }
 
             {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
+                add(new AccommodationHostDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
+                        202, "Novi Sad", 540, 2, 5, false));
             }
         };
     }

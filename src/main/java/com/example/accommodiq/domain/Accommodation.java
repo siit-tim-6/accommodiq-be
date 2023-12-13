@@ -1,11 +1,13 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.dtos.AccommodationCreateDto;
+import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +25,7 @@ public class Accommodation {
     private int minGuests;
     private int maxGuests;
     private String type;
-    private boolean accepted;
+    private AccommodationStatus status;
     private PricingType pricingType;
     private boolean automaticAcceptance;
     private int cancellationDeadline;
@@ -33,8 +35,10 @@ public class Accommodation {
     private Set<Availability> available = new HashSet<>();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Host host;
+    @ElementCollection
+    private Set<String> benefits = new HashSet<>();
 
-    public Accommodation(Long id, String title, String description, String location, List<String> images, int minGuests, int maxGuests, String type, boolean accepted, PricingType pricingType,
+    public Accommodation(Long id, String title, String description, String location, List<String> images, int minGuests, int maxGuests, String type, AccommodationStatus status, PricingType pricingType,
                          boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
@@ -45,7 +49,7 @@ public class Accommodation {
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.type = type;
-        this.accepted = accepted;
+        this.status = status;
         this.pricingType = pricingType;
         this.automaticAcceptance = automaticAcceptance;
         this.cancellationDeadline = cancellationDeadline;
@@ -132,12 +136,12 @@ public class Accommodation {
         this.type = type;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public AccommodationStatus getStatus() {
+        return status;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
     }
 
     public PricingType getPricingType() {
@@ -180,16 +184,58 @@ public class Accommodation {
         this.available = available;
     }
 
-    public Host getHost() { return host; }
-
-    public void setHost(Host host) { this.host = host; }
-
     public double getRating() {
         Hibernate.initialize(reviews);
         return reviews.stream()
                 .mapToDouble(Review::getRating)
                 .average()
                 .orElse(0);
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public Set<String> getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(Set<String> benefits) {
+        this.benefits = benefits;
+    }
+
+    public boolean isAvailable(Long from, Long to) {
+        Long finalFrom = from;
+        Long oneDay = (long) (60 * 60 * 24);
+
+        if (this.available == null) {
+            return false;
+        }
+
+        List<Availability> availabilityCandidates = this.available.stream().filter(availability ->
+                (availability.getFromDate() <= finalFrom && finalFrom <= availability.getToDate())
+                        || (availability.getFromDate() <= to && to <= availability.getToDate())
+        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
+
+        if (availabilityCandidates.isEmpty()) {
+            return false;
+        }
+
+        for (Availability availabilityCandidate : availabilityCandidates) {
+            if (availabilityCandidate.getFromDate() <= from && to <= availabilityCandidate.getToDate()) {
+                return true;
+            } else if (availabilityCandidate.getFromDate() <= from && to > availabilityCandidate.getToDate()) {
+                from = availabilityCandidate.getFromDate() + oneDay;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
     }
 }
 

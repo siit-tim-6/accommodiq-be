@@ -1,21 +1,23 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.enums.AccommodationStatus;
+
 public class AccommodationStatusDto {
-    private boolean accepted;
+    private AccommodationStatus status;
 
     public AccommodationStatusDto() {
         super();
     }
 
-    public AccommodationStatusDto(boolean accepted) {
-        this.accepted = accepted;
+    public AccommodationStatusDto(AccommodationStatus status) {
+        this.status = status;
     }
 
-    public boolean isAccepted() {
-        return accepted;
+    public AccommodationStatus getStatus() {
+        return status;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
     }
 }

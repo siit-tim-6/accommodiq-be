@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hosts")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
@@ -71,7 +71,7 @@ public class HostController {
     }
 
     @GetMapping("/{hostId}/accommodations")
-    public Collection<AccommodationListDto> getHostAccommodations(@PathVariable Long hostId) {
+    public Collection<AccommodationHostDto> getHostAccommodations(@PathVariable Long hostId) {
         return hostService.getHostAccommodations(hostId);
     }
 

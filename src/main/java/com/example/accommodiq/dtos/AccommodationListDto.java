@@ -1,5 +1,14 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Review;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
+
 public class AccommodationListDto {
     private Long id;
     private String title;
@@ -10,6 +19,7 @@ public class AccommodationListDto {
     private double minPrice;
     private int minGuests;
     private int maxGuests;
+    private double totalPrice;
 
     public AccommodationListDto() {
         super();
@@ -26,6 +36,40 @@ public class AccommodationListDto {
         this.minPrice = minPrice;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
+        this.totalPrice = 0;
+    }
+
+    public AccommodationListDto(Accommodation accommodation) {
+        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.image = accommodation.getImage().get(0);
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().size();
+        this.location = accommodation.getLocation();
+        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.totalPrice = 0;
+    }
+
+    public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate) {
+        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.image = accommodation.getImage().get(0);
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().size();
+        this.location = accommodation.getLocation();
+        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+
+        calcTotalPrice(accommodation, fromDate, toDate);
     }
 
     public Long getId() {
@@ -98,5 +142,34 @@ public class AccommodationListDto {
 
     public void setMaxGuests(int maxGuests) {
         this.maxGuests = maxGuests;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    private void calcTotalPrice(Accommodation accommodation, Long fromDate, Long toDate) {
+        Long oneDay = (long) (60 * 60 * 24);
+
+        List<Availability> availabilityCandidates = accommodation.getAvailable().stream().filter(availability ->
+                (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
+                        || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
+        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
+
+        Long fromDateCopy = fromDate;
+        for (Availability availabilityCandidate : availabilityCandidates) {
+            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
+                totalPrice += availabilityCandidate.getPrice();
+                fromDateCopy += oneDay;
+
+                if (fromDateCopy > toDate) {
+                    return;
+                }
+            }
+        }
     }
 }
