@@ -1,7 +1,6 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class AccommodationDetailsDto {
     private String title;
     private double rating;
     private int reviewCount;
-    private String address;
+    private String location;
     private AccommodationDetailsHostDto host;
     private String image;
     private int minGuests;
@@ -21,13 +20,13 @@ public class AccommodationDetailsDto {
     private String description;
     private List<AccommodationDetailsReviewDto> reviews;
 
-    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String address, AccommodationDetailsHostDto host, String image,
+    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, String image,
                                    int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews) {
         this.id = id;
         this.title = title;
         this.rating = rating;
         this.reviewCount = reviewCount;
-        this.address = address;
+        this.location = location;
         this.host = host;
         this.image = image;
         this.minGuests = minGuests;
@@ -43,7 +42,7 @@ public class AccommodationDetailsDto {
         this.title = accommodation.getTitle();
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = accommodation.getReviews().size();
-        this.address = accommodation.getLocation();
+        this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
         this.image = accommodation.getImage();
         this.minGuests = accommodation.getMinGuests();
@@ -84,12 +83,12 @@ public class AccommodationDetailsDto {
         this.reviewCount = reviewCount;
     }
 
-    public String getAddress() {
-        return address;
+    public String getLocation() {
+        return location;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public AccommodationDetailsHostDto getHost() {
