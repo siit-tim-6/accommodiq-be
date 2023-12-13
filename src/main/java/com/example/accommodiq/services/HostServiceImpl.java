@@ -1,12 +1,13 @@
 package com.example.accommodiq.services;
 
-import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,6 +17,14 @@ import java.util.Date;
 
 @Service
 public class HostServiceImpl implements IHostService {
+    final
+    AccommodationRepository allAccommodations;
+
+    @Autowired
+    public HostServiceImpl(AccommodationRepository allAccommodations) {
+        this.allAccommodations = allAccommodations;
+    }
+
     @Override
     public Collection<Host> getAll() {
         return null;
@@ -47,21 +56,8 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
-        if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
-        }
-        return new ArrayList<AccommodationListDto>() {
-            {
-                add(new AccommodationHostDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5, true));
-            }
-
-            {
-                add(new AccommodationHostDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5, false));
-            }
-        };
+    public Collection<AccommodationListDto> getHostAccommodations(Long hostId) {
+        return allAccommodations.findByHostId(hostId).stream().map(AccommodationListDto::new).toList();
     }
 
     @Override

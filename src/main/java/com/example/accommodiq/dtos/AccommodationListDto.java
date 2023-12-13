@@ -3,7 +3,6 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +69,21 @@ public class AccommodationListDto {
         this.maxGuests = accommodation.getMaxGuests();
 
         calcTotalPrice(accommodation, fromDate, toDate);
+    }
+
+    public AccommodationListDto(Accommodation accommodation) {
+        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.image = accommodation.getImage();
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().size();
+        this.location = accommodation.getLocation();
+        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
     }
 
     public Long getId() {

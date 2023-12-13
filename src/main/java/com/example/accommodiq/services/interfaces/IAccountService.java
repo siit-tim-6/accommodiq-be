@@ -2,12 +2,14 @@ package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountStatus;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 
-public interface IAccountService {
+public interface IAccountService extends UserDetailsService {
     Collection<Account> getAll();
     Account findAccount(Long accountId);
 
@@ -23,5 +25,5 @@ public interface IAccountService {
 
     void changeStatus(Long id, AccountStatus accountStatus);
 
-    void changePassword(Long id, String password);
+    void changePassword(Account account, UpdatePasswordDto passwordDto);
 }
