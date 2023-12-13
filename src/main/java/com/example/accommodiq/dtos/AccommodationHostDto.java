@@ -1,6 +1,7 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.enums.AccommodationStatus;
 
 import java.util.Random;
 
@@ -14,7 +15,7 @@ public class AccommodationHostDto {
     private double minPrice;
     private int minGuests;
     private int maxGuests;
-    private boolean accepted;
+    private AccommodationStatus status;
 
     public AccommodationHostDto() {
         super();
@@ -30,11 +31,11 @@ public class AccommodationHostDto {
         this.minPrice = new Random().nextInt(300, 600);
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
-        this.accepted = accommodation.isAccepted();
+        this.status = accommodation.getStatus();
     }
 
     public AccommodationHostDto(Long id, String title, String image, Double rating,
-                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests, boolean accepted) {
+                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests, AccommodationStatus status) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -44,7 +45,15 @@ public class AccommodationHostDto {
         this.minPrice = minPrice;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
-        this.accepted = accepted;
+        this.status = status;
+    }
+
+    public AccommodationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
     }
 
     public Long getId() {
@@ -117,13 +126,5 @@ public class AccommodationHostDto {
 
     public void setMaxGuests(int maxGuests) {
         this.maxGuests = maxGuests;
-    }
-
-    public boolean isAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
     }
 }
