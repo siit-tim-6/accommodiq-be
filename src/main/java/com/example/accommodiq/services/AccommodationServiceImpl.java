@@ -102,45 +102,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationDetailsDto findById(Long accommodationId) {
-        if (accommodationId == 4L) {
+        Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
+
+        if (accommodation.isEmpty()) {
             ReportUtils.throwNotFound("accommodationNotFound");
         }
-
-        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
-        ArrayList<Availability> availabilities = new ArrayList<>() {
-            {
-                add(new Availability(1L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 150.0));
-
-            }
-
-            {
-                add(new Availability(2L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 120.0));
-            }
-        };
-        ArrayList<AccommodationDetailsReviewDto> detailsReviewDtos = new ArrayList<>() {
-            {
-                add(new AccommodationDetailsReviewDto("John Doe", "Great place!", 4.5, new Date()));
-            }
-
-            {
-                add(new AccommodationDetailsReviewDto("Jane Smith", "Excellent stay!", 5.0, new Date()));
-            }
-        };
-
-        return new AccommodationDetailsDto(
-                1L,
-                "Cozy Cottage",
-                4.8,
-                25,
-                "123 Main St, Cityville",
-                detailsHostDto,
-                "cottage_image.jpg",
-                2,
-                4,
-                availabilities,
-                "A charming cottage with a beautiful garden.",
-                detailsReviewDtos
-        );
+        
+        return new AccommodationDetailsDto(accommodation.get());
     }
 
     @Override

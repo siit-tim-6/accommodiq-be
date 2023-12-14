@@ -48,14 +48,6 @@ public class AccommodationHostDto {
         this.status = status;
     }
 
-    public AccommodationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AccommodationStatus status) {
-        this.status = status;
-    }
-
     public Long getId() {
         return id;
     }
@@ -126,5 +118,13 @@ public class AccommodationHostDto {
 
     public void setMaxGuests(int maxGuests) {
         this.maxGuests = maxGuests;
+    }
+
+    public AccommodationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
     }
 }

@@ -34,7 +34,7 @@ public class WebSecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/accommodations").permitAll()
+                        .requestMatchers("/accommodations/**").permitAll()
                         .requestMatchers("/sessions").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers("/users/*").permitAll()
