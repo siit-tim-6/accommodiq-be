@@ -11,13 +11,11 @@ import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
-import com.example.accommodiq.utilities.HibernateUtil;
 import com.example.accommodiq.utilities.ReportUtils;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -62,14 +59,13 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     @Transactional
     public Account insert(Account account) {
-        EntityManager entityManager = HibernateUtil.getEntityManager();
         try {
             User user = account.getUser();
             if (account.getRole() == AccountRole.GUEST) {
-                entityManager.persist(Guest.createGuest(user));
+                account.setUser(Guest.createGuest(user));
             }
             if (account.getRole() == AccountRole.HOST) {
-                entityManager.persist(Host.createHost(user));
+                account.setUser(Host.createHost(user));
             }
             allAccounts.save(account);
             allAccounts.flush();

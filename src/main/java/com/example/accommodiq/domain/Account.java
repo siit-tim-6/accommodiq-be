@@ -50,7 +50,7 @@ public class Account implements UserDetails {
         account.setEmail(registerDto.getEmail());
         account.setPassword(registerDto.getPassword());
         account.setRole(registerDto.getRole());
-        account.setStatus(AccountStatus.ACTIVE);
+        account.setStatus(AccountStatus.INACTIVE);
         account.setUser(registerDto.getUser());
         return account;
     }
