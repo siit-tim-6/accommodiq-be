@@ -1,21 +1,17 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccommodationStatus;
-import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.util.*;
@@ -224,5 +220,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 7,
                 null
         );
+    }
+
+    @Override
+    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
     }
 }

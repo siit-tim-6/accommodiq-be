@@ -3,10 +3,8 @@ package com.example.accommodiq.services.interfaces;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.PriceSearch;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public interface IAccommodationService {
@@ -31,4 +29,6 @@ public interface IAccommodationService {
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
     Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
+
+    Collection<AccommodationWithStatusDto> getPendingAccommodations();
 }

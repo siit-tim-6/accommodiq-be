@@ -61,4 +61,10 @@ public class AccommodationController {
     public Accommodation addReview(@PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }
+
+    @GetMapping("/pending")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+        return accommodationService.getPendingAccommodations();
+    }
 }
