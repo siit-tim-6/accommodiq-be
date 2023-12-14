@@ -24,7 +24,7 @@ public class ImageController {
         this.imagesService = imagesService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping()
     public ResponseEntity<List<String>> uploadImages(@RequestParam("images") List<MultipartFile> images) {
         List<String> uploadedImages = imagesService.uploadImages(images);
         return ResponseEntity.ok(uploadedImages);
