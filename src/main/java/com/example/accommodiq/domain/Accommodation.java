@@ -104,11 +104,11 @@ public class Accommodation {
         this.location = location;
     }
 
-    public List<String> getImage() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImage(List<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

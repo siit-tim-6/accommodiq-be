@@ -43,7 +43,7 @@ public class AccommodationDetailsDto {
         this.reviewCount = accomodation.getReviews().size();
         this.address = accomodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accomodation.getHost());
-        this.images = accomodation.getImage();
+        this.images = accomodation.getImages();
         this.minGuests = accomodation.getMinGuests();
         this.maxGuests = accomodation.getMaxGuests();
         this.available = new ArrayList<>(accomodation.getAvailable());

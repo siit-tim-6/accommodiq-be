@@ -45,7 +45,7 @@ public class AccommodationListDto {
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
-        this.image = accommodation.getImage().get(0);
+        this.image = accommodation.getImages().get(0);
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
@@ -61,7 +61,7 @@ public class AccommodationListDto {
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
-        this.image = accommodation.getImage().get(0);
+        this.image = accommodation.getImages().get(0);
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
