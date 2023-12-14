@@ -45,21 +45,25 @@ public class AccommodationController {
     }
 
     @GetMapping("/{accommodationId}/booking-details")
+    @PreAuthorize("hasAuthority('HOST')")
     public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationBookingDetails(accommodationId);
     }
 
     @PutMapping("/{accommodationId}/booking-details")
+    @PreAuthorize("hasAuthority('HOST')")
     public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
         return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
     }
 
     @PostMapping("/{accommodationId}/availabilities")
+    @PreAuthorize("hasAuthority('HOST')")
     public ResponseEntity<List<Availability>> addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
         return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
+    @PreAuthorize("hasAuthority('HOST')")
     public MessageDto removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
         return accommodationService.removeAccommodationAvailability(accommodationId, availabilityId);
     }
