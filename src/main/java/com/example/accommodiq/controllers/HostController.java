@@ -73,7 +73,7 @@ public class HostController {
 
     @GetMapping("/accommodations")
     @PreAuthorize("hasAuthority('HOST')")
-    public Collection<AccommodationListDto> getHostAccommodations() {
+    public Collection<AccommodationHostDto> getHostAccommodations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
 

@@ -21,7 +21,7 @@ public interface IHostService {
 
     void deleteAll();
 
-    Collection<AccommodationListDto> getHostAccommodations(Long hostId);
+    Collection<AccommodationHostDto> getHostAccommodations(Long hostId);
 
     ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId);
 
