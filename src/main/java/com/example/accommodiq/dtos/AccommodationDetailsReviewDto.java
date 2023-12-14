@@ -18,7 +18,7 @@ public class AccommodationDetailsReviewDto {
     }
 
     public AccommodationDetailsReviewDto(Review review) {
-        this.author = review.getGuest().getFirstName() + review.getGuest().getLastName();
+        this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
         this.comment = review.getComment();
         this.rating = review.getRating();
         this.date = review.getDate();
