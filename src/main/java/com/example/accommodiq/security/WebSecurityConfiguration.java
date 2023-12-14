@@ -40,6 +40,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/users/*").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers("/email-verification").permitAll()
+                        .requestMatchers("images/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
