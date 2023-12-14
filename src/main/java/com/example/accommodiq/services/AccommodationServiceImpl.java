@@ -25,8 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
-
 import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
+
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
@@ -145,7 +145,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         if (accommodation.isEmpty()) {
             ReportUtils.throwNotFound("accommodationNotFound");
         }
-        
+
         return new AccommodationDetailsDto(accommodation.get());
     }
 

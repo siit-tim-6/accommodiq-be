@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.services.interfaces.IImageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,11 +19,12 @@ import java.util.List;
 public class ImageController {
     final private IImageService imagesService;
 
+    @Autowired
     public ImageController(IImageService imagesService) {
         this.imagesService = imagesService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping()
     public ResponseEntity<List<String>> uploadImages(@RequestParam("images") List<MultipartFile> images) {
         List<String> uploadedImages = imagesService.uploadImages(images);
         return ResponseEntity.ok(uploadedImages);

@@ -67,6 +67,7 @@ public class Accommodation {
         this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
         this.images = accommodationDto.getImages();
         this.type = accommodationDto.getType();
+        this.benefits = accommodationDto.getBenefits();
     }
 
     public Accommodation() {
@@ -105,11 +106,11 @@ public class Accommodation {
         this.location = location;
     }
 
-    public List<String> getImage() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImage(List<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

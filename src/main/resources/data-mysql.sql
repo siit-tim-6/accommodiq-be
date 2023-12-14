@@ -24,7 +24,7 @@ VALUES
     (3, 1672704000, 120.00, 1672790400);
 
 -- Insert sample data into `accommodation` table
-INSERT INTO `accommodation` (`id`, `accepted`, `automatic_acceptance`, `cancellation_deadline`, `description`, `image`, `location`, `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`)
+INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`, `image`, `location`, `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`)
 VALUES
     (1, 1, 1, 48, 'Cozy apartment near downtown', 'apartment.jpg', 'City Center', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1),
     (2, 1, 0, 72, 'Spacious house with a garden', 'house.jpg', 'Suburbia', 8, 4, 1, 'Green Haven', 'House', 2),

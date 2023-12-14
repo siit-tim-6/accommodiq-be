@@ -1,7 +1,6 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 
 import java.util.OptionalDouble;

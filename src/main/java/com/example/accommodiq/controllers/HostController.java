@@ -7,7 +7,6 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.IHostService;
-import com.example.accommodiq.services.interfaces.IImageService;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -67,9 +65,12 @@ public class HostController {
         hostService.deleteAll();
     }
 
-    @PostMapping("/{hostId}/accommodations")
+    @PostMapping("/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
-    public AccommodationDetailsDto createNewAccommodation(@PathVariable Long hostId, @RequestBody AccommodationCreateDto accommodation) {
+    @PreAuthorize("hasAuthority('HOST')")
+    public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationCreateDto accommodation) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
         return hostService.createAccommodation(hostId, accommodation);
     }
 

@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Accommodation;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.accommodiq.domain.Review;
+
 import java.util.OptionalDouble;
 import java.util.Set;
 
@@ -50,28 +51,13 @@ public class AccommodationDetailsDto {
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
-        this.images = accommodation.getImage();
+        this.images = accommodation.getImages();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
         this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
         this.benefits = accommodation.getBenefits();
         this.type = accommodation.getType();
-    }
-
-    public AccommodationDetailsDto(Accommodation accomodation) {
-        this.id = accomodation.getId();
-        this.title = accomodation.getTitle();
-        this.rating = accomodation.getRating();
-        this.reviewCount = accomodation.getReviews().size();
-        this.location = accomodation.getLocation();
-        this.host = new AccommodationDetailsHostDto(accomodation.getHost());
-        this.images = accomodation.getImage();
-        this.minGuests = accomodation.getMinGuests();
-        this.maxGuests = accomodation.getMaxGuests();
-        this.description = accomodation.getDescription();
-        this.reviews = new ArrayList<>();
-        accomodation.getReviews().forEach(review -> this.reviews.add(new AccommodationDetailsReviewDto(review)));
     }
 
     public Long getId() {
@@ -122,11 +108,11 @@ public class AccommodationDetailsDto {
         this.host = host;
     }
 
-    public List<String> getImage() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImage(List<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

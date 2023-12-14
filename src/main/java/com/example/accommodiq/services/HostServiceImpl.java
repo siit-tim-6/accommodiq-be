@@ -49,7 +49,6 @@ public class HostServiceImpl implements IHostService {
             ReportUtils.throwNotFound("hostNotFound");
         }
         return found.get();
-        //return new Host(1L, "John", "Doe", "123 Main St", "555-1234");
     }
 
     @Override
