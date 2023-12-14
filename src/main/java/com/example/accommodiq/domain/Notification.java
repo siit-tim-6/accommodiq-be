@@ -37,7 +37,7 @@ public class Notification {
     @PrePersist
     public void prePersist() {
         if (time == null) {
-            time = Instant.now().getEpochSecond();
+            time = Instant.now().toEpochMilli();
         }
     }
 

@@ -5,51 +5,60 @@ import com.example.accommodiq.domain.Availability;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.accommodiq.domain.Review;
+
+import java.util.OptionalDouble;
+import java.util.Set;
 
 public class AccommodationDetailsDto {
     private Long id;
     private String title;
     private double rating;
     private int reviewCount;
-    private String address;
+    private String location;
     private AccommodationDetailsHostDto host;
     private List<String> images;
     private int minGuests;
     private int maxGuests;
-    private ArrayList<Availability> available;
     private String description;
-    private ArrayList<AccommodationDetailsReviewDto> reviews;
+    private List<AccommodationDetailsReviewDto> reviews;
+    private Set<String> benefits;
+    private String type;
 
-    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String address, AccommodationDetailsHostDto host, List<String> images,
-                                   int minGuests, int maxGuests, ArrayList<Availability> available, String description, ArrayList<AccommodationDetailsReviewDto> reviews) {
+    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
+                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type) {
+
         this.id = id;
         this.title = title;
         this.rating = rating;
         this.reviewCount = reviewCount;
-        this.address = address;
+        this.location = location;
         this.host = host;
         this.images = images;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
-        this.available = available;
         this.description = description;
         this.reviews = reviews;
+        this.benefits = benefits;
+        this.type = type;
     }
 
-    public AccommodationDetailsDto(Accommodation accomodation) {
-        this.id = accomodation.getId();
-        this.title = accomodation.getTitle();
-        this.rating = accomodation.getRating();
-        this.reviewCount = accomodation.getReviews().size();
-        this.address = accomodation.getLocation();
-        this.host = new AccommodationDetailsHostDto(accomodation.getHost());
-        this.images = accomodation.getImages();
-        this.minGuests = accomodation.getMinGuests();
-        this.maxGuests = accomodation.getMaxGuests();
-        this.available = new ArrayList<>(accomodation.getAvailable());
-        this.description = accomodation.getDescription();
-        this.reviews = new ArrayList<>();
-        accomodation.getReviews().forEach(review -> this.reviews.add(new AccommodationDetailsReviewDto(review)));
+    public AccommodationDetailsDto(Accommodation accommodation) {
+        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().size();
+        this.location = accommodation.getLocation();
+        this.host = new AccommodationDetailsHostDto(accommodation.getHost());
+        this.images = accommodation.getImages();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.description = accommodation.getDescription();
+        this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
+        this.benefits = accommodation.getBenefits();
+        this.type = accommodation.getType();
     }
 
     public Long getId() {
@@ -84,12 +93,12 @@ public class AccommodationDetailsDto {
         this.reviewCount = reviewCount;
     }
 
-    public String getAddress() {
-        return address;
+    public String getLocation() {
+        return location;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public AccommodationDetailsHostDto getHost() {
@@ -100,11 +109,11 @@ public class AccommodationDetailsDto {
         this.host = host;
     }
 
-    public List<String> getImage() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImage(List<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
@@ -124,14 +133,6 @@ public class AccommodationDetailsDto {
         this.maxGuests = maxGuests;
     }
 
-    public ArrayList<Availability> getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(ArrayList<Availability> available) {
-        this.available = available;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -140,11 +141,27 @@ public class AccommodationDetailsDto {
         this.description = description;
     }
 
-    public ArrayList<AccommodationDetailsReviewDto> getReviews() {
+    public List<AccommodationDetailsReviewDto> getReviews() {
         return reviews;
     }
 
-    public void setReviews(ArrayList<AccommodationDetailsReviewDto> reviews) {
+    public void setReviews(List<AccommodationDetailsReviewDto> reviews) {
         this.reviews = reviews;
+    }
+
+    public Set<String> getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(Set<String> benefits) {
+        this.benefits = benefits;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

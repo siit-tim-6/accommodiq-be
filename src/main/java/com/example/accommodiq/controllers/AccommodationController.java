@@ -5,13 +5,14 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
 @RequestMapping("/accommodations")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 

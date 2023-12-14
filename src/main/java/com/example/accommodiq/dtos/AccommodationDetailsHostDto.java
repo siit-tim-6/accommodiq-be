@@ -1,7 +1,10 @@
 package com.example.accommodiq.dtos;
 
-import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
+import com.example.accommodiq.domain.Review;
+
+import java.util.OptionalDouble;
+
 
 public class AccommodationDetailsHostDto {
     private Long id;
@@ -17,9 +20,11 @@ public class AccommodationDetailsHostDto {
     }
 
     public AccommodationDetailsHostDto(Host host) {
+        OptionalDouble averageRating = host.getReviews().stream().mapToDouble(Review::getRating).average();
+
         this.id = host.getId();
         this.name = host.getFirstName() + " " + host.getLastName();
-        this.rating = host.getRating();
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = host.getReviews().size();
     }
 
