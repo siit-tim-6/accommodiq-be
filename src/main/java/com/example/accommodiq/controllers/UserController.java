@@ -63,13 +63,13 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public Account registerUser(@RequestBody Account account) {
-        account.setStatus(AccountStatus.INACTIVE);
+    public RegisterDto registerUser(@RequestBody RegisterDto registerDto) {
+        Account account = Account.createAccount(registerDto);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         Account savedAccount = accountService.insert(account);
         emailService.sendVerificationEmail(savedAccount.getId(),savedAccount.getEmail());
         notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
-        return savedAccount;
+        return registerDto;
     }
 
     @PutMapping

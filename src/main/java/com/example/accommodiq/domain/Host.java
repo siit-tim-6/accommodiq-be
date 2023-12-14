@@ -19,6 +19,15 @@ public class Host extends User {
         super(id, firstName, lastName, address, phoneNumber);
     }
 
+    public static Host createHost(User user) {
+        Host host = new Host();
+        host.setFirstName(user.getFirstName());
+        host.setLastName(user.getLastName());
+        host.setAddress(user.getAddress());
+        host.setPhoneNumber(user.getPhoneNumber());
+        return host;
+    }
+
     public Set<Review> getReviews() {
         return reviews;
     }

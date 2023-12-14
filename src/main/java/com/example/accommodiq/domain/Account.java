@@ -1,7 +1,8 @@
 package com.example.accommodiq.domain;
 
-import com.example.accommodiq.enums.AccountStatus;
+import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.AccountStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 public class Account implements UserDetails {
@@ -43,11 +45,24 @@ public class Account implements UserDetails {
         this.lastPasswordResetDate = Instant.now().toEpochMilli();
     }
 
+    public static Account createAccount(RegisterDto registerDto) {
+        Account account = new Account();
+        account.setEmail(registerDto.getEmail());
+        account.setPassword(registerDto.getPassword());
+        account.setRole(registerDto.getRole());
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setUser(registerDto.getUser());
+        return account;
+    }
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // return List.of(AccountRole.values());
         return Collections.singleton(this.role);
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @JsonIgnore
@@ -79,19 +94,16 @@ public class Account implements UserDetails {
         return this.status == AccountStatus.ACTIVE;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public AccountRole getRole() {

@@ -21,6 +21,15 @@ public class Guest extends User {
         super(id, firstName, lastName, address, phoneNumber);
     }
 
+    public static Guest createGuest(User user) {
+        Guest guest = new Guest();
+        guest.setFirstName(user.getFirstName());
+        guest.setLastName(user.getLastName());
+        guest.setAddress(user.getAddress());
+        guest.setPhoneNumber(user.getPhoneNumber());
+        return guest;
+    }
+
     public Set<Reservation> getReservations() {
         return reservations;
     }
