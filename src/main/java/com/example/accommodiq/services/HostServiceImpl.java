@@ -31,7 +31,7 @@ public class HostServiceImpl implements IHostService {
     AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository,AccommodationRepository allAccommodations) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;

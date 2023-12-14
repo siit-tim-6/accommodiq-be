@@ -18,12 +18,13 @@ public class AccommodationCreateDto {
     private PricingType pricingType;
     private boolean automaticAcceptance;
     private List<String> images;
+    private String type;
     private Set<String> benefits = new HashSet<>();
 
     public AccommodationCreateDto() {
     }
 
-    public AccommodationCreateDto(String title, String description, String location, int minGuests, int maxGuests, Set<AvailabilityDto> available, PricingType pricingType, boolean automaticAcceptance, List<String> images, Set<String> benefits) {
+    public AccommodationCreateDto(String title, String description, String location, int minGuests, int maxGuests, Set<AvailabilityDto> available, PricingType pricingType, boolean automaticAcceptance, List<String> images, String type, Set<String> benefits) {
         this.title = title;
         this.description = description;
         this.location = location;
@@ -33,6 +34,7 @@ public class AccommodationCreateDto {
         this.pricingType = pricingType;
         this.automaticAcceptance = automaticAcceptance;
         this.images = images;
+        this.type = type;
         this.benefits = benefits;
     }
 
@@ -112,6 +114,9 @@ public class AccommodationCreateDto {
 
     public void setImages(List<String> images) { this.images = images; }
 
+    public String getType() { return type; }
+
+    public void setType(String type) { this.type = type; }
     public Set<String> getBenefits() {
         return benefits;
     }

@@ -1,7 +1,6 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +22,11 @@ public class AccommodationDetailsDto {
     private String description;
     private List<AccommodationDetailsReviewDto> reviews;
     private Set<String> benefits;
+
     private String type;
 
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
                                    int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type) {
-
         this.id = id;
         this.title = title;
         this.rating = rating;
