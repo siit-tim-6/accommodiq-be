@@ -45,7 +45,7 @@ public class AccommodationListDto {
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
-        this.image = accommodation.getImages().get(0);
+        this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
@@ -55,14 +55,14 @@ public class AccommodationListDto {
 
         calcTotalPrice(accommodation, fromDate, toDate);
     }
-    
+
     public AccommodationListDto(Accommodation accommodation) {
         OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
         OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
-        this.image = accommodation.getImages().get(0);
+        this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();

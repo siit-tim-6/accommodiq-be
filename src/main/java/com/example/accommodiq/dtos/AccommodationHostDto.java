@@ -24,7 +24,7 @@ public class AccommodationHostDto {
     public AccommodationHostDto(Accommodation accommodation) {
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
-        this.image = accommodation.getImages().get(0);
+        this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
         this.rating = new Random().nextDouble(2, 5);
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
