@@ -3,6 +3,7 @@ package com.example.accommodiq.services;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
@@ -13,6 +14,8 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,7 +48,7 @@ public class AccountServiceImpl implements IAccountService {
     public Account findAccount(Long accountId) {
         Optional<Account> found = allAccounts.findById(accountId);
         if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
+            String value = bundle.getString("userNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
         return found.get();
@@ -127,10 +130,19 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public void changePassword(Long id, String password) {
-        Account account = findAccount(id);
-        account.setPassword(password);
+    public void changePassword(Account account, UpdatePasswordDto passwordDto) {
+        account.setPassword(passwordDto.getNewPassword());
         allAccounts.save(account);
         allAccounts.flush();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account user = allAccounts.findAccountByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+        } else {
+            return user;
+        }
     }
 }

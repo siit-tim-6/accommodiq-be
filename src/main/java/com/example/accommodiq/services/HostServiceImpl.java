@@ -1,13 +1,13 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,14 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
+    final
+    AccommodationRepository allAccommodations;
+
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository,AccommodationRepository allAccommodations) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
+        this.allAccommodations = allAccommodations;
     }
 
     @Override
@@ -69,21 +73,8 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<AccommodationListDto> getHostAccommodations(Long hostId) {
-        if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
-        }
-        return new ArrayList<AccommodationListDto>() {
-            {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-
-            {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-        };
+    public Collection<AccommodationListDto> getHostAccommodations(Long hostId) {
+        return allAccommodations.findByHostId(hostId).stream().map(AccommodationListDto::new).toList();
     }
 
     @Override

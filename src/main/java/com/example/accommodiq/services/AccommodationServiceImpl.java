@@ -5,12 +5,15 @@ import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import com.example.accommodiq.specifications.AccommodationSpecification;
+import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -81,6 +84,39 @@ public class AccommodationServiceImpl implements IAccommodationService {
         }
     }
 
+    public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
+        List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
+        boolean dateRangeSpecified = availableFrom != null && availableTo != null;
+        boolean priceRangeSpecified = priceFrom != null && priceTo != null;
+
+        if (dateRangeSpecified) {
+            searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
+        }
+
+        List<AccommodationListDto> accommodationListDtos;
+        if (!dateRangeSpecified && priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .filter(accommodationListDto -> accommodationListDto.getMinPrice() != 0 && accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
+                    .toList();
+        } else if (dateRangeSpecified && priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
+                    .toList();
+        } else if (dateRangeSpecified && !priceRangeSpecified) {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .toList();
+        } else {
+            accommodationListDtos = searchedAccommodations.stream()
+                    .map(AccommodationListDto::new)
+                    .toList();
+        }
+
+        return accommodationListDtos;
+    }
+
     public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
         if (accommodationId == 4L) {
             throwNotFound("accommodationNotFound");
@@ -94,7 +130,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                statusDto.getStatus(),
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -104,45 +140,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationDetailsDto findById(Long accommodationId) {
-        if (accommodationId == 4L) {
-            throwNotFound("accommodationNotFound");
+        Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
+
+        if (accommodation.isEmpty()) {
+            ReportUtils.throwNotFound("accommodationNotFound");
         }
-
-        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
-        ArrayList<Availability> availabilities = new ArrayList<>() {
-            {
-                add(new Availability(1L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 150.0));
-
-            }
-
-            {
-                add(new Availability(2L, Instant.now().toEpochMilli(), Instant.now().toEpochMilli(), 120.0));
-            }
-        };
-        ArrayList<AccommodationDetailsReviewDto> detailsReviewDtos = new ArrayList<>() {
-            {
-                add(new AccommodationDetailsReviewDto("John Doe", "Great place!", 4.5, null));
-            }
-
-            {
-                add(new AccommodationDetailsReviewDto("Jane Smith", "Excellent stay!", 5.0, null));
-            }
-        };
-
-        return new AccommodationDetailsDto(
-                1L,
-                "Cozy Cottage",
-                4.8,
-                25,
-                "123 Main St, Cityville",
-                detailsHostDto,
-                null,
-                2,
-                4,
-                availabilities,
-                "A charming cottage with a beautiful garden.",
-                detailsReviewDtos
-        );
+        
+        return new AccommodationDetailsDto(accommodation.get());
     }
 
     @Override
@@ -168,7 +172,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,
@@ -273,7 +277,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 2,
                 4,
                 "Cottage",
-                true,
+                AccommodationStatus.ACCEPTED,
                 PricingType.PER_GUEST,
                 true,
                 7,

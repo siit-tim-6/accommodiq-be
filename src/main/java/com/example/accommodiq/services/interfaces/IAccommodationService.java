@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface IAccommodationService {
     Collection<AccommodationListDto> findAll();
@@ -16,6 +17,8 @@ public interface IAccommodationService {
     Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
 
     Accommodation update(Accommodation accommodation);
+
+    Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits);
 
     Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
