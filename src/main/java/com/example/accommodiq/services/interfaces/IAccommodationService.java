@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PriceSearch;
@@ -11,6 +12,8 @@ import java.util.Set;
 
 public interface IAccommodationService {
     Collection<AccommodationListDto> findAll();
+
+    Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
 
     Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits);
 

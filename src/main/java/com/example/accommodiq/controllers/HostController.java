@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+
 @RestController
 @RequestMapping("/hosts")
 @CrossOrigin
@@ -65,9 +66,12 @@ public class HostController {
         hostService.deleteAll();
     }
 
-    @PostMapping("/{hostId}/accommodations")
+    @PostMapping("/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
-    public AccommodationDetailsDto createNewAccommodation(@PathVariable Long hostId, @RequestBody AccommodationCreateDto accommodation) {
+    @PreAuthorize("hasAuthority('HOST')")
+    public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationCreateDto accommodation) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
         return hostService.createAccommodation(hostId, accommodation);
     }
 

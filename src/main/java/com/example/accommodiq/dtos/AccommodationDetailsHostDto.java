@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Review;
 
 import java.util.OptionalDouble;
 
+
 public class AccommodationDetailsHostDto {
     private Long id;
     private String name;
