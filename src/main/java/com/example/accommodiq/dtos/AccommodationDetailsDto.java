@@ -1,10 +1,11 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Review;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.accommodiq.domain.Review;
+
 import java.util.OptionalDouble;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class AccommodationDetailsDto {
     private int reviewCount;
     private String location;
     private AccommodationDetailsHostDto host;
-    private String image;
+    private List<String> images;
     private int minGuests;
     private int maxGuests;
     private String description;
@@ -24,7 +25,7 @@ public class AccommodationDetailsDto {
 
     private String type;
 
-    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, String image,
+    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
                                    int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type) {
         this.id = id;
         this.title = title;
@@ -32,7 +33,7 @@ public class AccommodationDetailsDto {
         this.reviewCount = reviewCount;
         this.location = location;
         this.host = host;
-        this.image = image;
+        this.images = images;
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.description = description;
@@ -50,7 +51,7 @@ public class AccommodationDetailsDto {
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
-        this.image = accommodation.getImage();
+        this.images = accommodation.getImages();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
@@ -107,12 +108,12 @@ public class AccommodationDetailsDto {
         this.host = host;
     }
 
-    public String getImage() {
-        return image;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public int getMinGuests() {

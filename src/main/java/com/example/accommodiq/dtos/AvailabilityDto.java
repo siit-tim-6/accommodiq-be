@@ -3,29 +3,29 @@ package com.example.accommodiq.dtos;
 import java.util.Date;
 
 public class AvailabilityDto {
-    private Date fromDate;
-    private Date toDate;
+    private Long fromDate;
+    private Long toDate;
     private double price;
 
-    public AvailabilityDto(Date fromDate, Date toDate, double price) {
+    public AvailabilityDto(Long fromDate, Long toDate, double price) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.price = price;
     }
 
-    public Date getFromDate() {
+    public Long getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(Long fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public Long getToDate() {
         return toDate;
     }
 
-    public void setToDate(Date toDate) {
+    public void setToDate(Long toDate) {
         this.toDate = toDate;
     }
 

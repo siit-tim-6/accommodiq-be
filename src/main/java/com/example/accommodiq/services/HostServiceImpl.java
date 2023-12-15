@@ -1,27 +1,39 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.repositories.HostRepository;
+import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class HostServiceImpl implements IHostService {
+
+    final private IAccommodationService accommodationService;
+
+    final private HostRepository hostRepository;
+
     final
     AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository,AccommodationRepository allAccommodations) {
+        this.accommodationService = accommodationService;
+        this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
     }
 
@@ -32,7 +44,11 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host findHost(Long hostId) {
-        return new Host(1L, "John", "Doe", "123 Main Street", "555-1234");
+        Optional<Host> found = hostRepository.findById(hostId);
+        if (found.isEmpty()) {
+            ReportUtils.throwNotFound("hostNotFound");
+        }
+        return found.get();
     }
 
     @Override
@@ -110,28 +126,11 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
+    @Transactional
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
-        if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
-        }
-
-        AccommodationDetailsHostDto detailsHostDto = new AccommodationDetailsHostDto(1L, "John Doe", 4.92, 202);
-
-        return new AccommodationDetailsDto(
-                1L,
-                "Cozy Cottage",
-                4.8,
-                25,
-                "123 Main St, Cityville",
-                detailsHostDto,
-                "cottage_image.jpg",
-                2,
-                4,
-                "A charming cottage with a beautiful garden.",
-                null,
-                null,
-                "Test Type"
-        );
+        Host host = findHost(hostId);
+        Accommodation accommodation = accommodationService.insert(host, accommodationDto);
+        return new AccommodationDetailsDto(accommodation);
     }
 
     @Override

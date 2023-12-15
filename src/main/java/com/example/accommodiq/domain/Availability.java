@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.dtos.AvailabilityDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +25,12 @@ public class Availability {
 
     public Availability() {
         super();
+    }
+
+    public Availability(AvailabilityDto availabilityDto) {
+        this.fromDate = availabilityDto.getFromDate();
+        this.toDate = availabilityDto.getToDate();
+        this.price = availabilityDto.getPrice();
     }
 
     public Long getId() {
