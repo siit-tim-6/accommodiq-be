@@ -120,25 +120,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return accommodationListDtos;
     }
 
-    public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
-        if (accommodationId == 4L) {
-            throwNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                statusDto.getStatus(),
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    @Override
+    @Transactional
+    public AccommodationWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        accommodation.setStatus(statusDto.getStatus());
+        update(accommodation);
+        return new AccommodationWithStatusDto(accommodation);
     }
 
     @Override
