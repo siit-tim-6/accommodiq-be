@@ -61,6 +61,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
         accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE);
+        accommodation.setStatus(AccommodationStatus.PENDING);
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
@@ -84,6 +85,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
         }
     }
 
+    @Override
+    @Transactional
     public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
@@ -139,6 +142,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    @Transactional
     public AccommodationDetailsDto findById(Long accommodationId) {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
@@ -313,6 +317,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    @Transactional
     public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
         return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
     }
