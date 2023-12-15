@@ -5,12 +5,15 @@ import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.IEmailService;
+import com.example.accommodiq.services.interfaces.INotificationSettingService;
 import com.example.accommodiq.utilities.ReportUtils;
 import jakarta.persistence.EntityManager;
 import org.hibernate.exception.ConstraintViolationException;
@@ -33,11 +36,19 @@ public class AccountServiceImpl implements IAccountService {
     final
     AccountRepository allAccounts;
 
+    final
+    IEmailService emailService;
+
+    final
+    INotificationSettingService notificationSettingService;
+
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService) {
         this.allAccounts = allAccounts;
+        this.emailService = emailService;
+        this.notificationSettingService = notificationSettingService;
     }
 
     @Override
@@ -58,7 +69,8 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     @Transactional
-    public Account insert(Account account) {
+    public void insert(RegisterDto registerDto) {
+        Account account = new Account(registerDto);
         try {
             User user = account.getUser();
             if (account.getRole() == AccountRole.GUEST) {
@@ -69,10 +81,11 @@ public class AccountServiceImpl implements IAccountService {
             }
             allAccounts.save(account);
             allAccounts.flush();
-            return account;
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be inserted");
         }
+        emailService.sendVerificationEmail(account.getId(),account.getEmail());
+        notificationSettingService.setNotificationSettingsForUser(account.getUser().getId());
     }
 
     @Override
