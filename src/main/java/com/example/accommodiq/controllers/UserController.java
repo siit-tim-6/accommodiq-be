@@ -64,7 +64,7 @@ public class UserController {
     @PostMapping
     @Transactional
     public RegisterDto registerUser(@RequestBody RegisterDto registerDto) {
-        Account account = Account.createAccount(registerDto);
+        Account account = new Account(registerDto);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         Account savedAccount = accountService.insert(account);
         emailService.sendVerificationEmail(savedAccount.getId(),savedAccount.getEmail());

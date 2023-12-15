@@ -20,13 +20,8 @@ public class Host extends User {
         super(id, firstName, lastName, address, phoneNumber);
     }
 
-    public static Host createHost(User user) {
-        Host host = new Host();
-        host.setFirstName(user.getFirstName());
-        host.setLastName(user.getLastName());
-        host.setAddress(user.getAddress());
-        host.setPhoneNumber(user.getPhoneNumber());
-        return host;
+    public Host(User user) {
+        super(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber());
     }
 
     public Set<Review> getReviews() {

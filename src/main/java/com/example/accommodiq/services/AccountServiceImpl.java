@@ -62,10 +62,10 @@ public class AccountServiceImpl implements IAccountService {
         try {
             User user = account.getUser();
             if (account.getRole() == AccountRole.GUEST) {
-                account.setUser(Guest.createGuest(user));
+                account.setUser(new Guest(user));
             }
             if (account.getRole() == AccountRole.HOST) {
-                account.setUser(Host.createHost(user));
+                account.setUser(new Host(user));
             }
             allAccounts.save(account);
             allAccounts.flush();

@@ -45,14 +45,13 @@ public class Account implements UserDetails {
         this.lastPasswordResetDate = Instant.now().toEpochMilli();
     }
 
-    public static Account createAccount(RegisterDto registerDto) {
-        Account account = new Account();
-        account.setEmail(registerDto.getEmail());
-        account.setPassword(registerDto.getPassword());
-        account.setRole(registerDto.getRole());
-        account.setStatus(AccountStatus.INACTIVE);
-        account.setUser(registerDto.getUser());
-        return account;
+    public Account(RegisterDto registerDto) {
+        this.email = registerDto.getEmail();
+        this.password = registerDto.getPassword();
+        this.role = registerDto.getRole();
+        this.status = AccountStatus.INACTIVE;
+        this.user = registerDto.getUser();
+        this.lastPasswordResetDate = Instant.now().toEpochMilli();
     }
 
     @JsonIgnore
