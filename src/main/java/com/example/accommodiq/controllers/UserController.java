@@ -5,20 +5,19 @@ import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.AccountStatus;
-import com.example.accommodiq.services.interfaces.*;
+import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.INotificationService;
+import com.example.accommodiq.services.interfaces.IReportService;
+import com.example.accommodiq.services.interfaces.IUserService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -27,21 +26,17 @@ public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
     final IUserService userService;
-    final INotificationSettingService notificationSettingService;
     final IReportService reportService;
     final PasswordEncoder passwordEncoder;
-    final IEmailService emailService;
 
     @Autowired
     public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService,
-                          INotificationSettingService notificationSettingService, IReportService reportService, PasswordEncoder passwordEncoder, IEmailService emailService) {
+                          IReportService reportService, PasswordEncoder passwordEncoder) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
-        this.notificationSettingService = notificationSettingService;
         this.reportService = reportService;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
     }
 
     @GetMapping
@@ -63,13 +58,10 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public Account registerUser(@RequestBody Account account) {
-        account.setStatus(AccountStatus.INACTIVE);
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        Account savedAccount = accountService.insert(account);
-        emailService.sendVerificationEmail(savedAccount.getId(),savedAccount.getEmail());
-        notificationSettingService.setNotificationSettingsForUser(savedAccount.getUser().getId());
-        return savedAccount;
+    public RegisterDto registerUser(@RequestBody RegisterDto registerDto) {
+        registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        accountService.insert(registerDto);
+        return registerDto;
     }
 
     @PutMapping
@@ -129,8 +121,7 @@ public class UserController {
 
     @PutMapping("/{userId}/notification-settings")
     public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
-        User user = userService.findUser(userId);
-        //return notificationSettingService.updateNotificationSettingsForUser(user, notificationSettings);
+        System.out.println(userId);
         return notificationSettings.stream().map(NotificationSettingDto::new).toList();
     }
 
@@ -139,5 +130,4 @@ public class UserController {
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);
     }
-
 }

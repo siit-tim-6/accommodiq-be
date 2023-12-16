@@ -31,7 +31,7 @@ public class HostServiceImpl implements IHostService {
     AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository,AccommodationRepository allAccommodations) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
@@ -72,8 +72,8 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Collection<AccommodationListDto> getHostAccommodations(Long hostId) {
-        return allAccommodations.findByHostId(hostId).stream().map(AccommodationListDto::new).toList();
+    public Collection<AccommodationWithStatusDto> getHostAccommodations(Long hostId) {
+        return allAccommodations.findByHostId(hostId).stream().map(AccommodationWithStatusDto::new).toList();
     }
 
     @Override

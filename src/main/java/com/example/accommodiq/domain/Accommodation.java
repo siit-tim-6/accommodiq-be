@@ -20,7 +20,7 @@ public class Accommodation {
     private String title;
     private String description;
     private String location;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> images = new ArrayList<>();
     private int minGuests;
     private int maxGuests;
@@ -35,7 +35,7 @@ public class Accommodation {
     private Set<Availability> available = new HashSet<>();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Host host;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> benefits = new HashSet<>();
 
     public Accommodation(Long id, String title, String description, String location, List<String> images, int minGuests, int maxGuests, String type, AccommodationStatus status, PricingType pricingType,
@@ -66,6 +66,7 @@ public class Accommodation {
         this.pricingType = accommodationDto.getPricingType();
         this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
         this.images = accommodationDto.getImages();
+        this.type = accommodationDto.getType();
         this.benefits = accommodationDto.getBenefits();
     }
 

@@ -1,11 +1,13 @@
 package com.example.accommodiq.domain;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
 import java.util.Set;
 
+@Entity
 public class Guest extends User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Reservation> reservations;
@@ -19,6 +21,10 @@ public class Guest extends User {
 
     public Guest(Long id, String firstName, String lastName, String address, String phoneNumber) {
         super(id, firstName, lastName, address, phoneNumber);
+    }
+
+    public Guest(User user) {
+        super(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber());
     }
 
     public Set<Reservation> getReservations() {

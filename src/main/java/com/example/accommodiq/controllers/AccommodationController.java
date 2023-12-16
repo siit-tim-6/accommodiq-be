@@ -1,10 +1,12 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.PriceSearch;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,9 @@ public class AccommodationController {
     }
 
     @PutMapping("/{accommodationId}/status")
-    public Accommodation changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public AccommodationWithStatusDto changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
         return accommodationService.changeAccommodationStatus(accommodationId, body);
     }
 
@@ -42,12 +46,26 @@ public class AccommodationController {
         return accommodationService.updateAccommodation(body);
     }
 
+    @GetMapping("/{accommodationId}/booking-details")
+    @PreAuthorize("hasAuthority('HOST')")
+    public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
+        return accommodationService.getAccommodationBookingDetails(accommodationId);
+    }
+
+    @PutMapping("/{accommodationId}/booking-details")
+    @PreAuthorize("hasAuthority('HOST')")
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
+        return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
+    }
+
     @PostMapping("/{accommodationId}/availabilities")
-    public Accommodation addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+    @PreAuthorize("hasAuthority('HOST')")
+    public ResponseEntity<List<Availability>> addAccommodationAvailability(@PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
         return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 
     @DeleteMapping("/{accommodationId}/availabilities/{availabilityId}")
+    @PreAuthorize("hasAuthority('HOST')")
     public MessageDto removeAccommodationAvailability(@PathVariable Long accommodationId, @PathVariable Long availabilityId) {
         return accommodationService.removeAccommodationAvailability(accommodationId, availabilityId);
     }
@@ -60,5 +78,11 @@ public class AccommodationController {
     @PostMapping("{accommodationId}/reviews")
     public Accommodation addReview(@PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
+    }
+
+    @GetMapping("/pending")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+        return accommodationService.getPendingAccommodations();
     }
 }

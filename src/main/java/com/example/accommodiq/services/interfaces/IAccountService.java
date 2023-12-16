@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
+import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.dtos.UserLoginDto;
 import com.example.accommodiq.enums.AccountStatus;
@@ -13,7 +14,7 @@ public interface IAccountService extends UserDetailsService {
     Collection<Account> getAll();
     Account findAccount(Long accountId);
 
-    Account insert(Account account);
+    void insert(RegisterDto registerDto);
 
     Account update(Account account);
 
