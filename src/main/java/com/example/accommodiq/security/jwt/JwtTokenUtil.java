@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.example.accommodiq.enums.AccountRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -49,8 +50,9 @@ public class JwtTokenUtil implements Serializable {
     }
 
     // generate token for user
-    public String generateToken(String username) {
+    public String generateToken(String username, AccountRole role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role.getAuthority());
         return doGenerateToken(claims, username);
     }
 
