@@ -239,5 +239,29 @@ public class Accommodation {
 
         return false;
     }
+
+    public double getTotalPrice(Long fromDate, Long toDate) {
+        Long oneDay = (long) (60 * 60 * 24);
+
+        List<Availability> availabilityCandidates = available.stream().filter(availability ->
+                (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
+                        || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
+        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
+
+        Long fromDateCopy = fromDate;
+        double totalPrice = 0;
+        for (Availability availabilityCandidate : availabilityCandidates) {
+            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
+                totalPrice += availabilityCandidate.getPrice();
+                fromDateCopy += oneDay;
+
+                if (fromDateCopy > toDate) {
+                    return totalPrice;
+                }
+            }
+        }
+
+        return totalPrice;
+    }
 }
 

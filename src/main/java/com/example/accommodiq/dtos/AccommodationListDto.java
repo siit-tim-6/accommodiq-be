@@ -52,10 +52,9 @@ public class AccommodationListDto {
         this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
-
-        calcTotalPrice(accommodation, fromDate, toDate);
+        this.totalPrice = accommodation.getTotalPrice(fromDate, toDate);
     }
-    
+
     public AccommodationListDto(Accommodation accommodation) {
         OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
         OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
@@ -150,26 +149,5 @@ public class AccommodationListDto {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
-    }
-
-    private void calcTotalPrice(Accommodation accommodation, Long fromDate, Long toDate) {
-        Long oneDay = (long) (60 * 60 * 24);
-
-        List<Availability> availabilityCandidates = accommodation.getAvailable().stream().filter(availability ->
-                (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
-                        || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
-        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
-
-        Long fromDateCopy = fromDate;
-        for (Availability availabilityCandidate : availabilityCandidates) {
-            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
-                totalPrice += availabilityCandidate.getPrice();
-                fromDateCopy += oneDay;
-
-                if (fromDateCopy > toDate) {
-                    return;
-                }
-            }
-        }
     }
 }
