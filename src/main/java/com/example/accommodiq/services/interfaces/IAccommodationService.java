@@ -20,7 +20,7 @@ public interface IAccommodationService {
 
     Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits);
 
-    Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
+    AccommodationWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
     AccommodationDetailsDto findById(Long accommodationId);
 
@@ -39,6 +39,8 @@ public interface IAccommodationService {
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
     Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
+
+    Collection<AccommodationWithStatusDto> getPendingAccommodations();
 
     ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId);
 }

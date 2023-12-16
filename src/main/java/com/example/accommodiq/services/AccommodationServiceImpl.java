@@ -61,6 +61,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
         accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE);
+        accommodation.setStatus(AccommodationStatus.PENDING);
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
@@ -84,6 +85,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
         }
     }
 
+    @Override
+    @Transactional
     public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
@@ -117,28 +120,17 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return accommodationListDtos;
     }
 
-    public Accommodation changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
-        if (accommodationId == 4L) {
-            throwNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                statusDto.getStatus(),
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    @Override
+    @Transactional
+    public AccommodationWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        accommodation.setStatus(statusDto.getStatus());
+        update(accommodation);
+        return new AccommodationWithStatusDto(accommodation);
     }
 
     @Override
+    @Transactional
     public AccommodationDetailsDto findById(Long accommodationId) {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
@@ -310,5 +302,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 availability.getToDate()
         );
         return count != null && count > 0;
+    }
+
+    @Override
+    @Transactional
+    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
     }
 }

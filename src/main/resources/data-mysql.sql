@@ -1,6 +1,7 @@
 -- Insert sample data into `user` table
 INSERT INTO `user` (`id`, `address`, `first_name`, `last_name`, `phone_number`)
 VALUES
+    (4, 'a a', 'Addmin', 'Admin', '555-9101'),
     (1, '123 Main St', 'John', 'Doe', '555-1234'),
     (2, '456 Oak St', 'Jane', 'Smith', '555-5678'),
     (3, '789 Pine St', 'Bob', 'Johnson', '555-9101');
@@ -8,9 +9,10 @@ VALUES
 -- Insert sample data into `account` table
 INSERT INTO `account` (`id`, `email`, `password`, `role`, `status`, `user_id`, `activation_expires`)
 VALUES
-    (1, 'john.doe@example.com', 'password123', 1, 1, 1, 1672531200),
-    (2, 'jane.smith@example.com', 'pass456', 2, 1, 2, 1672531200),
-    (3, 'bob.johnson@example.com', 'letmein', 0, 0, 3, NULL);
+    (4, 'admin', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 4, NULL),
+    (1, 'john.doe@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 1, 1672531200),
+    (2, 'jane.smith@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 2, 1, 2, 1672531200),
+    (3, 'bob.johnson@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 3, NULL);
 
 -- Insert sample data into `host` table
 INSERT INTO `host` (`id`)
@@ -24,11 +26,18 @@ VALUES
     (3, 1672704000, 120.00, 1672790400);
 
 -- Insert sample data into `accommodation` table
-INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`, `image`, `location`, `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`)
+INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`, `location`, `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`)
 VALUES
-    (1, 1, 1, 48, 'Cozy apartment near downtown', 'apartment.jpg', 'City Center', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1),
-    (2, 1, 0, 72, 'Spacious house with a garden', 'house.jpg', 'Suburbia', 8, 4, 1, 'Green Haven', 'House', 2),
-    (3, 0, 1, 24, 'Charming cottage by the lake', 'cottage.jpg', 'Lakeside', 2, 1, 0, 'Lake View Cottage', 'Cottage', 3);
+    (1, 1, 1, 48, 'Cozy apartment near downtown', 'City Center', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1),
+    (2, 1, 0, 72, 'Spacious house with a garden', 'Suburbia', 8, 4, 1, 'Green Haven', 'House', 2),
+    (3, 0, 1, 24, 'Charming cottage by the lake', 'Lakeside', 2, 1, 0, 'Lake View Cottage', 'Cottage', 3);
+
+-- Insert sample data into `accommodation_images` table
+INSERT INTO `accommodation_images` (`accommodation_id`)
+VALUES
+    (1),
+    (2),
+    (3);
 
 -- Insert sample data into `accommodation_available` table
 INSERT INTO `accommodation_available` (`accommodation_id`, `available_id`)

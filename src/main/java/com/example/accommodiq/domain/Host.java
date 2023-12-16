@@ -20,6 +20,10 @@ public class Host extends User {
         super(id, firstName, lastName, address, phoneNumber);
     }
 
+    public Host(User user) {
+        super(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber());
+    }
+
     public Set<Review> getReviews() {
         return reviews;
     }
