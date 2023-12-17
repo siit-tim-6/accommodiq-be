@@ -3,6 +3,7 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.PricingType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,13 +21,14 @@ public class AccommodationListDto {
     private int minGuests;
     private int maxGuests;
     private double totalPrice;
+    private PricingType pricingType;
 
     public AccommodationListDto() {
         super();
     }
 
     public AccommodationListDto(Long id, String title, String image, Double rating,
-                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests) {
+                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -37,6 +39,7 @@ public class AccommodationListDto {
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.totalPrice = 0;
+        this.pricingType = pricingType;
     }
 
     public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
@@ -53,6 +56,7 @@ public class AccommodationListDto {
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = accommodation.getTotalPrice(fromDate, toDate, guests);
+        this.pricingType = accommodation.getPricingType();
     }
 
     public AccommodationListDto(Accommodation accommodation) {
@@ -69,6 +73,7 @@ public class AccommodationListDto {
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = 0;
+        this.pricingType = accommodation.getPricingType();
     }
 
     public Long getId() {
@@ -149,5 +154,13 @@ public class AccommodationListDto {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public PricingType getPricingType() {
+        return pricingType;
+    }
+
+    public void setPricingType(PricingType pricingType) {
+        this.pricingType = pricingType;
     }
 }
