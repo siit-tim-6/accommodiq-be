@@ -105,12 +105,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
                     .toList();
         } else if (dateRangeSpecified && priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
                     .toList();
         } else if (dateRangeSpecified && !priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .toList();
         } else {
             accommodationListDtos = searchedAccommodations.stream()
