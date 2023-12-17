@@ -43,4 +43,6 @@ public interface IAccommodationService {
     Collection<AccommodationWithStatusDto> getPendingAccommodations();
 
     ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId);
+
+    AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests);
 }

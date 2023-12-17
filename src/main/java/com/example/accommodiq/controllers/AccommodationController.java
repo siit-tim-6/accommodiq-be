@@ -85,4 +85,9 @@ public class AccommodationController {
     public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
         return accommodationService.getPendingAccommodations();
     }
+
+    @GetMapping("/{accommodationId}/total-price")
+    public AccommodationPriceDto getTotalPrice(@PathVariable Long accommodationId, @RequestParam long dateFrom, @RequestParam long dateTo, @RequestParam int guests) {
+        return accommodationService.getTotalPrice(accommodationId, dateFrom, dateTo, guests);
+    }
 }

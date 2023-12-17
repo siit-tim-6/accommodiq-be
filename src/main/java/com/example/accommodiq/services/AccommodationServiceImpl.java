@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
+
 import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 
@@ -308,5 +309,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Transactional
     public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
         return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
+    }
+
+    @Override
+    public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
     }
 }
