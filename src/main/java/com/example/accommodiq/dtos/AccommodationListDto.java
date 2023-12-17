@@ -43,16 +43,13 @@ public class AccommodationListDto {
     }
 
     public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
-        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
-
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
-        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.rating = accommodation.getAverageRating();
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
-        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minPrice = accommodation.getMinPrice();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = accommodation.getTotalPrice(fromDate, toDate, guests);
@@ -60,16 +57,13 @@ public class AccommodationListDto {
     }
 
     public AccommodationListDto(Accommodation accommodation) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
-        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
-
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
-        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.rating = accommodation.getAverageRating();
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
-        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minPrice = accommodation.getMinPrice();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = 0;

@@ -7,11 +7,7 @@ import com.example.accommodiq.utilities.ReportUtils;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Accommodation {
@@ -187,14 +183,6 @@ public class Accommodation {
         this.available = available;
     }
 
-    public double getRating() {
-        Hibernate.initialize(reviews);
-        return reviews.stream()
-                .mapToDouble(Review::getRating)
-                .average()
-                .orElse(0);
-    }
-
     public Host getHost() {
         return host;
     }
@@ -271,6 +259,16 @@ public class Accommodation {
         }
 
         return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
+    }
+
+    public double getMinPrice() {
+        OptionalDouble minPrice = available.stream().mapToDouble(Availability::getPrice).min();
+        return minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+    }
+
+    public double getAverageRating() {
+        OptionalDouble averageRating = reviews.stream().mapToDouble(Review::getRating).average();
+        return averageRating.isPresent() ? averageRating.getAsDouble() : 0;
     }
 }
 
