@@ -3,6 +3,7 @@ package com.example.accommodiq.domain;
 import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.utilities.ReportUtils;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
@@ -240,7 +241,11 @@ public class Accommodation {
         return false;
     }
 
-    public double getTotalPrice(Long fromDate, Long toDate) {
+    public double getTotalPrice(Long fromDate, Long toDate, Integer guests) {
+        if (guests > maxGuests || guests < minGuests) {
+            ReportUtils.throwBadRequest("invalidGuestNumber");
+        }
+
         Long oneDay = (long) (60 * 60 * 24);
 
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
@@ -256,12 +261,12 @@ public class Accommodation {
                 fromDateCopy += oneDay;
 
                 if (fromDateCopy > toDate) {
-                    return totalPrice;
+                    return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
                 }
             }
         }
 
-        return totalPrice;
+        return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
     }
 }
 
