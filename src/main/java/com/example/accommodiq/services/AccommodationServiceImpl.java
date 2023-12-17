@@ -43,21 +43,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Collection<AccommodationListDto> findAll() {
-        return new ArrayList<AccommodationListDto>() {
-            {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-
-            {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-        };
-    }
-
-    @Override
     public Accommodation insert(Host host, AccommodationCreateDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);

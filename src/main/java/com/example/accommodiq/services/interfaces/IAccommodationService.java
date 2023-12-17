@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface IAccommodationService {
-    Collection<AccommodationListDto> findAll();
-
     Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
 
     Accommodation update(Accommodation accommodation);
