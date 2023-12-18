@@ -269,6 +269,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return ResponseEntity.ok(accommodationDetails);
     }
 
+    @Override
+    public AccommodationUpdateDto getAdvancedDetails(Long accommodationId) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        return new AccommodationUpdateDto(accommodation);
+    }
+
     private boolean isOverlapping(Availability existing, Availability newAvailability) {
         long existingStart = existing.getFromDate();
         long existingEnd = existing.getToDate();

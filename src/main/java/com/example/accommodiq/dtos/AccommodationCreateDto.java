@@ -1,5 +1,6 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.enums.PricingType;
 
@@ -36,6 +37,23 @@ public class AccommodationCreateDto {
         this.images = images;
         this.type = type;
         this.benefits = benefits;
+    }
+
+    public AccommodationCreateDto(Accommodation accommodation) {
+        this.title = accommodation.getTitle();
+        this.description = accommodation.getDescription();
+        this.location = accommodation.getLocation();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.available = new HashSet<>();
+        for (Availability availability : accommodation.getAvailable()) {
+            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
+        }
+        this.pricingType = accommodation.getPricingType();
+        this.automaticAcceptance = accommodation.isAutomaticAcceptance();
+        this.images = accommodation.getImages();
+        this.type = accommodation.getType();
+        this.benefits = accommodation.getBenefits();
     }
 
     public String getTitle() {
