@@ -44,7 +44,8 @@ public class AccommodationController {
     }
 
     @PutMapping()
-    public Accommodation updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+    @PreAuthorize("hasAuthority('HOST')")
+    public AccommodationListDto updateAccommodation(@RequestBody AccommodationUpdateDto body) {
         return accommodationService.updateAccommodation(body);
     }
 

@@ -26,7 +26,7 @@ public interface IAccommodationService {
 
     Accommodation findAccommodation(Long accommodationId);
 
-    Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
+    AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto);
 
     ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 

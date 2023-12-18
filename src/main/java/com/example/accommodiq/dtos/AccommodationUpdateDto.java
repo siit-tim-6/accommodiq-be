@@ -10,6 +10,10 @@ public class AccommodationUpdateDto extends AccommodationCreateDto {
         this.id = id;
     }
 
+    public AccommodationUpdateDto() {
+        super();
+    }
+
     public AccommodationUpdateDto(Accommodation accommodation) {
         super(accommodation);
         this.id = accommodation.getId();

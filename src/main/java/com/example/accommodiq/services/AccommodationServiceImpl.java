@@ -151,9 +151,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation updateAccommodation(AccommodationUpdateDto updateDto) {
-        Accommodation accommodation = new Accommodation(updateDto);
-        return update(accommodation);
+    @Transactional
+    public AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto) {
+        Accommodation accommodation = findAccommodation(updateDto.getId());
+        accommodation.applyChanges(updateDto);
+        update(accommodation);
+        return new AccommodationListDto(accommodation);
     }
 
     @Override
@@ -270,6 +273,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    @Transactional
     public AccommodationUpdateDto getAdvancedDetails(Long accommodationId) {
         Accommodation accommodation = findAccommodation(accommodationId);
         return new AccommodationUpdateDto(accommodation);

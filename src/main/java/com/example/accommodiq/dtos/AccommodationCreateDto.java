@@ -102,6 +102,8 @@ public class AccommodationCreateDto {
 
     public Set<Availability> getAvailable() {
         Set<Availability> available = new HashSet<>();
+        if (this.available == null) return available;
+
         for (AvailabilityDto availabilityDto : this.available) {
             available.add(new Availability(availabilityDto));
         }
