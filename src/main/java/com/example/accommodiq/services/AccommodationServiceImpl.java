@@ -152,24 +152,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public Accommodation updateAccommodation(AccommodationUpdateDto updateDto) {
-        if (updateDto.getId() == 4L) {
-            throwNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                AccommodationStatus.ACCEPTED,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+        Accommodation accommodation = new Accommodation(updateDto);
+        return update(accommodation);
     }
 
     @Override

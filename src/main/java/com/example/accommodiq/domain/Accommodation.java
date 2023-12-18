@@ -1,6 +1,7 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.dtos.AccommodationCreateDto;
+import com.example.accommodiq.dtos.AccommodationUpdateDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
@@ -57,6 +58,21 @@ public class Accommodation {
     }
 
     public Accommodation(AccommodationCreateDto accommodationDto) {
+        this.title = accommodationDto.getTitle();
+        this.description = accommodationDto.getDescription();
+        this.location = accommodationDto.getLocation();
+        this.minGuests = accommodationDto.getMinGuests();
+        this.maxGuests = accommodationDto.getMaxGuests();
+        this.available = accommodationDto.getAvailable();
+        this.pricingType = accommodationDto.getPricingType();
+        this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
+        this.images = accommodationDto.getImages();
+        this.type = accommodationDto.getType();
+        this.benefits = accommodationDto.getBenefits();
+    }
+
+    public Accommodation(AccommodationUpdateDto accommodationDto) {
+        this.id = accommodationDto.getId();
         this.title = accommodationDto.getTitle();
         this.description = accommodationDto.getDescription();
         this.location = accommodationDto.getLocation();
