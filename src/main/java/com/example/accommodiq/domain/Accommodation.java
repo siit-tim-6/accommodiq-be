@@ -230,11 +230,15 @@ public class Accommodation {
     }
 
     public double getTotalPrice(Long fromDate, Long toDate, Integer guests) {
+        if ((guests == null && pricingType == PricingType.PER_GUEST)) {
+            return 0;
+        }
+
         if (!isAvailable(fromDate, toDate)) {
             ReportUtils.throwBadRequest("accommodationUnavailable");
         }
 
-        if (guests > maxGuests || guests < minGuests || (guests == null && pricingType == PricingType.PER_GUEST)) {
+        if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
             ReportUtils.throwBadRequest("invalidGuestNumber");
         }
 
