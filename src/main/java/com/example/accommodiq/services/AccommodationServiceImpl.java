@@ -300,4 +300,9 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
         return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
     }
+
+    @Override
+    public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
+        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
+    }
 }

@@ -90,4 +90,9 @@ public class AccommodationController {
     public AccommodationPriceDto getTotalPrice(@PathVariable Long accommodationId, @RequestParam long dateFrom, @RequestParam long dateTo, @RequestParam int guests) {
         return accommodationService.getTotalPrice(accommodationId, dateFrom, dateTo, guests);
     }
+
+    @GetMapping("/{accommodationId}/is-available")
+    public AccommodationAvailabilityDto getIsAvailable(@PathVariable Long accommodationId, @RequestParam long dateFrom, @RequestParam long dateTo) {
+        return accommodationService.getIsAvailable(accommodationId, dateFrom, dateTo);
+    }
 }
