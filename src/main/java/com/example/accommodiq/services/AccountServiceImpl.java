@@ -70,6 +70,10 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     @Transactional
     public void insert(RegisterDto registerDto) {
+        if (emailExists(registerDto.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
+        }
+
         Account account = new Account(registerDto);
         try {
             User user = account.getUser();
@@ -166,5 +170,9 @@ public class AccountServiceImpl implements IAccountService {
         } else {
             return user;
         }
+    }
+
+    private boolean emailExists(String email) {
+        return allAccounts.findAccountByEmail(email) != null;
     }
 }
