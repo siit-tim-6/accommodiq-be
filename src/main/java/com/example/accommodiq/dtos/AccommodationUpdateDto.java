@@ -5,11 +5,6 @@ import com.example.accommodiq.domain.Accommodation;
 public class AccommodationUpdateDto extends AccommodationCreateDto {
     private Long id;
 
-    public AccommodationUpdateDto(Long id) {
-        super();
-        this.id = id;
-    }
-
     public AccommodationUpdateDto() {
         super();
     }
