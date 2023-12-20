@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
 
 @Service
 public class NotificationSettingServiceImpl implements INotificationSettingService {

@@ -9,14 +9,13 @@ import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.INotificationService;
 import com.example.accommodiq.services.interfaces.IReportService;
 import com.example.accommodiq.services.interfaces.IUserService;
-import com.example.accommodiq.utilities.ReportUtils;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 
@@ -94,7 +93,7 @@ public class UserController {
         Account account = (Account) accountService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(passwordDto.getOldPassword(), account.getPassword())) {
-            ReportUtils.throwBadRequest("wrongOldPassword");
+            ErrorUtils.throwBadRequest("wrongOldPassword");
         }
 
         passwordDto.encode(passwordEncoder);
