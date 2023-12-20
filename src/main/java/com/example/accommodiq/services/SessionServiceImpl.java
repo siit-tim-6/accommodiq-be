@@ -1,5 +1,6 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.LoginResponseDto;
 import com.example.accommodiq.enums.AccountRole;
@@ -47,8 +48,9 @@ public class SessionServiceImpl implements ISessionService {
         }
 
         AccountRole role = (AccountRole) s.get();
+        long userId = ((Account) sc.getAuthentication().getPrincipal()).getUser().getId();
 
-        String token = jwtTokenUtil.generateToken(credentialsDto.getEmail(), role);
+        String token = jwtTokenUtil.generateToken(credentialsDto.getEmail(), role, userId);
         return new LoginResponseDto(role, token);
     }
 }
