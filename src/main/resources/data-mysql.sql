@@ -9,10 +9,10 @@ VALUES
 -- Insert sample data into `account` table
 INSERT INTO `account` (`id`, `email`, `password`, `role`, `status`, `user_id`, `activation_expires`)
 VALUES
-    (4, 'admin', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 4, NULL),
+    (4, 'admin', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 4, 1672531200),
     (1, 'john.doe@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 1, 1672531200),
     (2, 'jane.smith@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 2, 1, 2, 1672531200),
-    (3, 'bob.johnson@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 3, NULL);
+    (3, 'bob.johnson@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 0, 3, 1672531200);
 
 -- Insert sample data into `host` table
 INSERT INTO `host` (`id`)

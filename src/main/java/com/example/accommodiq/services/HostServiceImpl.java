@@ -72,6 +72,7 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
+    @Transactional
     public Collection<AccommodationWithStatusDto> getHostAccommodations(Long hostId) {
         return allAccommodations.findByHostId(hostId).stream().map(AccommodationWithStatusDto::new).toList();
     }

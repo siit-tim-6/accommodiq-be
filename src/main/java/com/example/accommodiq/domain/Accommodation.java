@@ -1,6 +1,7 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.dtos.AccommodationCreateDto;
+import com.example.accommodiq.dtos.AccommodationUpdateDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import jakarta.persistence.*;
@@ -68,6 +69,34 @@ public class Accommodation {
         this.images = accommodationDto.getImages();
         this.type = accommodationDto.getType();
         this.benefits = accommodationDto.getBenefits();
+    }
+
+    public Accommodation(AccommodationUpdateDto accommodationDto) {
+        this.title = accommodationDto.getTitle();
+        this.description = accommodationDto.getDescription();
+        this.location = accommodationDto.getLocation();
+        this.minGuests = accommodationDto.getMinGuests();
+        this.maxGuests = accommodationDto.getMaxGuests();
+        this.available = accommodationDto.getAvailable();
+        this.pricingType = accommodationDto.getPricingType();
+        this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
+        this.images = accommodationDto.getImages();
+        this.type = accommodationDto.getType();
+        this.benefits = accommodationDto.getBenefits();
+    }
+
+    public void applyChanges(AccommodationUpdateDto accommodationDto) {
+        this.title = accommodationDto.getTitle() == null ? this.title : accommodationDto.getTitle();
+        this.description = accommodationDto.getDescription() == null ? this.description : accommodationDto.getDescription();
+        this.location = accommodationDto.getLocation() == null ? this.location : accommodationDto.getLocation();
+        this.minGuests = accommodationDto.getMinGuests() == 0 ? this.minGuests : accommodationDto.getMinGuests();
+        this.maxGuests = accommodationDto.getMaxGuests() == 0 ? this.maxGuests : accommodationDto.getMaxGuests();
+        this.available = accommodationDto.getAvailable() == null ? this.available : accommodationDto.getAvailable();
+        this.pricingType = accommodationDto.getPricingType() == null ? this.pricingType : accommodationDto.getPricingType();
+        this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
+        this.images = accommodationDto.getImages() == null ? this.images : accommodationDto.getImages();
+        this.type = accommodationDto.getType() == null ? this.type : accommodationDto.getType();
+        this.benefits = accommodationDto.getBenefits() == null ? this.benefits : accommodationDto.getBenefits();
     }
 
     public Accommodation() {

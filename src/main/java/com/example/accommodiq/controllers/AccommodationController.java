@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/accommodations")
@@ -42,7 +44,8 @@ public class AccommodationController {
     }
 
     @PutMapping()
-    public Accommodation updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+    @PreAuthorize("hasAuthority('HOST')")
+    public AccommodationListDto updateAccommodation(@RequestBody AccommodationUpdateDto body) {
         return accommodationService.updateAccommodation(body);
     }
 
@@ -84,5 +87,11 @@ public class AccommodationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
         return accommodationService.getPendingAccommodations();
+    }
+
+    @GetMapping("{accommodationId}/advanced")
+    @PreAuthorize("hasAuthority('HOST')")
+    public AccommodationUpdateDto getAdvancedDetails(@PathVariable Long accommodationId) {
+        return accommodationService.getAdvancedDetails(accommodationId);
     }
 }

@@ -151,25 +151,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation updateAccommodation(AccommodationUpdateDto updateDto) {
-        if (updateDto.getId() == 4L) {
-            throwNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                AccommodationStatus.ACCEPTED,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    @Transactional
+    public AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto) {
+        Accommodation accommodation = findAccommodation(updateDto.getId());
+        accommodation.applyChanges(updateDto);
+        update(accommodation);
+        return new AccommodationListDto(accommodation);
     }
 
     @Override
@@ -283,6 +270,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Accommodation accommodation = findAccommodation(accommodationId);
         AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
         return ResponseEntity.ok(accommodationDetails);
+    }
+
+    @Override
+    @Transactional
+    public AccommodationUpdateDto getAdvancedDetails(Long accommodationId) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        return new AccommodationUpdateDto(accommodation);
     }
 
     private boolean isOverlapping(Availability existing, Availability newAvailability) {
