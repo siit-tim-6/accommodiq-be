@@ -14,8 +14,7 @@ import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.IEmailService;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
-import com.example.accommodiq.utilities.ReportUtils;
-import jakarta.persistence.EntityManager;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -88,7 +87,7 @@ public class AccountServiceImpl implements IAccountService {
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be inserted");
         }
-        emailService.sendVerificationEmail(account.getId(),account.getEmail());
+        emailService.sendVerificationEmail(account.getId(), account.getEmail());
         notificationSettingService.setNotificationSettingsForUser(account.getUser().getId());
     }
 
@@ -135,7 +134,7 @@ public class AccountServiceImpl implements IAccountService {
 //        return new UserLoginDto(account);
 
         if (credentialsDto.getEmail().equals("test@nonexistent.com")) {
-            ReportUtils.throwNotFound("badCredentials");
+            ErrorUtils.throwNotFound("badCredentials");
         }
 
         return new UserLoginDto(new User(

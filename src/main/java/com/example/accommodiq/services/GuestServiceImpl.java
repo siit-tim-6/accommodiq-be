@@ -1,7 +1,6 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
@@ -9,7 +8,7 @@ import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.services.interfaces.IGuestService;
-import com.example.accommodiq.utilities.ReportUtils;
+import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Guest> guest = guestRepository.findById(guestId);
 
         if (guest.isEmpty()) {
-            ReportUtils.throwNotFound("guestNotFound");
+            ErrorUtils.throwNotFound("guestNotFound");
         }
 
         return guest.get();
@@ -43,7 +42,7 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ReportUtils.throwNotFound("accommodationNotFound");
+            ErrorUtils.throwNotFound("accommodationNotFound");
         }
 
         return accommodation.get();
@@ -52,7 +51,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<ReservationListDto> getReservations(Long guestId) {
         if (guestId == 4L) {
-            ReportUtils.throwNotFound("guestNotFound");
+            ErrorUtils.throwNotFound("guestNotFound");
         }
 
         ArrayList<ReservationListDto> reservationListDtos = new ArrayList<>();
@@ -119,7 +118,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<AccommodationListDto> getFavorites(Long guestId) {
         if (guestId == 4L) {
-            ReportUtils.throwNotFound("guestNotFound");
+            ErrorUtils.throwNotFound("guestNotFound");
         }
 
         ArrayList<AccommodationListDto> accommodationListDtos = new ArrayList<>();
@@ -157,7 +156,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) {
         if (guestId == 4L) {
-            ReportUtils.throwNotFound("guestNotFound");
+            ErrorUtils.throwNotFound("guestNotFound");
         }
         return new AccommodationListDto() {{
             setId(2L);
@@ -175,11 +174,11 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public MessageDto removeFavorite(Long guestId, Long accommodationId) {
         if (guestId == 4L) {
-            ReportUtils.throwNotFound("guestNotFound");
+            ErrorUtils.throwNotFound("guestNotFound");
         }
 
         if (accommodationId == 4L) {
-            ReportUtils.throwNotFound("favoriteNotFound");
+            ErrorUtils.throwNotFound("favoriteNotFound");
         }
 
         return new MessageDto("Favorite removed successfully");

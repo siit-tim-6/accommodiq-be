@@ -9,7 +9,7 @@ import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IHostService;
-import com.example.accommodiq.utilities.ReportUtils;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class HostServiceImpl implements IHostService {
     AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository,AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
@@ -46,7 +46,7 @@ public class HostServiceImpl implements IHostService {
     public Host findHost(Long hostId) {
         Optional<Host> found = hostRepository.findById(hostId);
         if (found.isEmpty()) {
-            ReportUtils.throwNotFound("hostNotFound");
+            ErrorUtils.throwNotFound("hostNotFound");
         }
         return found.get();
     }
@@ -80,7 +80,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) {
         if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
+            ErrorUtils.throwNotFound("hostNotFound");
         }
 
         ArrayList<HostReservationDto> reservations = new ArrayList<>();
@@ -94,7 +94,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate) {
         if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
+            ErrorUtils.throwNotFound("hostNotFound");
         }
 
         ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
@@ -109,7 +109,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Collection<Review> getHostReviews(Long hostId) {
         if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
+            ErrorUtils.throwNotFound("hostNotFound");
         }
 
         return new ArrayList<Review>() {
@@ -137,7 +137,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Review addReview(Long hostId, ReviewRequestDto reviewDto) {
         if (hostId == 4L) {
-            ReportUtils.throwNotFound("hostNotFound");
+            ErrorUtils.throwNotFound("hostNotFound");
         }
 
         return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);

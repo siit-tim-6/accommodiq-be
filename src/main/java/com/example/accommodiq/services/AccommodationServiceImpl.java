@@ -13,7 +13,7 @@ import com.example.accommodiq.services.interfaces.IAccommodationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import com.example.accommodiq.specifications.AccommodationSpecification;
-import com.example.accommodiq.utilities.ReportUtils;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 
-import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
 
 
 @Service
@@ -121,7 +121,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ReportUtils.throwNotFound("accommodationNotFound");
+            ErrorUtils.throwNotFound("accommodationNotFound");
         }
 
         return new AccommodationDetailsDto(accommodation.get());

@@ -4,9 +4,8 @@ import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.dtos.AccommodationUpdateDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
-import com.example.accommodiq.utilities.ReportUtils;
+import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.*;
-import org.hibernate.Hibernate;
 
 import java.util.*;
 
@@ -264,11 +263,11 @@ public class Accommodation {
         }
 
         if (!isAvailable(fromDate, toDate)) {
-            ReportUtils.throwBadRequest("accommodationUnavailable");
+            ErrorUtils.throwBadRequest("accommodationUnavailable");
         }
 
         if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
-            ReportUtils.throwBadRequest("invalidGuestNumber");
+            ErrorUtils.throwBadRequest("invalidGuestNumber");
         }
 
         Long oneDay = (long) (60 * 60 * 24);

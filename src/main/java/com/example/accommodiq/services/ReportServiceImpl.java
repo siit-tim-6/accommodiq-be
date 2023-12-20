@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ReportUtils.throwBadRequest;
-import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.throwBadRequest;
+import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
 
 @Service
 public class ReportServiceImpl implements IReportService {
@@ -134,5 +134,5 @@ public class ReportServiceImpl implements IReportService {
         report.setTimestamp(reportDto.getTimestamp());
         return report;
     }
-    
+
 }

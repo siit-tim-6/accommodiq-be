@@ -1,7 +1,6 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Notification;
-import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.INotificationService;
@@ -13,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
 
 @Service
 public class NotificationServiceImpl implements INotificationService {
-    
+
     final
     NotificationRepository allNotifications;
 
