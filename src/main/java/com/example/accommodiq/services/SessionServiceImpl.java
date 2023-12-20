@@ -54,7 +54,7 @@ public class SessionServiceImpl implements ISessionService {
             return new LoginResponseDto(role, token);
 
         } catch (DisabledException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account is not active");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account is not active. Make sure you have verified your email.");
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
