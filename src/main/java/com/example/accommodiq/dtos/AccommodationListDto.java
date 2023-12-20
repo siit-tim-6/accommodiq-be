@@ -3,6 +3,7 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.PricingType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,13 +21,14 @@ public class AccommodationListDto {
     private int minGuests;
     private int maxGuests;
     private double totalPrice;
+    private PricingType pricingType;
 
     public AccommodationListDto() {
         super();
     }
 
     public AccommodationListDto(Long id, String title, String image, Double rating,
-                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests) {
+                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -37,39 +39,35 @@ public class AccommodationListDto {
         this.minGuests = minGuests;
         this.maxGuests = maxGuests;
         this.totalPrice = 0;
+        this.pricingType = pricingType;
     }
 
-    public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
-        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
-
+    public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
-        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.rating = accommodation.getAverageRating();
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
-        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minPrice = accommodation.getMinPrice();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
-
-        calcTotalPrice(accommodation, fromDate, toDate);
+        this.totalPrice = accommodation.getTotalPrice(fromDate, toDate, guests);
+        this.pricingType = accommodation.getPricingType();
     }
 
     public AccommodationListDto(Accommodation accommodation) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
-        OptionalDouble minPrice = accommodation.getAvailable().stream().mapToDouble(Availability::getPrice).min();
-
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
-        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.rating = accommodation.getAverageRating();
         this.reviewCount = accommodation.getReviews().size();
         this.location = accommodation.getLocation();
-        this.minPrice = minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+        this.minPrice = accommodation.getMinPrice();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = 0;
+        this.pricingType = accommodation.getPricingType();
     }
 
     public Long getId() {
@@ -152,24 +150,11 @@ public class AccommodationListDto {
         this.totalPrice = totalPrice;
     }
 
-    private void calcTotalPrice(Accommodation accommodation, Long fromDate, Long toDate) {
-        Long oneDay = (long) (60 * 60 * 24);
+    public PricingType getPricingType() {
+        return pricingType;
+    }
 
-        List<Availability> availabilityCandidates = accommodation.getAvailable().stream().filter(availability ->
-                (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
-                        || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
-        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
-
-        Long fromDateCopy = fromDate;
-        for (Availability availabilityCandidate : availabilityCandidates) {
-            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
-                totalPrice += availabilityCandidate.getPrice();
-                fromDateCopy += oneDay;
-
-                if (fromDateCopy > toDate) {
-                    return;
-                }
-            }
-        }
+    public void setPricingType(PricingType pricingType) {
+        this.pricingType = pricingType;
     }
 }

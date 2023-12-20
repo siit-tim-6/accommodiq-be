@@ -4,14 +4,11 @@ import com.example.accommodiq.dtos.AccommodationCreateDto;
 import com.example.accommodiq.dtos.AccommodationUpdateDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.utilities.ReportUtils;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Accommodation {
@@ -215,14 +212,6 @@ public class Accommodation {
         this.available = available;
     }
 
-    public double getRating() {
-        Hibernate.initialize(reviews);
-        return reviews.stream()
-                .mapToDouble(Review::getRating)
-                .average()
-                .orElse(0);
-    }
-
     public Host getHost() {
         return host;
     }
@@ -267,6 +256,52 @@ public class Accommodation {
         }
 
         return false;
+    }
+
+    public double getTotalPrice(Long fromDate, Long toDate, Integer guests) {
+        if ((guests == null && pricingType == PricingType.PER_GUEST)) {
+            return 0;
+        }
+
+        if (!isAvailable(fromDate, toDate)) {
+            ReportUtils.throwBadRequest("accommodationUnavailable");
+        }
+
+        if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
+            ReportUtils.throwBadRequest("invalidGuestNumber");
+        }
+
+        Long oneDay = (long) (60 * 60 * 24);
+
+        List<Availability> availabilityCandidates = available.stream().filter(availability ->
+                (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
+                        || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
+        ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
+
+        Long fromDateCopy = fromDate;
+        double totalPrice = 0;
+        for (Availability availabilityCandidate : availabilityCandidates) {
+            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
+                totalPrice += availabilityCandidate.getPrice();
+                fromDateCopy += oneDay;
+
+                if (fromDateCopy > toDate) {
+                    return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
+                }
+            }
+        }
+
+        return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
+    }
+
+    public double getMinPrice() {
+        OptionalDouble minPrice = available.stream().mapToDouble(Availability::getPrice).min();
+        return minPrice.isPresent() ? minPrice.getAsDouble() : 0;
+    }
+
+    public double getAverageRating() {
+        OptionalDouble averageRating = reviews.stream().mapToDouble(Review::getRating).average();
+        return averageRating.isPresent() ? averageRating.getAsDouble() : 0;
     }
 }
 

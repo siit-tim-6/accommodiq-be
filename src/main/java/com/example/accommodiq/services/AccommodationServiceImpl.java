@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.*;
+
 import static com.example.accommodiq.utilities.ReportUtils.throwNotFound;
 
 
@@ -39,21 +40,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
-    }
-
-    @Override
-    public Collection<AccommodationListDto> findAll() {
-        return new ArrayList<AccommodationListDto>() {
-            {
-                add(new AccommodationListDto(1L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-
-            {
-                add(new AccommodationListDto(2L, "City Center Apartment", "https://example.image.com", 4.92,
-                        202, "Novi Sad", 540, 2, 5));
-            }
-        };
     }
 
     @Override
@@ -104,12 +90,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
                     .toList();
         } else if (dateRangeSpecified && priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
                     .toList();
         } else if (dateRangeSpecified && !priceRangeSpecified) {
             accommodationListDtos = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo))
+                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .toList();
         } else {
             accommodationListDtos = searchedAccommodations.stream()
@@ -302,5 +288,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Transactional
     public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
         return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
+    }
+
+    @Override
+    public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
+    }
+
+    @Override
+    public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
+        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
     }
 }

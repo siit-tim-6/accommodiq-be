@@ -5,39 +5,35 @@ import com.example.accommodiq.enums.ReservationStatus;
 import java.util.Date;
 
 public class ReservationRequestDto {
-    private Date startDate;
-    private Date endDate;
+    private long startDate;
+    private long endDate;
     private int numberOfGuests;
-    private ReservationStatus status;
-    private Long userId;
     private Long accommodationId;
 
     public ReservationRequestDto() {
         super();
     }
 
-    public ReservationRequestDto(Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, Long userId, Long accommodationId) {
+    public ReservationRequestDto(long startDate, long endDate, int numberOfGuests, Long accommodationId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
-        this.status = status;
-        this.userId = userId;
         this.accommodationId = accommodationId;
     }
 
-    public Date getStartDate() {
+    public long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
 
@@ -47,22 +43,6 @@ public class ReservationRequestDto {
 
     public void setNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public ReservationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getAccommodationId() {

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface IAccommodationService {
-    Collection<AccommodationListDto> findAll();
-
     Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
 
     Accommodation update(Accommodation accommodation);
@@ -43,6 +41,10 @@ public interface IAccommodationService {
     Collection<AccommodationWithStatusDto> getPendingAccommodations();
 
     ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId);
+
+    AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests);
+
+    AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo);
 
     AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
 }

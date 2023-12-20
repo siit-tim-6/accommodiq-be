@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import jakarta.persistence.*;
 
@@ -28,6 +29,15 @@ public class Reservation {
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
         this.status = status;
+        this.user = user;
+        this.accommodation = accommodation;
+    }
+
+    public Reservation(ReservationRequestDto reservationRequestDto, User user, Accommodation accommodation) {
+        this.startDate = reservationRequestDto.getStartDate();
+        this.endDate = reservationRequestDto.getEndDate();
+        this.numberOfGuests = reservationRequestDto.getNumberOfGuests();
+        this.status = ReservationStatus.CREATED;
         this.user = user;
         this.accommodation = accommodation;
     }
@@ -75,7 +85,7 @@ public class Reservation {
     public User getUser() {
         return user;
     }
-  
+
     public void setUser(User user) {
         this.user = user;
     }

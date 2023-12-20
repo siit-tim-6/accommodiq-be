@@ -1,20 +1,54 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
+import com.example.accommodiq.repositories.AccommodationRepository;
+import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import com.example.accommodiq.utilities.ReportUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class GuestServiceImpl implements IGuestService {
+    final private GuestRepository guestRepository;
+    final private AccommodationRepository accommodationRepository;
+
+    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository) {
+        this.guestRepository = guestRepository;
+        this.accommodationRepository = accommodationRepository;
+    }
+
+    @Override
+    public Guest findGuest(Long guestId) {
+        Optional<Guest> guest = guestRepository.findById(guestId);
+
+        if (guest.isEmpty()) {
+            ReportUtils.throwNotFound("guestNotFound");
+        }
+
+        return guest.get();
+    }
+
+    private Accommodation findAccommodation(Long accommodationId) {
+        Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
+
+        if (accommodation.isEmpty()) {
+            ReportUtils.throwNotFound("accommodationNotFound");
+        }
+
+        return accommodation.get();
+    }
+
     @Override
     public Collection<ReservationListDto> getReservations(Long guestId) {
         if (guestId == 4L) {
@@ -69,21 +103,17 @@ public class GuestServiceImpl implements IGuestService {
         return reservationListDtos;
     }
 
+    @Transactional
     @Override
-    public Reservation addReservation(Long guestId, ReservationRequestDto reservationDto) {
-        if (guestId == 4L) {
-            ReportUtils.throwNotFound("guestNotFound");
-        }
+    public ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto) {
+        Guest guest = findGuest(guestId);
+        Accommodation accommodation = findAccommodation(reservationDto.getAccommodationId());
 
-        return new Reservation(
-                1L,
-                new Date().getTime(),
-                new Date().getTime(),
-                2,
-                ReservationStatus.CREATED,
-                null,
-                null
-        );
+        guest.getReservations().add(new Reservation(reservationDto, guest, accommodation));
+        guestRepository.save(guest);
+        guestRepository.flush();
+
+        return reservationDto;
     }
 
     @Override
