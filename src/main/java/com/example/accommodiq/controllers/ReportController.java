@@ -28,7 +28,7 @@ public class ReportController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('Host') or hasAuthority('Guest')")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public ReportModificationDto insertReport(@RequestBody ReportModificationDto reportModificationDto) {
         return service.insert(reportModificationDto);
     }
