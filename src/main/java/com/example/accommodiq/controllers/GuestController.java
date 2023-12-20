@@ -32,7 +32,7 @@ public class GuestController {
 
     @PostMapping("/{guestId}/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
-    public Reservation addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
+    public ReservationRequestDto addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
         return guestService.addReservation(guestId, reservationDto);
     }
 
