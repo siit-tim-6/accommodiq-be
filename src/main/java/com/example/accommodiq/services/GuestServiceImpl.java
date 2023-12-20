@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
+import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,12 @@ import java.util.Date;
 
 @Service
 public class GuestServiceImpl implements IGuestService {
+    final private GuestRepository guestRepository;
+
+    public GuestServiceImpl(GuestRepository guestRepository) {
+        this.guestRepository = guestRepository;
+    }
+
     @Override
     public Collection<ReservationListDto> getReservations(Long guestId) {
         if (guestId == 4L) {
