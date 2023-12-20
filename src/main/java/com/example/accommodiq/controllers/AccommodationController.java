@@ -74,11 +74,13 @@ public class AccommodationController {
     }
 
     @GetMapping("/{accommodationId}/financial-report")
+    @PreAuthorize("hasAuthority('HOST')")
     public AccommodationReportDto getAccommodationReport(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationReport(accommodationId);
     }
 
     @PostMapping("{accommodationId}/reviews")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Accommodation addReview(@PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }

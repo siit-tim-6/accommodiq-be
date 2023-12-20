@@ -31,21 +31,25 @@ public class GuestController {
     }
 
     @PostMapping("/{guestId}/reservations")
-    public ReservationRequestDto addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
+    @PreAuthorize("hasAuthority('GUEST')")
+    public Reservation addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
         return guestService.addReservation(guestId, reservationDto);
     }
 
     @GetMapping("/{guestId}/favorites")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Collection<AccommodationListDto> getFavorites(@PathVariable Long guestId) {
         return guestService.getFavorites(guestId);
     }
 
     @PostMapping("/{guestId}/favorites")
+    @PreAuthorize("hasAuthority('GUEST')")
     public AccommodationListDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
         return guestService.addFavorite(guestId, guestFavoriteDto);
     }
 
     @DeleteMapping("/{guestId}/favorites/{accommodationId}")
+    @PreAuthorize("hasAuthority('GUEST')")
     public MessageDto removeFavorite(@PathVariable Long guestId, @PathVariable Long accommodationId) {
         return guestService.removeFavorite(guestId, accommodationId);
     }

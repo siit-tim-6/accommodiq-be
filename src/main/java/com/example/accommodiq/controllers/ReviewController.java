@@ -8,6 +8,7 @@ import com.example.accommodiq.services.interfaces.IReviewService;
 import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -40,21 +41,25 @@ public class ReviewController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteAll() {
         reviewService.deleteAll();
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<Review> getReviews() {
         return reviewService.getAll();
     }
 
     @DeleteMapping("/{reviewId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('GUEST')")
     public MessageDto deleteReview(@PathVariable Long reviewId) {
         return reviewService.delete(reviewId);
     }
 
     @PutMapping("/{reviewId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Review acceptReview(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
         return reviewService.setReviewStatus(reviewId, body);
     }
