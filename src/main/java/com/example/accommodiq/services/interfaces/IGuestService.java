@@ -7,9 +7,11 @@ import com.example.accommodiq.dtos.*;
 import java.util.Collection;
 
 public interface IGuestService {
+    Guest findGuest(Long guestId);
+
     Collection<ReservationListDto> getReservations(Long guestId);
 
-    Reservation addReservation(Long guestId, ReservationRequestDto reservationDto);
+    ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 
     Collection<AccommodationListDto> getFavorites(Long guestId);
 

@@ -148,10 +148,9 @@ public class ReservationServiceImpl implements IReservationService {
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);
-        reservation.setStartDate(reservationDto.getStartDate().getTime());
-        reservation.setEndDate(reservationDto.getEndDate().getTime());
+        reservation.setStartDate(reservationDto.getStartDate());
+        reservation.setEndDate(reservationDto.getEndDate());
         reservation.setNumberOfGuests(reservationDto.getNumberOfGuests());
-        reservation.setStatus(reservationDto.getStatus());
         reservation.setUser(null);
         reservation.setAccommodation(null);
         return reservation;
