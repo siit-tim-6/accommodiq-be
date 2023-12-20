@@ -58,7 +58,7 @@ public class ImageServiceImpl implements IImageService {
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return  filePath.toString();
+            return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Error saving file", e);
         }
