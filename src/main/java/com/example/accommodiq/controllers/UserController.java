@@ -12,6 +12,7 @@ import com.example.accommodiq.services.interfaces.IUserService;
 import com.example.accommodiq.utilities.ReportUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +67,7 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST') or hasAuthority('ADMIN')")
     public Account manageUserAccount(@RequestBody AccountDetailsDto accountDetails) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account accountToManage = (Account) accountService.loadUserByUsername(email);
@@ -74,6 +76,7 @@ public class UserController {
     }
 
     @DeleteMapping()
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Account deleteUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
@@ -88,6 +91,7 @@ public class UserController {
     }
 
     @PutMapping("/password")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST') or hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@RequestBody UpdatePasswordDto passwordDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -102,17 +106,20 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/notifications")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Notification createNotification(@PathVariable Long userId, @RequestBody Notification notification) {
         return notificationService.insert(userId, notification);
     }
 
     @GetMapping("/{userId}/notifications")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Collection<NotificationDto> getUsersNotifications(@PathVariable Long userId) {
         User user = userService.findUser(userId);
         return user.getNotifications().stream().map(NotificationDto::new).toList();
     }
 
     @GetMapping("/notification-settings")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Collection<NotificationSettingDto> getUsersNotificationSettings() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
@@ -121,12 +128,14 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/notification-settings")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Collection<NotificationSettingDto> updateNotificationSettings(@PathVariable Long userId, @RequestBody Collection<NotificationSetting> notificationSettings) {
         System.out.println(userId);
         return notificationSettings.stream().map(NotificationSettingDto::new).toList();
     }
 
     @PostMapping("/{id}/reports")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @ResponseStatus(HttpStatus.OK)
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);

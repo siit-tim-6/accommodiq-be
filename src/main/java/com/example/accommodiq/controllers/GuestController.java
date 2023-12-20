@@ -8,6 +8,7 @@ import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -23,26 +24,31 @@ public class GuestController {
     }
 
     @GetMapping("/{guestId}/reservations")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Collection<ReservationListDto> getReservations(@PathVariable Long guestId) {
         return guestService.getReservations(guestId);
     }
 
     @PostMapping("/{guestId}/reservations")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Reservation addReservation(@PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
         return guestService.addReservation(guestId, reservationDto);
     }
 
     @GetMapping("/{guestId}/favorites")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Collection<AccommodationListDto> getFavorites(@PathVariable Long guestId) {
         return guestService.getFavorites(guestId);
     }
 
     @PostMapping("/{guestId}/favorites")
+    @PreAuthorize("hasAuthority('GUEST')")
     public AccommodationListDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
         return guestService.addFavorite(guestId, guestFavoriteDto);
     }
 
     @DeleteMapping("/{guestId}/favorites/{accommodationId}")
+    @PreAuthorize("hasAuthority('GUEST')")
     public MessageDto removeFavorite(@PathVariable Long guestId, @PathVariable Long accommodationId) {
         return guestService.removeFavorite(guestId, accommodationId);
     }

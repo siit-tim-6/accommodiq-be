@@ -35,6 +35,7 @@ public class HostController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<Host> getAllHosts() {
         return hostService.getAll();
     }
@@ -51,16 +52,19 @@ public class HostController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('HOST')")
     public Host updateHost(@RequestBody Host host) {
         return hostService.update(host);
     }
 
     @DeleteMapping("/{hostId}")
+    @PreAuthorize("hasAuthority('HOST')")
     public Host deleteHost(@PathVariable Long hostId) {
         return hostService.delete(hostId);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteAll() {
         hostService.deleteAll();
     }
@@ -84,16 +88,19 @@ public class HostController {
     }
 
     @GetMapping("/{hostId}/reservations")
+    @PreAuthorize("hasAuthority('HOST')")
     public Collection<HostReservationDto> getHostAccommodationReservations(@PathVariable Long hostId) {
         return hostService.getHostAccommodationReservations(hostId);
     }
 
     @GetMapping("{hostId}/financial-report")
+    @PreAuthorize("hasAuthority('HOST')")
     public Collection<FinancialReportEntryDto> getFinancialReport(@PathVariable Long hostId, @RequestParam long fromDate, @RequestParam long toDate) {
         return hostService.getFinancialReport(hostId, fromDate, toDate);
     }
 
     @PostMapping("{hostId}/reviews")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
         return hostService.addReview(hostId, reviewDto);
     }

@@ -26,6 +26,7 @@ public class AccommodationController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
                                                                  @RequestParam(required = false) Integer priceFrom, @RequestParam(required = false) Integer priceTo, @RequestParam(required = false) Integer guests, @RequestParam(required = false) String type, @RequestParam(required = false) Set<String> benefits) {
         return accommodationService.findByFilter(title, location, availableFrom, availableTo, priceFrom, priceTo, guests, type, benefits);
@@ -74,11 +75,13 @@ public class AccommodationController {
     }
 
     @GetMapping("/{accommodationId}/financial-report")
+    @PreAuthorize("hasAuthority('HOST')")
     public AccommodationReportDto getAccommodationReport(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationReport(accommodationId);
     }
 
     @PostMapping("{accommodationId}/reviews")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Accommodation addReview(@PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }
