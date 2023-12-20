@@ -40,7 +40,6 @@ public class SessionServiceImpl implements ISessionService {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
 
-        String token = jwtTokenUtil.generateToken(credentialsDto.getEmail());
 
         Optional<? extends GrantedAuthority> s = sc.getAuthentication().getAuthorities().stream().findFirst();
         if (s.isEmpty()) {
@@ -49,6 +48,7 @@ public class SessionServiceImpl implements ISessionService {
 
         AccountRole role = (AccountRole) s.get();
 
+        String token = jwtTokenUtil.generateToken(credentialsDto.getEmail(), role);
         return new LoginResponseDto(role, token);
     }
 }

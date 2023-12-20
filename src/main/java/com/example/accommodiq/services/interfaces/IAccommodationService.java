@@ -24,7 +24,7 @@ public interface IAccommodationService {
 
     Accommodation findAccommodation(Long accommodationId);
 
-    Accommodation updateAccommodation(AccommodationUpdateDto updateDto);
+    AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto);
 
     ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
@@ -45,4 +45,6 @@ public interface IAccommodationService {
     AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests);
 
     AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo);
+
+    AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
 }
