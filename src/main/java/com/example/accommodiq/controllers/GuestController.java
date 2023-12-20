@@ -8,10 +8,12 @@ import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.services.interfaces.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/guests")
 public class GuestController {
@@ -23,6 +25,7 @@ public class GuestController {
     }
 
     @GetMapping("/{guestId}/reservations")
+    @PreAuthorize("hasAuthority('GUEST')")
     public Collection<ReservationListDto> getReservations(@PathVariable Long guestId) {
         return guestService.getReservations(guestId);
     }
