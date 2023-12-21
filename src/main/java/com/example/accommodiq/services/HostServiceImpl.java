@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
@@ -131,6 +132,7 @@ public class HostServiceImpl implements IHostService {
     public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
         Host host = findHost(hostId);
         Accommodation accommodation = accommodationService.insert(host, accommodationDto);
+        accommodation.setPricingType(PricingType.PER_NIGHT);
         return new AccommodationDetailsDto(accommodation);
     }
 
