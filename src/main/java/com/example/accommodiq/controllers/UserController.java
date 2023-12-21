@@ -67,7 +67,7 @@ public class UserController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST') or hasAuthority('ADMIN')")
-    public Account manageUserAccount(@RequestBody AccountDetailsDto accountDetails) {
+    public AccountDetailsDto manageUserAccount(@RequestBody AccountDetailsDto accountDetails) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account accountToManage = (Account) accountService.loadUserByUsername(email);
         accountDetails.putDetailsIntoAccount(accountToManage);

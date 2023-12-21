@@ -4,10 +4,7 @@ import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.CredentialsDto;
-import com.example.accommodiq.dtos.RegisterDto;
-import com.example.accommodiq.dtos.UpdatePasswordDto;
-import com.example.accommodiq.dtos.UserLoginDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
@@ -92,12 +89,12 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public Account update(Account account) {
+    public AccountDetailsDto update(Account account) {
         try {
             findAccount(account.getId()); // this will throw ResponseStatusException if account is not found
             allAccounts.save(account);
             allAccounts.flush();
-            return account;
+            return new AccountDetailsDto(account);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
