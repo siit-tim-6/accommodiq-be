@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,5 +42,11 @@ public class Guest extends User {
 
     public void setFavorite(Set<Accommodation> favorite) {
         this.favorite = favorite;
+    }
+
+    public boolean canCreateReservation(long startDate, long endDate, long accommodationId) {
+        return reservations.stream().noneMatch((reservation -> reservation.getAccommodation().getId() == accommodationId
+                && (reservation.getStartDate() <= startDate && startDate <= reservation.getEndDate()
+                || reservation.getStartDate() <= endDate && endDate <= reservation.getEndDate())));
     }
 }
