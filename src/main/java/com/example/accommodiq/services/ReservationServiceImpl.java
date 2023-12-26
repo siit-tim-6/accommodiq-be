@@ -1,10 +1,12 @@
 package com.example.accommodiq.services;
 
+import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IReservationService;
@@ -18,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -154,5 +158,21 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setUser(null);
         reservation.setAccommodation(null);
         return reservation;
+    }
+
+    @Override
+    public void canGuestCommentAndRateHost(Long guestId, Long hostId) {
+        Collection<Accommodation> hostAccommodations = accommodationService.findAccommodationsByHostId(hostId);
+
+        List<Long> accommodationIds = hostAccommodations.stream()
+                .map(Accommodation::getId)
+                .collect(Collectors.toList());
+
+        Collection<Reservation> reservations = allReservations
+                .findByUserIdAndAccommodationIdInAndStatusNot(guestId, accommodationIds, ReservationStatus.CANCELLED);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
+        }
     }
 }

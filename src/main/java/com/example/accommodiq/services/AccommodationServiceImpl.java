@@ -265,6 +265,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return new AccommodationUpdateDto(accommodation);
     }
 
+    @Override
+    public Collection<Accommodation> findAccommodationsByHostId(Long hostId) {
+        return accommodationRepository.findAllByHostId(hostId);
+    }
+
     private boolean isOverlapping(Availability existing, Availability newAvailability) {
         long existingStart = existing.getFromDate();
         long existingEnd = existing.getToDate();

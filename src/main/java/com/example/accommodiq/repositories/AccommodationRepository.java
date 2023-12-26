@@ -14,4 +14,6 @@ import java.util.Collection;
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long>, JpaSpecificationExecutor<Accommodation> {
     Collection<Accommodation> findByHostId(Long hostId);
     Collection<Accommodation> findAllByStatus(AccommodationStatus accommodationStatus);
+
+    Collection<Accommodation> findAllByHostId(Long hostId);
 }

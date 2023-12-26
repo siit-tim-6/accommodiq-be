@@ -47,4 +47,6 @@ public interface IAccommodationService {
     AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo);
 
     AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
+
+    Collection<Accommodation> findAccommodationsByHostId(Long hostId);
 }

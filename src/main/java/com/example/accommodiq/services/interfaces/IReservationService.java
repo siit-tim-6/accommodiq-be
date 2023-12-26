@@ -29,4 +29,6 @@ public interface IReservationService {
     Collection<Reservation> findReservationsByUserId(Long userId);
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
+
+    void canGuestCommentAndRateHost(Long guestId, Long hostId);
 }

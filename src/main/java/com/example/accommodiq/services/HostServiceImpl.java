@@ -6,11 +6,12 @@ import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
-import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
+import com.example.accommodiq.services.interfaces.IGuestService;
 import com.example.accommodiq.services.interfaces.IHostService;
+import com.example.accommodiq.services.interfaces.IReservationService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,19 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
-    final private GuestServiceImpl guestService;
+    final private IGuestService guestService;
 
-    final
-    AccommodationRepository allAccommodations;
+    final private IReservationService reservationService;
+
+    final AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, GuestServiceImpl guestService) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, IReservationService reservationService) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
         this.guestService = guestService;
+        this.reservationService = reservationService;
     }
 
     @Override
@@ -152,6 +155,7 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
+        reservationService.canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest);
