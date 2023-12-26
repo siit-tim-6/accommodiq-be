@@ -137,22 +137,8 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Collection<Review> getHostReviews(Long hostId) {
-        if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
-        }
-
-        return new ArrayList<Review>() {
-            {
-                add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
-            }
-
-            {
-                add(new Review(2L, 5, "Excellent stay!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
-            }
-        };
-
-        //Host host = findHost(hostId);
-        //return host.getReviews();
+        Host host = findHost(hostId);
+        return host.getReviews();
     }
 
     @Override
