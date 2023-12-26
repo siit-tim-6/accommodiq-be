@@ -71,15 +71,9 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public MessageDto delete(Long reviewId) {
-//        Review review = findReview(reviewId);
-//        allReviews.delete(review);
-//        allReviews.flush();
-//        return review;
-
-        if (reviewId == 4L) {
-            ErrorUtils.throwNotFound("reviewNotFound");
-        }
-
+        Review review = findReview(reviewId);
+        allReviews.delete(review);
+        allReviews.flush();
         return new MessageDto("Review successfully deleted.");
     }
 
