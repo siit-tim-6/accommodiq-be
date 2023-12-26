@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
@@ -11,9 +12,12 @@ import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,14 +32,17 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
+    final private GuestServiceImpl guestService;
+
     final
     AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, GuestServiceImpl guestService) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
+        this.guestService = guestService;
     }
 
     @Override
@@ -54,12 +61,33 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Host insert(Host host) {
-        return null;
+        try {
+            hostRepository.save(host);
+            hostRepository.flush();
+            return new Host(host);
+        } catch (ConstraintViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host cannot be inserted");
+        }
     }
 
     @Override
     public Host update(Host host) {
-        return null;
+        try {
+            findHost(host.getId());
+            hostRepository.save(host);
+            hostRepository.flush();
+            return new Host(host);
+        } catch (RuntimeException ex) {
+            Throwable e = ex;
+            Throwable c = null;
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException)) {
+                e = c;
+            }
+            if ((c != null)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host cannot be updated");
+            }
+            throw ex;
+        }
     }
 
     @Override
@@ -137,11 +165,12 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Review addReview(Long hostId, ReviewRequestDto reviewDto) {
-        if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
-        }
-
-        return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);
+    public Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
+        Host host = findHost(hostId);
+        Guest guest = guestService.findGuest(guestId);
+        Review review = new Review(reviewDto, guest);
+        host.getReviews().add(review);
+        update(host);
+        return review;
     }
 }
