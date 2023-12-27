@@ -145,6 +145,18 @@ public class ReservationServiceImpl implements IReservationService {
         }
     }
 
+    @Override
+    public void deleteByAccommodationId(Long accommodationId) {
+        allReservations.deleteByAccommodationId(accommodationId);
+        allReservations.flush();
+    }
+
+    @Override
+    public void deleteByUserId(Long userId) {
+        allReservations.deleteByUserId(userId);
+        allReservations.flush();
+    }
+
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);

@@ -15,9 +15,9 @@ public class Reservation {
     private int numberOfGuests;
     private ReservationStatus status;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Accommodation accommodation;
 
     public Reservation() {
