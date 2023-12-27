@@ -71,11 +71,6 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public MessageDto delete(Long reviewId) {
-//        Review review = findReview(reviewId);
-//        allReviews.delete(review);
-//        allReviews.flush();
-//        return review;
-
         if (reviewId == 4L) {
             ErrorUtils.throwNotFound("reviewNotFound");
         }
@@ -91,11 +86,6 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
-//        Review review = findReview(reviewId);
-//        review.setStatus(reviewStatusDto.getStatus());
-//        allReviews.save(review);
-//        allReviews.flush();
-
         if (reviewId == 4L) {
             ErrorUtils.throwNotFound("reviewNotFound");
         }
@@ -117,5 +107,11 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Collection<Review> getAccommodationReviews(Long accommodationId) {
         return accommodationService.getAccommodationReviews(accommodationId);
+    }
+
+    @Override
+    public void deleteByGuestId(Long id) {
+        allReviews.deleteByGuestId(id);
+        allReviews.flush();
     }
 }
