@@ -144,4 +144,9 @@ public class HostServiceImpl implements IHostService {
 
         return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);
     }
+
+    @Override
+    public AccommodationListDto deleteAccommodation(Long accommodationId) {
+        return accommodationService.deleteAccommodation(accommodationId);
+    }
 }
