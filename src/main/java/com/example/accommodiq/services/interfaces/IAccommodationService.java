@@ -47,4 +47,8 @@ public interface IAccommodationService {
     AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo);
 
     AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
+
+    AccommodationListDto deleteAccommodation(Long accommodationId);
+
+    void deleteAllByHostId(Long accountId);
 }

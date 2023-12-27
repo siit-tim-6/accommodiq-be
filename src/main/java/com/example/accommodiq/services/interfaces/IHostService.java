@@ -32,4 +32,6 @@ public interface IHostService {
     AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto);
 
     Review addReview(Long hostId, ReviewRequestDto reviewDto);
+
+    AccommodationListDto deleteAccommodation(Long accommodationId);
 }
