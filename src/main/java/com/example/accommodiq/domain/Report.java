@@ -9,9 +9,9 @@ public class Report {
     private Long id;
     private String reason;
     private Long timestamp;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User reportingUser;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User reportedUser;
 
     public Report() {}
