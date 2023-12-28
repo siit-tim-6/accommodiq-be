@@ -7,7 +7,6 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
-import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,14 +21,12 @@ import java.util.Collection;
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
-    final private IUserService userService;
     final private IAccountService accountService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService, IAccountService accountService) {
+    public HostController(IHostService hostService, IReviewService reviewService, IAccountService accountService) {
         this.hostService = hostService;
         this.reviewService = reviewService;
-        this.userService = userService;
         this.accountService = accountService;
     }
 
