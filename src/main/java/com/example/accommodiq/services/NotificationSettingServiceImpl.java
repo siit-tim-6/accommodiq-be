@@ -18,11 +18,9 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 @Service
 public class NotificationSettingServiceImpl implements INotificationSettingService {
 
-    final
-    NotificationSettingRepository allNotificationSettings;
+    final NotificationSettingRepository allNotificationSettings;
 
-    final
-    IUserService userService;
+    final IUserService userService;
 
     @Autowired
     public NotificationSettingServiceImpl(NotificationSettingRepository allNotificationSettings, IUserService userService) {

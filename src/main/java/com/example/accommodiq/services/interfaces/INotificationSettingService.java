@@ -1,7 +1,6 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.NotificationSetting;
-import com.example.accommodiq.domain.User;
 
 import java.util.Collection;
 
