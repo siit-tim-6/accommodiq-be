@@ -33,18 +33,6 @@ public class Account implements UserDetails {
     public Account() {
     }
 
-    public Account(Long id, String email, String password, AccountRole role, AccountStatus status, Long activationExpires, User user, String jwt) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.status = status;
-        this.activationExpires = activationExpires;
-        this.user = user;
-        this.jwt = jwt;
-        this.lastPasswordResetDate = Instant.now().toEpochMilli();
-    }
-
     public Account(RegisterDto registerDto) {
         this.email = registerDto.getEmail();
         this.password = registerDto.getPassword();

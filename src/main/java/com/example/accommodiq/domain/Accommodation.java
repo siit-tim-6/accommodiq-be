@@ -266,11 +266,11 @@ public class Accommodation {
             throw ErrorUtils.generateBadRequest("accommodationUnavailable");
         }
 
-        if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
+        if (pricingType == PricingType.PER_GUEST && guests != null && (guests > maxGuests || guests < minGuests)) {
             throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
-        Long oneDay = (long) (60 * 60 * 24);
+        long oneDay = 60 * 60 * 24;
 
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
                 (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
@@ -284,12 +284,15 @@ public class Accommodation {
                 totalPrice += availabilityCandidate.getPrice();
                 fromDateCopy += oneDay;
 
+                assert guests != null;
+
                 if (fromDateCopy > toDate) {
                     return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
                 }
             }
         }
 
+        assert guests != null;
         return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
     }
 
