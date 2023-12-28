@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.services.interfaces.IVerificationTokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -12,7 +13,9 @@ import java.util.Base64;
 public class VerificationTokenServiceImpl implements IVerificationTokenService {
 
     private static final int TOKEN_LENGTH = 10;
-    private static final String SECRET_KEY = "AccommodIQ";
+
+    @Value("${email.token.secret}")
+    private static String SECRET_KEY;
 
     @Override
     public String generateVerificationToken(Long userId, String userEmail) {

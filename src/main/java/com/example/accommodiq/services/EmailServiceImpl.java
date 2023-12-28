@@ -1,6 +1,5 @@
 package com.example.accommodiq.services;
 
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.services.interfaces.IEmailService;
 import com.example.accommodiq.services.interfaces.IVerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ public class EmailServiceImpl implements IEmailService {
 
     final private IVerificationTokenService verificationTokenService;
 
-    final private String fromEmail = "accommodiqproject@gmail.com";
-
 
     @Autowired
     public EmailServiceImpl(JavaMailSender javaMailSender, IVerificationTokenService verificationTokenService) {
@@ -27,6 +24,7 @@ public class EmailServiceImpl implements IEmailService {
     @Override
     public void sendVerificationEmail(Long accountId, String accountEmail) {
         SimpleMailMessage message = new SimpleMailMessage();
+        String fromEmail = "accommodiqproject@gmail.com";
         message.setFrom(fromEmail);
         message.setTo(accountEmail);
         message.setSubject("AccommodIQ - Email Verification");
