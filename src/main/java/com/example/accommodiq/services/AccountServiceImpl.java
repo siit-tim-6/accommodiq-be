@@ -8,9 +8,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
-import com.example.accommodiq.services.interfaces.IAccountService;
-import com.example.accommodiq.services.interfaces.IEmailService;
-import com.example.accommodiq.services.interfaces.INotificationSettingService;
+import com.example.accommodiq.services.interfaces.*;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +36,25 @@ public class AccountServiceImpl implements IAccountService {
     final
     INotificationSettingService notificationSettingService;
 
+    final
+    IReservationService reservationService;
+
+    final IAccommodationService accommodationService;
+    final IReportService reportService;
+
+    final IReviewService reviewService;
+
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, IAccommodationService accommodationService, IReportService reportService, IReviewService reviewService) {
         this.allAccounts = allAccounts;
         this.emailService = emailService;
         this.notificationSettingService = notificationSettingService;
+        this.reservationService = reservationService;
+        this.accommodationService = accommodationService;
+        this.reportService = reportService;
+        this.reviewService = reviewService;
     }
 
     @Override
@@ -111,6 +121,17 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Account delete(Long accountId) {
         Account found = findAccount(accountId); // this will throw AccountNotFoundException if Account is not found
+        reservationService.deleteByUserId(accountId);
+        if (found.getRole() == AccountRole.HOST) {
+            accommodationService.deleteAllByHostId(accountId);
+        }
+        reportService.deleteByReportingUserId(accountId);
+        reportService.deleteByReportedUserId(accountId);
+
+        if (found.getRole() == AccountRole.GUEST) {
+            reviewService.deleteByGuestId(accountId);
+        }
+
         allAccounts.delete(found);
         allAccounts.flush();
         return found;
@@ -124,12 +145,6 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public UserLoginDto login(CredentialsDto credentialsDto) {
-//        Account account = allAccounts.findAccountByEmail(credentialsDto.getEmail());
-//        if (account == null || !Objects.equals(account.getPassword(), credentialsDto.getPassword())) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
-//        }
-//        return new UserLoginDto(account);
-
         if (credentialsDto.getEmail().equals("test@nonexistent.com")) {
             ErrorUtils.throwNotFound("badCredentials");
         }
@@ -158,6 +173,10 @@ public class AccountServiceImpl implements IAccountService {
         allAccounts.flush();
     }
 
+    private boolean emailExists(String email) {
+        return allAccounts.findAccountByEmail(email) != null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account user = allAccounts.findAccountByEmail(email);
@@ -166,9 +185,5 @@ public class AccountServiceImpl implements IAccountService {
         } else {
             return user;
         }
-    }
-
-    private boolean emailExists(String email) {
-        return allAccounts.findAccountByEmail(email) != null;
     }
 }

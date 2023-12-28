@@ -29,4 +29,8 @@ public interface IReservationService {
     Collection<Reservation> findReservationsByUserId(Long userId);
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
+
+    void deleteByAccommodationId(Long accommodationId);
+
+    void deleteByUserId(Long userId);
 }

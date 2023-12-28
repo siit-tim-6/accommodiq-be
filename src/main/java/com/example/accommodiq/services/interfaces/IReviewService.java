@@ -26,4 +26,6 @@ public interface IReviewService {
     Collection<Review> getHostReviews(Long hostId);
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
+
+    void deleteByGuestId(Long id);
 }

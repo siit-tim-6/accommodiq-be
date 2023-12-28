@@ -110,8 +110,8 @@ public class HostController {
         return reviewService.getHostReviews(hostId);
     }
 
-    private Review convertToReview(ReviewDto reviewDto) {
-        User guest = userService.findUser(reviewDto.getGuestId());
-        return new Review(reviewDto, guest);
+    @DeleteMapping("accommodations/{accommodationId}")
+    public AccommodationListDto deleteAccommodation(@PathVariable Long accommodationId) {
+        return hostService.deleteAccommodation(accommodationId);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
@@ -71,11 +72,6 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public MessageDto delete(Long reviewId) {
-//        Review review = findReview(reviewId);
-//        allReviews.delete(review);
-//        allReviews.flush();
-//        return review;
-
         if (reviewId == 4L) {
             ErrorUtils.throwNotFound("reviewNotFound");
         }
@@ -91,11 +87,6 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
-//        Review review = findReview(reviewId);
-//        review.setStatus(reviewStatusDto.getStatus());
-//        allReviews.save(review);
-//        allReviews.flush();
-
         if (reviewId == 4L) {
             ErrorUtils.throwNotFound("reviewNotFound");
         }
@@ -117,5 +108,16 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Collection<Review> getAccommodationReviews(Long accommodationId) {
         return accommodationService.getAccommodationReviews(accommodationId);
+    }
+
+    @Override
+    public void deleteByGuestId(Long id) {
+        List<Review> reviews = allReviews.findByGuestId(id);
+        for (Review review : reviews) {
+            allReviews.deleteFromAccommodationReviews(review.getId());
+            allReviews.deleteFromHostReviews(review.getId());
+        }
+        allReviews.deleteByGuestId(id);
+        allReviews.flush();
     }
 }

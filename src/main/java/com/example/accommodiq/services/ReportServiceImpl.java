@@ -114,6 +114,18 @@ public class ReportServiceImpl implements IReportService {
         insert(report);
     }
 
+    @Override
+    public void deleteByReportedUserId(Long id) {
+        allReports.deleteByReportedUserId(id);
+        allReports.flush();
+    }
+
+    @Override
+    public void deleteByReportingUserId(Long id) {
+        allReports.deleteByReportingUserId(id);
+        allReports.flush();
+    }
+
     private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
         if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
             throwBadRequest("reportYourself");
@@ -134,5 +146,4 @@ public class ReportServiceImpl implements IReportService {
         report.setTimestamp(reportDto.getTimestamp());
         return report;
     }
-
 }

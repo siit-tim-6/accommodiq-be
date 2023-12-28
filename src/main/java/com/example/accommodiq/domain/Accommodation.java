@@ -30,7 +30,7 @@ public class Accommodation {
     private Set<Review> reviews = new HashSet<>();
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Availability> available = new HashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Host host;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> benefits = new HashSet<>();
