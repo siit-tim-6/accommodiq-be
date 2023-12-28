@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.email;
+package com.example.accommodiq.services.impl.email;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.enums.AccountStatus;

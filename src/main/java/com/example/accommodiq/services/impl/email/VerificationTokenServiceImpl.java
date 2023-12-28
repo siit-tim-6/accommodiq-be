@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.email;
+package com.example.accommodiq.services.impl.email;
 
 import com.example.accommodiq.services.interfaces.email.IVerificationTokenService;
 import org.springframework.beans.factory.annotation.Value;

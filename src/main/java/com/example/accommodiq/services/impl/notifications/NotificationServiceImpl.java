@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.notifications;
+package com.example.accommodiq.services.impl.notifications;
 
 import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.User;

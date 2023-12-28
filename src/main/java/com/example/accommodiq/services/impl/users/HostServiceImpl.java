@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.users;
+package com.example.accommodiq.services.impl.users;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;

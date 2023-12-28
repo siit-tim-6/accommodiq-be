@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.feedback;
+package com.example.accommodiq.services.impl.feedback;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;

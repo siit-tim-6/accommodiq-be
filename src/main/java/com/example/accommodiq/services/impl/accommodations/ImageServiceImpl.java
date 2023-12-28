@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.accommodations;
+package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.dtos.ImageDataDto;
 import com.example.accommodiq.services.interfaces.accommodations.IImageService;
