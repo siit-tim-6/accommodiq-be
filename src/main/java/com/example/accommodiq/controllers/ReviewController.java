@@ -59,8 +59,10 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}/status")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Review acceptReview(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
-        return reviewService.setReviewStatus(reviewId, body);
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('HOST')")
+    public MessageDto setReviewStatus(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        reviewService.setReviewStatus(reviewId, body);
+        return new MessageDto("Review status updated successfully");
     }
+
 }

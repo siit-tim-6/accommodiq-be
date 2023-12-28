@@ -85,22 +85,11 @@ public class ReviewServiceImpl implements IReviewService {
 
     @Override
     public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
-//        Review review = findReview(reviewId);
-//        review.setStatus(reviewStatusDto.getStatus());
-//        allReviews.save(review);
-//        allReviews.flush();
-
-        if (reviewId == 4L) {
-            ErrorUtils.throwNotFound("reviewNotFound");
-        }
-
-        return new Review(
-                4L,
-                5,
-                "Great experience!",
-                new Date().getTime(),  // Replace with actual date
-                ReviewStatus.ACCEPTED
-        );
+        Review review = findReview(reviewId);
+        review.setStatus(reviewStatusDto.getStatus());
+        allReviews.save(review);
+        allReviews.flush();
+        return review;
     }
 
     @Override
