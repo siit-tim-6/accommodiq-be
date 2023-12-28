@@ -97,7 +97,7 @@ public class UserController {
         Account account = (Account) accountService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(passwordDto.getOldPassword(), account.getPassword())) {
-            ErrorUtils.generateBadRequest("wrongOldPassword");
+            throw ErrorUtils.generateBadRequest("wrongOldPassword");
         }
 
         passwordDto.encode(passwordEncoder);

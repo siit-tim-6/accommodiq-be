@@ -121,7 +121,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ErrorUtils.generateNotFound("accommodationNotFound");
+            throw ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
         return new AccommodationDetailsDto(accommodation.get());
@@ -131,7 +131,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation findAccommodation(Long accommodationId) {
         Optional<Accommodation> found = accommodationRepository.findById(accommodationId);
         if (found.isEmpty()) {
-            generateNotFound("accommodationNotFound");
+            throw generateNotFound("accommodationNotFound");
         }
         return found.get();
     }
@@ -231,7 +231,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) {
         if (accommodationId == 4L) {
-            generateNotFound("accommodationNotFound");
+            throw generateNotFound("accommodationNotFound");
         }
 
         return new Accommodation(1L,

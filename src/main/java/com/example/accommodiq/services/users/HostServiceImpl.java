@@ -47,7 +47,7 @@ public class HostServiceImpl implements IHostService {
     public Host findHost(Long hostId) {
         Optional<Host> found = hostRepository.findById(hostId);
         if (found.isEmpty()) {
-            ErrorUtils.generateNotFound("hostNotFound");
+            throw ErrorUtils.generateNotFound("hostNotFound");
         }
         return found.get();
     }
@@ -81,7 +81,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.generateNotFound("hostNotFound");
+            throw ErrorUtils.generateNotFound("hostNotFound");
         }
 
         ArrayList<HostReservationDto> reservations = new ArrayList<>();
@@ -95,7 +95,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate) {
         if (hostId == 4L) {
-            ErrorUtils.generateNotFound("hostNotFound");
+            throw ErrorUtils.generateNotFound("hostNotFound");
         }
 
         ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
@@ -110,7 +110,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Collection<Review> getHostReviews(Long hostId) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.generateNotFound("hostNotFound");
+            throw ErrorUtils.generateNotFound("hostNotFound");
         }
 
         return new ArrayList<>() {
@@ -135,7 +135,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Review addReview(Long hostId, ReviewRequestDto reviewDto) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.generateNotFound("hostNotFound");
+            throw ErrorUtils.generateNotFound("hostNotFound");
         }
 
         return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);

@@ -37,7 +37,7 @@ public class NotificationServiceImpl implements INotificationService {
     public Notification findNotification(Long notificationId) {
         Optional<Notification> found = allNotifications.findById(notificationId);
         if (found.isEmpty()) {
-            generateNotFound("reviewNotFound");
+            throw generateNotFound("reviewNotFound");
         }
         return found.get();
     }
@@ -58,9 +58,8 @@ public class NotificationServiceImpl implements INotificationService {
             allNotifications.flush();
             return notification;
         } catch (ConstraintViolationException ex) {
-            generateNotFound("reviewUpdateFailed");
+            throw generateNotFound("reviewUpdateFailed");
         }
-        return notification;
     }
 
     @Override

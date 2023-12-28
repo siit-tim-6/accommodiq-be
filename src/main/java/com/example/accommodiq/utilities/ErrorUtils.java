@@ -10,13 +10,13 @@ public class ErrorUtils {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public static void generateBadRequest(String messageKey) {
+    public static ResponseStatusException generateBadRequest(String messageKey) {
         String value = bundle.getString(messageKey);
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, value);
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, value);
     }
 
-    public static void generateNotFound(String messageKey) {
+    public static ResponseStatusException generateNotFound(String messageKey) {
         String value = bundle.getString(messageKey);
-        throw  new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, value);
     }
 }

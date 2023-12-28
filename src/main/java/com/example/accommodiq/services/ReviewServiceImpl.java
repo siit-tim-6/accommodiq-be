@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements IReviewService {
     public Review findReview(Long reviewId) {
         Optional<Review> found = allReviews.findById(reviewId);
         if (found.isEmpty()) {
-            generateNotFound("reviewNotFound");
+            throw generateNotFound("reviewNotFound");
         }
         return found.get();
     }
@@ -65,15 +65,14 @@ public class ReviewServiceImpl implements IReviewService {
             allReviews.flush();
             return review;
         } catch (ConstraintViolationException ex) {
-            generateNotFound("reviewUpdateFailed");
+            throw generateNotFound("reviewUpdateFailed");
         }
-        return review;
     }
 
     @Override
     public MessageDto delete(Long reviewId) {
         if (reviewId == 4L) {
-            ErrorUtils.generateNotFound("reviewNotFound");
+            throw ErrorUtils.generateNotFound("reviewNotFound");
         }
 
         return new MessageDto("Review successfully deleted.");
@@ -88,7 +87,7 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
         if (reviewId == 4L) {
-            ErrorUtils.generateNotFound("reviewNotFound");
+            throw ErrorUtils.generateNotFound("reviewNotFound");
         }
 
         return new Review(

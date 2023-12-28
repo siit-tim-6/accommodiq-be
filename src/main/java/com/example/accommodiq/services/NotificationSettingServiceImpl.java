@@ -40,7 +40,7 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     public NotificationSetting findNotificationSetting(Long notificationSettingId) {
         Optional<NotificationSetting> found = allNotificationSettings.findById(notificationSettingId);
         if (found.isEmpty()) {
-            generateNotFound("reviewNotFound");
+            throw generateNotFound("reviewNotFound");
         }
         return found.get();
     }
@@ -61,9 +61,8 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
             allNotificationSettings.flush();
             return notificationSetting;
         } catch (ConstraintViolationException ex) {
-            generateNotFound("reviewUpdateFailed");
+            throw generateNotFound("reviewUpdateFailed");
         }
-        return notificationSetting;
     }
 
     @Override

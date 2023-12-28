@@ -39,7 +39,7 @@ public class ReportServiceImpl implements IReportService {
     public Report findReport(Long reportId) {
         Optional<Report> found = allReports.findById(reportId);
         if (found.isEmpty()) {
-            generateNotFound("reportNotFound");
+            throw generateNotFound("reportNotFound");
         }
         return found.get();
     }
@@ -51,9 +51,8 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return report;
         } catch (ConstraintViolationException ex) {
-            generateBadRequest("reportInsertFailed");
+            throw generateBadRequest("reportInsertFailed");
         }
-        return report;
     }
 
     @Override
@@ -64,9 +63,8 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return new ReportModificationDto(report);
         } catch (ConstraintViolationException ex) {
-            generateBadRequest("reportInsertFailed");
+            throw generateBadRequest("reportInsertFailed");
         }
-        return new ReportModificationDto(report);
     }
 
     @Override
@@ -82,9 +80,8 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return new ReportModificationDto(existingReport);
         } catch (ConstraintViolationException ex) {
-            generateBadRequest("reportUpdateFailed");
+            throw generateBadRequest("reportUpdateFailed");
         }
-        return new ReportModificationDto(existingReport);
     }
 
     @Override
@@ -128,13 +125,13 @@ public class ReportServiceImpl implements IReportService {
 
     private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
         if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
-            generateBadRequest("reportYourself");
+            throw generateBadRequest("reportYourself");
         }
         if (reportedUserId == null || reportDto.getReportingUserId() == null) {
-            generateBadRequest("reportNull");
+            throw generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
-            generateBadRequest("reportReasonNull");
+            throw generateBadRequest("reportReasonNull");
         }
     }
 

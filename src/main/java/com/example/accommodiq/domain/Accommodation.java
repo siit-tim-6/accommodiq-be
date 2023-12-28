@@ -263,11 +263,11 @@ public class Accommodation {
         }
 
         if (!isAvailable(fromDate, toDate)) {
-            ErrorUtils.generateBadRequest("accommodationUnavailable");
+            throw ErrorUtils.generateBadRequest("accommodationUnavailable");
         }
 
         if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
-            ErrorUtils.generateBadRequest("invalidGuestNumber");
+            throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
         Long oneDay = (long) (60 * 60 * 24);

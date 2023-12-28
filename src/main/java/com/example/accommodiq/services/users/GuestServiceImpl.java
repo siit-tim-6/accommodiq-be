@@ -30,7 +30,7 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Guest> guest = guestRepository.findById(guestId);
 
         if (guest.isEmpty()) {
-            ErrorUtils.generateNotFound("guestNotFound");
+            throw ErrorUtils.generateNotFound("guestNotFound");
         }
 
         return guest.get();
@@ -40,7 +40,7 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ErrorUtils.generateNotFound("accommodationNotFound");
+            throw ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
         return accommodation.get();
@@ -49,7 +49,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<ReservationListDto> getReservations(Long guestId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.generateNotFound("guestNotFound");
+            throw ErrorUtils.generateNotFound("guestNotFound");
         }
 
         return new ArrayList<>();
@@ -62,7 +62,7 @@ public class GuestServiceImpl implements IGuestService {
         Accommodation accommodation = findAccommodation(reservationDto.getAccommodationId());
 
         if (!guest.canCreateReservation(reservationDto.getStartDate(), reservationDto.getEndDate(), reservationDto.getAccommodationId())) {
-            ErrorUtils.generateBadRequest("overlappingReservations");
+            throw ErrorUtils.generateBadRequest("overlappingReservations");
         }
 
         guest.getReservations().add(new Reservation(reservationDto, guest, accommodation));
@@ -75,7 +75,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<AccommodationListDto> getFavorites(Long guestId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.generateNotFound("guestNotFound");
+            throw ErrorUtils.generateNotFound("guestNotFound");
         }
 
         return new ArrayList<>();
@@ -84,7 +84,7 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.generateNotFound("guestNotFound");
+            throw ErrorUtils.generateNotFound("guestNotFound");
         }
         return new AccommodationListDto() {{
             setId(2L);
@@ -102,11 +102,11 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public MessageDto removeFavorite(Long guestId, Long accommodationId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.generateNotFound("guestNotFound");
+            throw ErrorUtils.generateNotFound("guestNotFound");
         }
 
         if (accommodationId == 4L) {
-            ErrorUtils.generateNotFound("favoriteNotFound");
+            throw ErrorUtils.generateNotFound("favoriteNotFound");
         }
 
         return new MessageDto("Favorite removed successfully");
