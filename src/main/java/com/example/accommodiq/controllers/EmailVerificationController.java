@@ -1,6 +1,6 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.services.interfaces.IEmailVerificationService;
+import com.example.accommodiq.services.interfaces.email.IEmailVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

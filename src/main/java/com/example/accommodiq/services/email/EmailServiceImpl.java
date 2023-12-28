@@ -1,7 +1,7 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.email;
 
-import com.example.accommodiq.services.interfaces.IEmailService;
-import com.example.accommodiq.services.interfaces.IVerificationTokenService;
+import com.example.accommodiq.services.interfaces.email.IEmailService;
+import com.example.accommodiq.services.interfaces.email.IVerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

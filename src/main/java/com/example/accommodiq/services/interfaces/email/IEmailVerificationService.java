@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.email;
 
 import org.springframework.http.ResponseEntity;
 

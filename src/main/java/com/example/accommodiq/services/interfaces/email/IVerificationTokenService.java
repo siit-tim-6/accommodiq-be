@@ -1,8 +1,8 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.email;
 
 public interface IVerificationTokenService {
 
-    public String generateVerificationToken(Long userId, String userEmail);
+    String generateVerificationToken(Long userId, String userEmail);
 
     boolean verifyVerificationToken(Long accountId, String accountEmail, String token);
 }

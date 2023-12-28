@@ -9,6 +9,7 @@ import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.*;
+import com.example.accommodiq.services.interfaces.email.IEmailService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;

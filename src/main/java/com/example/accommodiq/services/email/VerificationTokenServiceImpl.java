@@ -1,6 +1,6 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.email;
 
-import com.example.accommodiq.services.interfaces.IVerificationTokenService;
+import com.example.accommodiq.services.interfaces.email.IVerificationTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
