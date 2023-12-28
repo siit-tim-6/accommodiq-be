@@ -111,13 +111,7 @@ public class HostController {
     }
 
     @DeleteMapping("accommodations/{accommodationId}")
-    @PreAuthorize("hasAuthority('HOST')")
     public AccommodationListDto deleteAccommodation(@PathVariable Long accommodationId) {
         return hostService.deleteAccommodation(accommodationId);
-    }
-
-    private Review convertToReview(ReviewDto reviewDto) {
-        User guest = userService.findUser(reviewDto.getGuestId());
-        return new Review(reviewDto, guest);
     }
 }

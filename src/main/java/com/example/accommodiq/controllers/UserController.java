@@ -75,7 +75,7 @@ public class UserController {
     }
 
     @DeleteMapping()
-    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     public Account deleteUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
