@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.users;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Guest;
@@ -6,7 +6,7 @@ import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
-import com.example.accommodiq.services.interfaces.IGuestService;
+import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

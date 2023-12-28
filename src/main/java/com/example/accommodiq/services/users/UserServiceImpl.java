@@ -1,8 +1,8 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.users;
 
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.UserRepository;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

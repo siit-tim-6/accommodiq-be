@@ -2,7 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.LoginResponseDto;
-import com.example.accommodiq.services.interfaces.ISessionService;
+import com.example.accommodiq.services.interfaces.users.ISessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

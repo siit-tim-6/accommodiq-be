@@ -5,7 +5,7 @@ import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.IReportService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

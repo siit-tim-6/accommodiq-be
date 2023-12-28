@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.AccountDetailsDto;

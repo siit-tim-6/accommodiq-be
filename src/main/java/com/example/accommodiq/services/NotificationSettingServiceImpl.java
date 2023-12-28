@@ -5,7 +5,7 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationSettingRepository;
 import com.example.accommodiq.services.interfaces.INotificationSettingService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

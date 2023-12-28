@@ -7,7 +7,7 @@ import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
-import com.example.accommodiq.services.interfaces.IHostService;
+import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;

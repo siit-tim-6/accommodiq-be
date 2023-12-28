@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.users;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
@@ -12,6 +12,7 @@ import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.*;
 import com.example.accommodiq.services.interfaces.email.IEmailService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

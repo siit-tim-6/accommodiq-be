@@ -8,7 +8,7 @@ import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.services.interfaces.IReservationService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.i18n.LocaleContextHolder;

@@ -1,11 +1,11 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.users;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.LoginResponseDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.security.jwt.JwtTokenUtil;
-import com.example.accommodiq.services.interfaces.ISessionService;
+import com.example.accommodiq.services.interfaces.users.ISessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.dtos.CredentialsDto;
 import com.example.accommodiq.dtos.LoginResponseDto;

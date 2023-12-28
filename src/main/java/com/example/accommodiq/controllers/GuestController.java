@@ -1,12 +1,10 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.dtos.AccommodationListDto;
 import com.example.accommodiq.dtos.GuestFavoriteDto;
-import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationListDto;
-import com.example.accommodiq.services.interfaces.IGuestService;
+import com.example.accommodiq.services.interfaces.users.IGuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

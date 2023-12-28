@@ -2,7 +2,7 @@ package com.example.accommodiq.services.email;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.enums.AccountStatus;
-import com.example.accommodiq.services.interfaces.IAccountService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.email.IEmailVerificationService;
 import com.example.accommodiq.services.interfaces.email.IVerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;

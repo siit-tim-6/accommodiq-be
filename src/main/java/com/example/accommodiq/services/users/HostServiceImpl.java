@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.users;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Host;
@@ -9,7 +9,7 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
-import com.example.accommodiq.services.interfaces.IHostService;
+import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

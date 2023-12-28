@@ -4,7 +4,7 @@ import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.INotificationService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

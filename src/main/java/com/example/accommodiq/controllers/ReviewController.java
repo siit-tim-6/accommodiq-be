@@ -5,9 +5,8 @@ import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.services.interfaces.IReviewService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
