@@ -15,7 +15,6 @@ import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +30,9 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
-    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE = 1; // in days
+    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
     public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository) {
@@ -46,7 +44,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation insert(Host host, AccommodationCreateDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
-        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE);
+        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS);
         accommodation.setStatus(AccommodationStatus.PENDING);
         try {
             accommodationRepository.save(accommodation);
@@ -60,7 +58,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Accommodation update(Accommodation accommodation) {
         try {
-            findAccommodation(accommodation.getId()); // this will throw ResponseStatusException if accommodation is not found
+            findAccommodation(accommodation.getId());
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
             return accommodation;
@@ -82,28 +80,28 @@ public class AccommodationServiceImpl implements IAccommodationService {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
         }
 
-        List<AccommodationListDto> accommodationListDtos;
+        List<AccommodationListDto> accommodations;
         if (!dateRangeSpecified && priceRangeSpecified) {
-            accommodationListDtos = searchedAccommodations.stream()
+            accommodations = searchedAccommodations.stream()
                     .map(AccommodationListDto::new)
                     .filter(accommodationListDto -> accommodationListDto.getMinPrice() != 0 && accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
                     .toList();
         } else if (dateRangeSpecified && priceRangeSpecified) {
-            accommodationListDtos = searchedAccommodations.stream()
+            accommodations = searchedAccommodations.stream()
                     .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
                     .toList();
-        } else if (dateRangeSpecified && !priceRangeSpecified) {
-            accommodationListDtos = searchedAccommodations.stream()
+        } else if (dateRangeSpecified) {
+            accommodations = searchedAccommodations.stream()
                     .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
                     .toList();
         } else {
-            accommodationListDtos = searchedAccommodations.stream()
+            accommodations = searchedAccommodations.stream()
                     .map(AccommodationListDto::new)
                     .toList();
         }
 
-        return accommodationListDtos;
+        return accommodations;
     }
 
     @Override
@@ -147,16 +145,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto accommodationBookingDetailsDto) {
-        Accommodation accommodation = findAccommodation(accommodationId);
-        accommodation.setCancellationDeadline(accommodationBookingDetailsDto.getCancellationDeadline());
-        accommodation.setPricingType(accommodationBookingDetailsDto.getPricingType());
-        Accommodation updatedAccommodation = update(accommodation);
-        return ResponseEntity.ok(new AccommodationBookingDetailsDto(updatedAccommodation));
-    }
-
-    @Override
-    @Transactional
     public ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto) {
         Accommodation accommodation = findAccommodation(accommodationId);
         Availability newAvailability = new Availability(availabilityDto);
@@ -174,6 +162,16 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         return ResponseEntity
                 .ok(updatedAccommodation.getAvailable().stream().toList());
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(Long accommodationId, AccommodationBookingDetailsDto accommodationBookingDetailsDto) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        accommodation.setCancellationDeadline(accommodationBookingDetailsDto.getCancellationDeadline());
+        accommodation.setPricingType(accommodationBookingDetailsDto.getPricingType());
+        Accommodation updatedAccommodation = update(accommodation);
+        return ResponseEntity.ok(new AccommodationBookingDetailsDto(updatedAccommodation));
     }
 
     @Override
@@ -199,7 +197,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationReportDto getAccommodationReport(Long accommodationId) {
-        ArrayList<AccommodationReportRevenueDto> revenueDtos = new ArrayList<>() {
+        ArrayList<AccommodationReportRevenueDto> revenues = new ArrayList<>() {
             {
                 add(new AccommodationReportRevenueDto("January", 8000));
             }
@@ -209,12 +207,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
             }
         };
 
-        return new AccommodationReportDto(30, revenueDtos);
+        return new AccommodationReportDto(30, revenues);
     }
 
     @Override
-    public Collection<Review> getAccommodationReviews(Long accommodationId) {
-        return new ArrayList<Review>() {
+    public Collection<Review> getAccommodationReviews(Long accommodationId) { // mocked
+        return new ArrayList<>() {
             {
                 add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), null));
             }
@@ -223,13 +221,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
                 add(new Review(2L, 5, "Excellent stay!", Instant.now().toEpochMilli(), null));
             }
         };
-
-        //Accommodation accommodation = accommodationRepository.findById(accommodationId);
-        //return accommodation.getReviews();
     }
 
     @Override
-    public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) {
+    public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) { // mocked
         if (accommodationId == 4L) {
             throw generateNotFound("accommodationNotFound");
         }
@@ -251,11 +246,27 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    @Transactional
+    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId) {
         Accommodation accommodation = findAccommodation(accommodationId);
         AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
         return ResponseEntity.ok(accommodationDetails);
+    }
+
+    @Override
+    public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
+    }
+
+    @Override
+    public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
+        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
     }
 
     @Override
@@ -280,15 +291,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
         accommodationRepository.flush();
     }
 
-    private boolean isOverlapping(Availability existing, Availability newAvailability) {
-        long existingStart = existing.getFromDate();
-        long existingEnd = existing.getToDate();
-        long newStart = newAvailability.getFromDate();
-        long newEnd = newAvailability.getToDate();
-
-        return newStart < existingEnd && newEnd > existingStart;
-    }
-
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {
 
         Long count = reservationRepository.countOverlappingReservations(
@@ -299,19 +301,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return count != null && count > 0;
     }
 
-    @Override
-    @Transactional
-    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
-        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
-    }
+    private boolean isOverlapping(Availability existing, Availability newAvailability) {
+        long existingStart = existing.getFromDate();
+        long existingEnd = existing.getToDate();
+        long newStart = newAvailability.getFromDate();
+        long newEnd = newAvailability.getToDate();
 
-    @Override
-    public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
-        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
-    }
-
-    @Override
-    public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
-        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
+        return newStart < existingEnd && newEnd > existingStart;
     }
 }

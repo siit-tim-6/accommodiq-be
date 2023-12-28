@@ -15,10 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +50,7 @@ public class ImageServiceImpl implements IImageService {
         try {
             Path dirPath = Path.of(UPLOAD_DIR);
             if (!Files.exists(dirPath)) {
-                Files.createDirectories(dirPath); // Create directory if it doesn't exist
+                Files.createDirectories(dirPath);
             }
 
             String fileName = generateUniqueFileName(file.getOriginalFilename());
@@ -69,13 +69,12 @@ public class ImageServiceImpl implements IImageService {
     }
 
     private MediaType getContentType(String filename) {
-        String fileExtension = StringUtils.getFilenameExtension(filename).toLowerCase();
+        String fileExtension = Objects.requireNonNull(StringUtils.getFilenameExtension(filename)).toLowerCase();
         Map<String, MediaType> extensionMap = new HashMap<>();
         extensionMap.put("jpeg", MediaType.IMAGE_JPEG);
         extensionMap.put("jpg", MediaType.IMAGE_JPEG);
         extensionMap.put("png", MediaType.IMAGE_PNG);
         extensionMap.put("gif", MediaType.IMAGE_GIF);
-        // add other types as needed
 
         return extensionMap.getOrDefault(fileExtension, MediaType.APPLICATION_OCTET_STREAM);
     }
