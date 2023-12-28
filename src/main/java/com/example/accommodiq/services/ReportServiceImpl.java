@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ErrorUtils.throwBadRequest;
-import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.generateBadRequest;
+import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class ReportServiceImpl implements IReportService {
@@ -39,7 +39,7 @@ public class ReportServiceImpl implements IReportService {
     public Report findReport(Long reportId) {
         Optional<Report> found = allReports.findById(reportId);
         if (found.isEmpty()) {
-            throwNotFound("reportNotFound");
+            generateNotFound("reportNotFound");
         }
         return found.get();
     }
@@ -51,7 +51,7 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return report;
         } catch (ConstraintViolationException ex) {
-            throwBadRequest("reportInsertFailed");
+            generateBadRequest("reportInsertFailed");
         }
         return report;
     }
@@ -64,7 +64,7 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return new ReportModificationDto(report);
         } catch (ConstraintViolationException ex) {
-            throwBadRequest("reportInsertFailed");
+            generateBadRequest("reportInsertFailed");
         }
         return new ReportModificationDto(report);
     }
@@ -82,7 +82,7 @@ public class ReportServiceImpl implements IReportService {
             allReports.flush();
             return new ReportModificationDto(existingReport);
         } catch (ConstraintViolationException ex) {
-            throwBadRequest("reportUpdateFailed");
+            generateBadRequest("reportUpdateFailed");
         }
         return new ReportModificationDto(existingReport);
     }
@@ -128,13 +128,13 @@ public class ReportServiceImpl implements IReportService {
 
     private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
         if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
-            throwBadRequest("reportYourself");
+            generateBadRequest("reportYourself");
         }
         if (reportedUserId == null || reportDto.getReportingUserId() == null) {
-            throwBadRequest("reportNull");
+            generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
-            throwBadRequest("reportReasonNull");
+            generateBadRequest("reportReasonNull");
         }
     }
 

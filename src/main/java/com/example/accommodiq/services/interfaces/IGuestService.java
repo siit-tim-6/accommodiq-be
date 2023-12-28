@@ -1,7 +1,6 @@
 package com.example.accommodiq.services.interfaces;
 
 import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 
 import java.util.Collection;

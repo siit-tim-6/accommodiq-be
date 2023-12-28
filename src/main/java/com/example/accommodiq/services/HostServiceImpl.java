@@ -47,7 +47,7 @@ public class HostServiceImpl implements IHostService {
     public Host findHost(Long hostId) {
         Optional<Host> found = hostRepository.findById(hostId);
         if (found.isEmpty()) {
-            ErrorUtils.throwNotFound("hostNotFound");
+            ErrorUtils.generateNotFound("hostNotFound");
         }
         return found.get();
     }
@@ -79,9 +79,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) {
+    public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
+            ErrorUtils.generateNotFound("hostNotFound");
         }
 
         ArrayList<HostReservationDto> reservations = new ArrayList<>();
@@ -95,7 +95,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate) {
         if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
+            ErrorUtils.generateNotFound("hostNotFound");
         }
 
         ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
@@ -108,23 +108,19 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Collection<Review> getHostReviews(Long hostId) {
+    public Collection<Review> getHostReviews(Long hostId) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
+            ErrorUtils.generateNotFound("hostNotFound");
         }
 
-        return new ArrayList<Review>() {
+        return new ArrayList<>() {
             {
                 add(new Review(1L, 5, "Great place!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
             }
-
             {
                 add(new Review(2L, 5, "Excellent stay!", Instant.now().toEpochMilli(), ReviewStatus.ACCEPTED));
             }
         };
-
-        //Host host = findHost(hostId);
-        //return host.getReviews();
     }
 
     @Override
@@ -137,9 +133,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Review addReview(Long hostId, ReviewRequestDto reviewDto) {
+    public Review addReview(Long hostId, ReviewRequestDto reviewDto) { // mocked
         if (hostId == 4L) {
-            ErrorUtils.throwNotFound("hostNotFound");
+            ErrorUtils.generateNotFound("hostNotFound");
         }
 
         return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);

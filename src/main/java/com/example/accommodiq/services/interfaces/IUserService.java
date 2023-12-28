@@ -5,15 +5,15 @@ import com.example.accommodiq.domain.User;
 import java.util.Collection;
 
 public interface IUserService {
-    public Collection<User> getAll();
+    Collection<User> getAll();
 
-    public User findUser(Long UserId);
+    User findUser(Long UserId);
 
-    public User insert(User User);
+    User insert(User User);
 
-    public User update(User User);
+    User update(User User);
 
-    public User delete(Long UserId);
+    User delete(Long UserId);
 
-    public void deleteAll();
+    void deleteAll();
 }

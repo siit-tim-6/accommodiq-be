@@ -10,18 +10,13 @@ public class ErrorUtils {
 
     private static final ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public static void throwBadRequest(String messageKey) {
+    public static void generateBadRequest(String messageKey) {
         String value = bundle.getString(messageKey);
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, value);
     }
 
-    public static void throwNotFound(String messageKey) {
+    public static void generateNotFound(String messageKey) {
         String value = bundle.getString(messageKey);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-    }
-
-    public static void throwForbidden(String messageKey) {
-        String value = bundle.getString(messageKey);
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, value);
+        throw  new ResponseStatusException(HttpStatus.NOT_FOUND, value);
     }
 }

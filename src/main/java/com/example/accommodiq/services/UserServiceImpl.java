@@ -17,8 +17,7 @@ import java.util.ResourceBundle;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    final
-    UserRepository allUsers;
+    final UserRepository allUsers;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
@@ -57,14 +56,14 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User update(User user) {
         try {
-            findUser(user.getId()); // this will throw ResponseStatusException if user is not found
+            findUser(user.getId());
             allUsers.save(user);
             allUsers.flush();
             return user;
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
-            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException)) {
                 e = c;
             }
             if ((c != null)) {
@@ -76,7 +75,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User delete(Long userId) {
-        User found = findUser(userId); // this will throw UserNotFoundException if User is not found
+        User found = findUser(userId);
         allUsers.delete(found);
         allUsers.flush();
         return found;

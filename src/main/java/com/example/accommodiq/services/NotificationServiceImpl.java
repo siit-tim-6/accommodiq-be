@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class NotificationServiceImpl implements INotificationService {
@@ -37,7 +37,7 @@ public class NotificationServiceImpl implements INotificationService {
     public Notification findNotification(Long notificationId) {
         Optional<Notification> found = allNotifications.findById(notificationId);
         if (found.isEmpty()) {
-            throwNotFound("reviewNotFound");
+            generateNotFound("reviewNotFound");
         }
         return found.get();
     }
@@ -58,7 +58,7 @@ public class NotificationServiceImpl implements INotificationService {
             allNotifications.flush();
             return notification;
         } catch (ConstraintViolationException ex) {
-            throwNotFound("reviewUpdateFailed");
+            generateNotFound("reviewUpdateFailed");
         }
         return notification;
     }

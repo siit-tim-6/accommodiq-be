@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class ReviewServiceImpl implements IReviewService {
@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements IReviewService {
     public Review findReview(Long reviewId) {
         Optional<Review> found = allReviews.findById(reviewId);
         if (found.isEmpty()) {
-            throwNotFound("reviewNotFound");
+            generateNotFound("reviewNotFound");
         }
         return found.get();
     }
@@ -65,7 +65,7 @@ public class ReviewServiceImpl implements IReviewService {
             allReviews.flush();
             return review;
         } catch (ConstraintViolationException ex) {
-            throwNotFound("reviewUpdateFailed");
+            generateNotFound("reviewUpdateFailed");
         }
         return review;
     }
@@ -73,7 +73,7 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public MessageDto delete(Long reviewId) {
         if (reviewId == 4L) {
-            ErrorUtils.throwNotFound("reviewNotFound");
+            ErrorUtils.generateNotFound("reviewNotFound");
         }
 
         return new MessageDto("Review successfully deleted.");
@@ -88,7 +88,7 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
         if (reviewId == 4L) {
-            ErrorUtils.throwNotFound("reviewNotFound");
+            ErrorUtils.generateNotFound("reviewNotFound");
         }
 
         return new Review(

@@ -26,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 
-import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
+import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 
 @Service
@@ -121,7 +121,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ErrorUtils.throwNotFound("accommodationNotFound");
+            ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
         return new AccommodationDetailsDto(accommodation.get());
@@ -131,7 +131,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation findAccommodation(Long accommodationId) {
         Optional<Accommodation> found = accommodationRepository.findById(accommodationId);
         if (found.isEmpty()) {
-            throwNotFound("accommodationNotFound");
+            generateNotFound("accommodationNotFound");
         }
         return found.get();
     }
@@ -231,7 +231,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) {
         if (accommodationId == 4L) {
-            throwNotFound("accommodationNotFound");
+            generateNotFound("accommodationNotFound");
         }
 
         return new Accommodation(1L,

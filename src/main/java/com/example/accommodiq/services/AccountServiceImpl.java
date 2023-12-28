@@ -4,13 +4,14 @@ import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.User;
-import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.dtos.AccountDetailsDto;
+import com.example.accommodiq.dtos.RegisterDto;
+import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.*;
 import com.example.accommodiq.services.interfaces.email.IEmailService;
-import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -27,18 +28,13 @@ import java.util.ResourceBundle;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
+    final AccountRepository allAccounts;
 
-    final
-    AccountRepository allAccounts;
+    final IEmailService emailService;
 
-    final
-    IEmailService emailService;
+    final INotificationSettingService notificationSettingService;
 
-    final
-    INotificationSettingService notificationSettingService;
-
-    final
-    IReservationService reservationService;
+    final IReservationService reservationService;
 
     final IAccommodationService accommodationService;
     final IReportService reportService;
@@ -142,21 +138,6 @@ public class AccountServiceImpl implements IAccountService {
     public void deleteAll() {
         allAccounts.deleteAll();
         allAccounts.flush();
-    }
-
-    @Override
-    public UserLoginDto login(CredentialsDto credentialsDto) {
-        if (credentialsDto.getEmail().equals("test@nonexistent.com")) {
-            ErrorUtils.throwNotFound("badCredentials");
-        }
-
-        return new UserLoginDto(new User(
-                1L,
-                "John",
-                "Doe",
-                "123 Main St",
-                "555-1234"
-        ), AccountRole.GUEST);
     }
 
     @Override

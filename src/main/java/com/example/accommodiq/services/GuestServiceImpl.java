@@ -4,7 +4,6 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.services.interfaces.IGuestService;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -32,7 +30,7 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Guest> guest = guestRepository.findById(guestId);
 
         if (guest.isEmpty()) {
-            ErrorUtils.throwNotFound("guestNotFound");
+            ErrorUtils.generateNotFound("guestNotFound");
         }
 
         return guest.get();
@@ -42,64 +40,19 @@ public class GuestServiceImpl implements IGuestService {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
-            ErrorUtils.throwNotFound("accommodationNotFound");
+            ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
         return accommodation.get();
     }
 
     @Override
-    public Collection<ReservationListDto> getReservations(Long guestId) {
+    public Collection<ReservationListDto> getReservations(Long guestId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.throwNotFound("guestNotFound");
+            ErrorUtils.generateNotFound("guestNotFound");
         }
 
-        ArrayList<ReservationListDto> reservationListDtos = new ArrayList<>();
-        AccommodationListDto accommodation1 = new AccommodationListDto() {{
-            setId(1L);
-            setTitle("Cozy Cottage");
-            setImage("/images/cozy_cottage.jpg");
-            setRating(4.5);
-            setReviewCount(32);
-            setLocation("Mountain View, CA");
-            setMinPrice(120.0);
-            setMinGuests(2);
-            setMaxGuests(4);
-        }};
-
-        // Accommodation 2
-        AccommodationListDto accommodation2 = new AccommodationListDto() {{
-            setId(2L);
-            setTitle("Seaside Villa");
-            setImage("/images/seaside_villa.jpg");
-            setRating(4.8);
-            setReviewCount(45);
-            setLocation("Malibu, CA");
-            setMinPrice(200.0);
-            setMinGuests(4);
-            setMaxGuests(8);
-        }};
-        ReservationListDto reservation1 = new ReservationListDto() {{
-            setStartDate(new Date());
-            setEndDate(new Date(System.currentTimeMillis() + 86400000)); // Adding one day in milliseconds
-            setNumberOfGuests(2);
-            setStatus(ReservationStatus.CREATED); // Assuming ReservationStatus is an enum
-            setAccommodation(accommodation1);
-        }};
-
-        // Object 2
-        ReservationListDto reservation2 = new ReservationListDto() {{
-            setStartDate(new Date());
-            setEndDate(new Date(System.currentTimeMillis() + 172800000)); // Adding two days in milliseconds
-            setNumberOfGuests(4);
-            setStatus(ReservationStatus.CREATED); // Assuming ReservationStatus is an enum
-            setAccommodation(accommodation2);
-        }};
-
-        reservationListDtos.add(reservation1);
-        reservationListDtos.add(reservation2);
-
-        return reservationListDtos;
+        return new ArrayList<>();
     }
 
     @Transactional
@@ -109,7 +62,7 @@ public class GuestServiceImpl implements IGuestService {
         Accommodation accommodation = findAccommodation(reservationDto.getAccommodationId());
 
         if (!guest.canCreateReservation(reservationDto.getStartDate(), reservationDto.getEndDate(), reservationDto.getAccommodationId())) {
-            ErrorUtils.throwBadRequest("overlappingReservations");
+            ErrorUtils.generateBadRequest("overlappingReservations");
         }
 
         guest.getReservations().add(new Reservation(reservationDto, guest, accommodation));
@@ -120,47 +73,18 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<AccommodationListDto> getFavorites(Long guestId) {
+    public Collection<AccommodationListDto> getFavorites(Long guestId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.throwNotFound("guestNotFound");
+            ErrorUtils.generateNotFound("guestNotFound");
         }
 
-        ArrayList<AccommodationListDto> accommodationListDtos = new ArrayList<>();
-        AccommodationListDto accommodation1 = new AccommodationListDto() {{
-            setId(1L);
-            setTitle("Cozy Cottage");
-            setImage("/images/cozy_cottage.jpg");
-            setRating(4.5);
-            setReviewCount(32);
-            setLocation("Mountain View, CA");
-            setMinPrice(120.0);
-            setMinGuests(2);
-            setMaxGuests(4);
-        }};
-
-        // Accommodation 2
-        AccommodationListDto accommodation2 = new AccommodationListDto() {{
-            setId(2L);
-            setTitle("Seaside Villa");
-            setImage("/images/seaside_villa.jpg");
-            setRating(4.8);
-            setReviewCount(45);
-            setLocation("Malibu, CA");
-            setMinPrice(200.0);
-            setMinGuests(4);
-            setMaxGuests(8);
-        }};
-
-        accommodationListDtos.add(accommodation1);
-        accommodationListDtos.add(accommodation2);
-
-        return accommodationListDtos;
+        return new ArrayList<>();
     }
 
     @Override
-    public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) {
+    public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.throwNotFound("guestNotFound");
+            ErrorUtils.generateNotFound("guestNotFound");
         }
         return new AccommodationListDto() {{
             setId(2L);
@@ -176,13 +100,13 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public MessageDto removeFavorite(Long guestId, Long accommodationId) {
+    public MessageDto removeFavorite(Long guestId, Long accommodationId) { // mocked
         if (guestId == 4L) {
-            ErrorUtils.throwNotFound("guestNotFound");
+            ErrorUtils.generateNotFound("guestNotFound");
         }
 
         if (accommodationId == 4L) {
-            ErrorUtils.throwNotFound("favoriteNotFound");
+            ErrorUtils.generateNotFound("favoriteNotFound");
         }
 
         return new MessageDto("Favorite removed successfully");
