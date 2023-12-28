@@ -34,7 +34,7 @@ public class ReviewController {
         existingReview.setComment(reviewDto.getComment());
         existingReview.setDate(reviewDto.getDate());
         existingReview.setStatus(reviewDto.getStatus());
-        existingReview.setGuest(userService.findUser(reviewDto.getGuestId()));
+        existingReview.setGuest(userService.findUser(reviewDto.getAuthorId()));
 
         Review updatedReview = reviewService.update(existingReview);
         return new ReviewDto(updatedReview);

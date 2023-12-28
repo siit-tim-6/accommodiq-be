@@ -12,18 +12,22 @@ public class ReviewDto {
     private String comment;
     private Long date = Instant.now().toEpochMilli();
     private ReviewStatus status;
-    private Long guestId;
+    private Long authorId;
+    private String author;
+    private boolean canDelete;
 
     public ReviewDto() {
     }
 
-    public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId) {
+    public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId, String firstName, String lastName, boolean canDelete) {
         this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.date = date;
         this.status = status;
-        this.guestId = guestId;
+        this.authorId = guestId;
+        this.author = firstName + " " + lastName;
+        this.canDelete = canDelete;
     }
 
     public ReviewDto(Review review) {
@@ -32,7 +36,19 @@ public class ReviewDto {
         this.comment = review.getComment();
         this.date = review.getDate();
         this.status = review.getStatus();
-        this.guestId = review.getGuest().getId();
+        this.authorId = review.getGuest().getId();
+        this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
+    }
+
+    public ReviewDto(Review review, Long authorId) {
+        this.id = review.getId();
+        this.rating = review.getRating();
+        this.comment = review.getComment();
+        this.date = review.getDate();
+        this.status = review.getStatus();
+        this.authorId = review.getGuest().getId();
+        this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
+        this.canDelete = authorId.equals(review.getGuest().getId());
     }
 
     public Long getId() {
@@ -55,8 +71,8 @@ public class ReviewDto {
         return status;
     }
 
-    public Long getGuestId() {
-        return guestId;
+    public Long getAuthorId() {
+        return authorId;
     }
 
     public void setId(Long id) {
@@ -79,11 +95,19 @@ public class ReviewDto {
         this.status = status;
     }
 
-    public void setGuestId(Long guestId) {
-        this.guestId = guestId;
+    public void setAuthorId(Long guestId) {
+        this.authorId = guestId;
     }
 
     public Review toReview() {
         return new Review(id, rating, comment, date, status);
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

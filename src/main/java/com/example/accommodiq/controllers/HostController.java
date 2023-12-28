@@ -101,19 +101,18 @@ public class HostController {
 
     @PostMapping("{hostId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
-    public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long guestId = ((Account) accountService.loadUserByUsername(email)).getId();
-        return hostService.addReview(hostId, guestId, reviewDto);
+        Review addedReview = hostService.addReview(hostId, guestId, reviewDto);
+        return new ReviewDto(addedReview, guestId);
     }
 
     @GetMapping("{hostId}/reviews")
-    public Collection<Review> getHostReviews(@PathVariable Long hostId) {
-        return reviewService.getHostReviews(hostId);
-    }
-
-    private Review convertToReview(ReviewDto reviewDto) {
-        User guest = userService.findUser(reviewDto.getGuestId());
-        return new Review(reviewDto, guest);
+    public Collection<ReviewDto> getHostReviews(@PathVariable Long hostId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long loggedInId = ((Account) accountService.loadUserByUsername(email)).getId();
+        Collection<Review> hostReviews = reviewService.getHostReviews(hostId);
+        return hostReviews.stream().map(review -> new ReviewDto(review, loggedInId)).toList();
     }
 }
