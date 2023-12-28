@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.accommodations;
 
 import com.example.accommodiq.dtos.ImageDataDto;
 import org.springframework.web.multipart.MultipartFile;

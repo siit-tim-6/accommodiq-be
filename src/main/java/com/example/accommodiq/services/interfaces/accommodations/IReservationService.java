@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.accommodations;
 
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.MessageDto;

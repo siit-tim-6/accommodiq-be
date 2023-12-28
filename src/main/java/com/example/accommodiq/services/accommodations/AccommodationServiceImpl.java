@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.accommodations;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
@@ -9,7 +9,7 @@ import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
-import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;

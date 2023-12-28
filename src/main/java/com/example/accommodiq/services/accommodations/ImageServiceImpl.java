@@ -1,7 +1,7 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.accommodations;
 
 import com.example.accommodiq.dtos.ImageDataDto;
-import com.example.accommodiq.services.interfaces.IImageService;
+import com.example.accommodiq.services.interfaces.accommodations.IImageService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;

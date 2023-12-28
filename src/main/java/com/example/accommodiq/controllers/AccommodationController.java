@@ -3,7 +3,7 @@ package com.example.accommodiq.controllers;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

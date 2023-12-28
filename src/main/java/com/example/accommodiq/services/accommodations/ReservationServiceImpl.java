@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.accommodations;
 
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.MessageDto;
@@ -6,8 +6,8 @@ import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.repositories.ReservationRepository;
-import com.example.accommodiq.services.interfaces.IAccommodationService;
-import com.example.accommodiq.services.interfaces.IReservationService;
+import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;

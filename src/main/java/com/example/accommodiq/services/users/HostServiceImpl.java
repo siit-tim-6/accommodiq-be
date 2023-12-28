@@ -7,7 +7,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
-import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;

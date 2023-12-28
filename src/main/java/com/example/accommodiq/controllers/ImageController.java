@@ -1,7 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.ImageDataDto;
-import com.example.accommodiq.services.interfaces.IImageService;
+import com.example.accommodiq.services.interfaces.accommodations.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
