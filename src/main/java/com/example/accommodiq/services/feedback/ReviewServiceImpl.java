@@ -1,4 +1,4 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.feedback;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
@@ -8,7 +8,7 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
-import com.example.accommodiq.services.interfaces.IReviewService;
+import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;

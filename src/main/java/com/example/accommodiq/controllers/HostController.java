@@ -6,7 +6,7 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
-import com.example.accommodiq.services.interfaces.IReviewService;
+import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

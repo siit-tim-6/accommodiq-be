@@ -7,7 +7,7 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
-import com.example.accommodiq.services.interfaces.IReportService;
+import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;

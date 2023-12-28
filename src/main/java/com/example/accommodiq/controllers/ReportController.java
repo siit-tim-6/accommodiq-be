@@ -2,7 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportModificationDto;
-import com.example.accommodiq.services.interfaces.IReportService;
+import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

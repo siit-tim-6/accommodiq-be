@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.feedback;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;

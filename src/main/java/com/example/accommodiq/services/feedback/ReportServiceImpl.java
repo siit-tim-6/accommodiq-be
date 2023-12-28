@@ -1,10 +1,10 @@
-package com.example.accommodiq.services;
+package com.example.accommodiq.services.feedback;
 
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.repositories.ReportRepository;
-import com.example.accommodiq.services.interfaces.IReportService;
+import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
