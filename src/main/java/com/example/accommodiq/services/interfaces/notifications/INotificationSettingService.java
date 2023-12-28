@@ -1,4 +1,4 @@
-package com.example.accommodiq.services.interfaces;
+package com.example.accommodiq.services.interfaces.notifications;
 
 import com.example.accommodiq.domain.NotificationSetting;
 
