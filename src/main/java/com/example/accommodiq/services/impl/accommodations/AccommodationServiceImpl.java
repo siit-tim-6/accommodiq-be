@@ -41,7 +41,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation insert(Host host, AccommodationCreateDto accommodationDto) {
+    public Accommodation insert(Host host, AccommodationModifyDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
         accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS);
@@ -136,7 +136,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto) {
+    public AccommodationListDto updateAccommodation(AccommodationModifyDto updateDto) {
         Accommodation accommodation = findAccommodation(updateDto.getId());
         accommodation.applyChanges(updateDto);
         update(accommodation);
@@ -271,9 +271,9 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationUpdateDto getAdvancedDetails(Long accommodationId) {
+    public AccommodationModifyDto getAdvancedDetails(Long accommodationId) {
         Accommodation accommodation = findAccommodation(accommodationId);
-        return new AccommodationUpdateDto(accommodation);
+        return new AccommodationModifyDto(accommodation);
     }
 
     @Override

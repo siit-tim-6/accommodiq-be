@@ -68,7 +68,7 @@ public class HostController {
     @PostMapping("/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('HOST')")
-    public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationCreateDto accommodation) {
+    public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationModifyDto accommodation) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
         return hostService.createAccommodation(hostId, accommodation);

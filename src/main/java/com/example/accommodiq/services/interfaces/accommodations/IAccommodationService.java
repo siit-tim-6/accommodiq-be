@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface IAccommodationService {
-    Accommodation insert(Host host, AccommodationCreateDto accommodationDto);
+    Accommodation insert(Host host, AccommodationModifyDto accommodationDto);
 
     Accommodation update(Accommodation accommodation);
 
@@ -24,7 +24,7 @@ public interface IAccommodationService {
 
     Accommodation findAccommodation(Long accommodationId);
 
-    AccommodationListDto updateAccommodation(AccommodationUpdateDto updateDto);
+    AccommodationListDto updateAccommodation(AccommodationModifyDto updateDto);
 
     ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
@@ -46,7 +46,7 @@ public interface IAccommodationService {
 
     AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo);
 
-    AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
+    AccommodationModifyDto getAdvancedDetails(Long accommodationId);
 
     AccommodationListDto deleteAccommodation(Long accommodationId);
 

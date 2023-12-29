@@ -1,6 +1,6 @@
 package com.example.accommodiq.dtos;
 
-public class AccommodationPriceDto {
+public class AccommodationPriceDto { // valid
     private double totalPrice;
 
     public AccommodationPriceDto() {

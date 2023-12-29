@@ -29,7 +29,7 @@ public interface IHostService {
 
     Collection<Review> getHostReviews(Long hostId);
 
-    AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto);
+    AccommodationDetailsDto createAccommodation(Long hostId, AccommodationModifyDto accommodationDto);
 
     Review addReview(Long hostId, ReviewRequestDto reviewDto);
 

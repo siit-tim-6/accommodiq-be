@@ -45,7 +45,7 @@ public class AccommodationController {
 
     @PutMapping()
     @PreAuthorize("hasAuthority('HOST')")
-    public AccommodationListDto updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+    public AccommodationListDto updateAccommodation(@RequestBody AccommodationModifyDto body) {
         return accommodationService.updateAccommodation(body);
     }
 
@@ -103,7 +103,7 @@ public class AccommodationController {
 
     @GetMapping("{accommodationId}/advanced")
     @PreAuthorize("hasAuthority('HOST')")
-    public AccommodationUpdateDto getAdvancedDetails(@PathVariable Long accommodationId) {
+    public AccommodationModifyDto getAdvancedDetails(@PathVariable Long accommodationId) {
         return accommodationService.getAdvancedDetails(accommodationId);
     }
 }

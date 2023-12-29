@@ -4,12 +4,12 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.enums.PricingType;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AccommodationCreateDto {
+public class AccommodationModifyDto {
+    private Long id;
     private String title;
     private String description;
     private String location;
@@ -20,41 +20,7 @@ public class AccommodationCreateDto {
     private boolean automaticAcceptance;
     private List<String> images;
     private String type;
-    private Set<String> benefits = new HashSet<>();
-
-    public AccommodationCreateDto() {
-    }
-
-    public AccommodationCreateDto(String title, String description, String location, int minGuests, int maxGuests, Set<AvailabilityDto> available, PricingType pricingType, boolean automaticAcceptance, List<String> images, String type, Set<String> benefits) {
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.minGuests = minGuests;
-        this.maxGuests = maxGuests;
-        this.available = available;
-        this.pricingType = pricingType;
-        this.automaticAcceptance = automaticAcceptance;
-        this.images = images;
-        this.type = type;
-        this.benefits = benefits;
-    }
-
-    public AccommodationCreateDto(Accommodation accommodation) {
-        this.title = accommodation.getTitle();
-        this.description = accommodation.getDescription();
-        this.location = accommodation.getLocation();
-        this.minGuests = accommodation.getMinGuests();
-        this.maxGuests = accommodation.getMaxGuests();
-        this.available = new HashSet<>();
-        for (Availability availability : accommodation.getAvailable()) {
-            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
-        }
-        this.pricingType = accommodation.getPricingType();
-        this.automaticAcceptance = accommodation.isAutomaticAcceptance();
-        this.images = accommodation.getImages();
-        this.type = accommodation.getType();
-        this.benefits = accommodation.getBenefits();
-    }
+    private Set<String> benefits;
 
     public String getTitle() {
         return title;
@@ -143,5 +109,31 @@ public class AccommodationCreateDto {
 
     public void setBenefits(Set<String> benefits) {
         this.benefits = benefits;
+    }
+
+    public AccommodationModifyDto(Accommodation accommodation) {
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.description = accommodation.getDescription();
+        this.location = accommodation.getLocation();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.available = new HashSet<>();
+        for (Availability availability : accommodation.getAvailable()) {
+            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
+        }
+        this.pricingType = accommodation.getPricingType();
+        this.automaticAcceptance = accommodation.isAutomaticAcceptance();
+        this.images = accommodation.getImages();
+        this.type = accommodation.getType();
+        this.benefits = accommodation.getBenefits();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

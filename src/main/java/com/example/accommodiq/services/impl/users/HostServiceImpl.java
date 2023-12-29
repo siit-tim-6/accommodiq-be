@@ -125,8 +125,9 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     @Transactional
-    public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationCreateDto accommodationDto) {
+    public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationModifyDto accommodationDto) {
         Host host = findHost(hostId);
+        accommodationDto.setId(null);
         Accommodation accommodation = accommodationService.insert(host, accommodationDto);
         accommodation.setPricingType(PricingType.PER_NIGHT);
         return new AccommodationDetailsDto(accommodation);
