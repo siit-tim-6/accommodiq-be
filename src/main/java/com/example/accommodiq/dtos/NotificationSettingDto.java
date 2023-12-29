@@ -9,6 +9,9 @@ public class NotificationSettingDto {
     private NotificationType type;
     private boolean isOn;
 
+    public NotificationSettingDto() {
+    }
+
     public NotificationSettingDto(NotificationSetting notificationSetting) {
         this.id = notificationSetting.getId();
         this.type = notificationSetting.getType();

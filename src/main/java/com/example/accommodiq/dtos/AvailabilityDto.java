@@ -7,6 +7,10 @@ public class AvailabilityDto {
     private Long toDate;
     private double price;
 
+    public AvailabilityDto() {
+        super();
+    }
+
     public AvailabilityDto(Long fromDate, Long toDate, double price) {
         this.fromDate = fromDate;
         this.toDate = toDate;

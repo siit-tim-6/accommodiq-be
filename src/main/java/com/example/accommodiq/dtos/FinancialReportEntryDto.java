@@ -5,6 +5,10 @@ public class FinancialReportEntryDto {
     private double revenue;
     private int reservationCount;
 
+    public FinancialReportEntryDto() {
+        super();
+    }
+
     public FinancialReportEntryDto(String accommodationTitle, double revenue, int reservationCount) {
         this.accommodationTitle = accommodationTitle;
         this.revenue = revenue;

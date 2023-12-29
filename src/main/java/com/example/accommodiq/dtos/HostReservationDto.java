@@ -9,6 +9,10 @@ public class HostReservationDto {
     private Date fromDate;
     private Date toDate;
 
+    public HostReservationDto() {
+        super();
+    }
+
     public HostReservationDto(Long id, String accommodationTitle, String guestName, Date fromDate, Date toDate) {
         this.id = id;
         this.accommodationTitle = accommodationTitle;

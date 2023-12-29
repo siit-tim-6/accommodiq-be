@@ -6,6 +6,10 @@ import com.example.accommodiq.enums.AccommodationStatus;
 public class AccommodationWithStatusDto extends AccommodationListDto {
     private AccommodationStatus status;
 
+    public AccommodationWithStatusDto() {
+        super();
+    }
+
     public AccommodationWithStatusDto(Accommodation accommodation) {
         super(accommodation);
         this.status = accommodation.getStatus();

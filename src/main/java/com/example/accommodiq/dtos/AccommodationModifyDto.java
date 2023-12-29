@@ -22,6 +22,28 @@ public class AccommodationModifyDto {
     private String type;
     private Set<String> benefits;
 
+    public AccommodationModifyDto() {
+        super();
+    }
+
+    public AccommodationModifyDto(Accommodation accommodation) {
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.description = accommodation.getDescription();
+        this.location = accommodation.getLocation();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.available = new HashSet<>();
+        for (Availability availability : accommodation.getAvailable()) {
+            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
+        }
+        this.pricingType = accommodation.getPricingType();
+        this.automaticAcceptance = accommodation.isAutomaticAcceptance();
+        this.images = accommodation.getImages();
+        this.type = accommodation.getType();
+        this.benefits = accommodation.getBenefits();
+    }
+
     public String getTitle() {
         return title;
     }
@@ -96,37 +118,28 @@ public class AccommodationModifyDto {
         this.automaticAcceptance = automaticAcceptance;
     }
 
-    public List<String> getImages() { return images; }
+    public List<String> getImages() {
+        return images;
+    }
 
-    public void setImages(List<String> images) { this.images = images; }
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
 
-    public String getType() { return type; }
+    public String getType() {
+        return type;
+    }
 
-    public void setType(String type) { this.type = type; }
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Set<String> getBenefits() {
         return benefits;
     }
 
     public void setBenefits(Set<String> benefits) {
         this.benefits = benefits;
-    }
-
-    public AccommodationModifyDto(Accommodation accommodation) {
-        this.id = accommodation.getId();
-        this.title = accommodation.getTitle();
-        this.description = accommodation.getDescription();
-        this.location = accommodation.getLocation();
-        this.minGuests = accommodation.getMinGuests();
-        this.maxGuests = accommodation.getMaxGuests();
-        this.available = new HashSet<>();
-        for (Availability availability : accommodation.getAvailable()) {
-            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
-        }
-        this.pricingType = accommodation.getPricingType();
-        this.automaticAcceptance = accommodation.isAutomaticAcceptance();
-        this.images = accommodation.getImages();
-        this.type = accommodation.getType();
-        this.benefits = accommodation.getBenefits();
     }
 
     public Long getId() {

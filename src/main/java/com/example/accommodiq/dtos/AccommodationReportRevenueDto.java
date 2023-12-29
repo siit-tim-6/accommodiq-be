@@ -4,6 +4,10 @@ public class AccommodationReportRevenueDto {
     private String month;
     private double revenue;
 
+    public AccommodationReportRevenueDto() {
+        super();
+    }
+
     public AccommodationReportRevenueDto(String month, double revenue) {
         this.month = month;
         this.revenue = revenue;
