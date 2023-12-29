@@ -68,6 +68,7 @@ public class HostController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Delete all hosts")
     public void deleteAll() {
         hostService.deleteAll();
     }
@@ -75,6 +76,7 @@ public class HostController {
     @PostMapping("/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Create accommodation")
     public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationModifyDto accommodation) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
@@ -83,6 +85,7 @@ public class HostController {
 
     @GetMapping("/accommodations")
     @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Get host accommodations")
     public Collection<AccommodationCardWithStatusDto> getHostAccommodations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
@@ -92,28 +95,33 @@ public class HostController {
 
     @GetMapping("/{hostId}/reservations")
     @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Get host reservations")
     public Collection<HostReservationDto> getHostAccommodationReservations(@PathVariable Long hostId) {
         return hostService.getHostAccommodationReservations(hostId);
     }
 
     @GetMapping("{hostId}/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Get host financial report")
     public Collection<FinancialReportEntryDto> getFinancialReport(@PathVariable Long hostId, @RequestParam long fromDate, @RequestParam long toDate) {
         return hostService.getFinancialReport(hostId, fromDate, toDate);
     }
 
     @PostMapping("{hostId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
+    @Operation(summary = "Add review")
     public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
         return hostService.addReview(hostId, reviewDto);
     }
 
     @GetMapping("{hostId}/reviews")
+    @Operation(summary = "Get host reviews")
     public Collection<Review> getHostReviews(@PathVariable Long hostId) {
         return reviewService.getHostReviews(hostId);
     }
 
     @DeleteMapping("accommodations/{accommodationId}")
+    @Operation(summary = "Delete accommodation")
     public AccommodationCardDto deleteAccommodation(@PathVariable Long accommodationId) {
         return hostService.deleteAccommodation(accommodationId);
     }
