@@ -20,5 +20,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
 
-    Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNot(Long userId, List<Long> accommodationIds, ReservationStatus statusNot);
+    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id IN :accommodationIds AND r.status <> :status AND r.endDate < :currentTime")
+    Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(
+            @Param("userId") Long userId,
+            @Param("accommodationIds") List<Long> accommodationIds,
+            @Param("status") ReservationStatus status,
+            @Param("currentTime") Long currentTime
+    );
 }
