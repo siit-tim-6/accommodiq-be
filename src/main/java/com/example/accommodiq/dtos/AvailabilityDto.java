@@ -1,7 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import java.util.Date;
-
 public class AvailabilityDto {
     private Long fromDate;
     private Long toDate;

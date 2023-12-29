@@ -1,6 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.enums.NotificationType;
 
