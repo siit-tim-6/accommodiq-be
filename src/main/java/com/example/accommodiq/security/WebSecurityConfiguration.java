@@ -42,6 +42,8 @@ public class WebSecurityConfiguration {
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(HttpMethod.GET,"/images/*").permitAll()
                         .requestMatchers(HttpMethod.GET,"/email-verification").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/users/*/profile").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/hosts/*/reviews").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

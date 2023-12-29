@@ -139,4 +139,10 @@ public class UserController {
     public void reportUser(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);
     }
+
+    @GetMapping("/{userId}/profile")
+    public AccountDetailsDto getAccountDetails(@PathVariable Long userId) {
+        Account account = accountService.findAccount(userId);
+        return new AccountDetailsDto(account);
+    }
 }
