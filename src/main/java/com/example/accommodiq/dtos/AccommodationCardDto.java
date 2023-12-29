@@ -1,16 +1,9 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
-import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.PricingType;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
-
-public class AccommodationListDto {
+public class AccommodationCardDto {
     private Long id;
     private String title;
     private String image;
@@ -23,11 +16,11 @@ public class AccommodationListDto {
     private double totalPrice;
     private PricingType pricingType;
 
-    public AccommodationListDto() {
+    public AccommodationCardDto() {
         super();
     }
 
-    public AccommodationListDto(Long id, String title, String image, Double rating,
+    public AccommodationCardDto(Long id, String title, String image, Double rating,
                                 int reviewCount, String location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
         this.id = id;
         this.title = title;
@@ -42,7 +35,7 @@ public class AccommodationListDto {
         this.pricingType = pricingType;
     }
 
-    public AccommodationListDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
+    public AccommodationCardDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
@@ -56,7 +49,7 @@ public class AccommodationListDto {
         this.pricingType = accommodation.getPricingType();
     }
 
-    public AccommodationListDto(Accommodation accommodation) {
+    public AccommodationCardDto(Accommodation accommodation) {
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";

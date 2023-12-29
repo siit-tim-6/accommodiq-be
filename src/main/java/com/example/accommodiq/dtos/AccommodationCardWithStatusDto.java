@@ -3,14 +3,14 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.enums.AccommodationStatus;
 
-public class AccommodationWithStatusDto extends AccommodationListDto {
+public class AccommodationCardWithStatusDto extends AccommodationCardDto {
     private AccommodationStatus status;
 
-    public AccommodationWithStatusDto() {
+    public AccommodationCardWithStatusDto() {
         super();
     }
 
-    public AccommodationWithStatusDto(Accommodation accommodation) {
+    public AccommodationCardWithStatusDto(Accommodation accommodation) {
         super(accommodation);
         this.status = accommodation.getStatus();
     }

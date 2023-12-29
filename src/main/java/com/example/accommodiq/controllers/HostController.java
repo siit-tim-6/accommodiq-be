@@ -76,7 +76,7 @@ public class HostController {
 
     @GetMapping("/accommodations")
     @PreAuthorize("hasAuthority('HOST')")
-    public Collection<AccommodationWithStatusDto> getHostAccommodations() {
+    public Collection<AccommodationCardWithStatusDto> getHostAccommodations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
 
@@ -107,7 +107,7 @@ public class HostController {
     }
 
     @DeleteMapping("accommodations/{accommodationId}")
-    public AccommodationListDto deleteAccommodation(@PathVariable Long accommodationId) {
+    public AccommodationCardDto deleteAccommodation(@PathVariable Long accommodationId) {
         return hostService.deleteAccommodation(accommodationId);
     }
 }

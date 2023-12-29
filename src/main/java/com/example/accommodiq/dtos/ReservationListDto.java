@@ -9,13 +9,13 @@ public class ReservationListDto {
     private Date endDate;
     private int numberOfGuests;
     private ReservationStatus status;
-    private AccommodationListDto accommodation;
+    private AccommodationCardDto accommodation;
 
     public ReservationListDto() {
         super();
     }
 
-    public ReservationListDto(Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, AccommodationListDto accommodation) {
+    public ReservationListDto(Date startDate, Date endDate, int numberOfGuests, ReservationStatus status, AccommodationCardDto accommodation) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
@@ -55,11 +55,11 @@ public class ReservationListDto {
         this.status = status;
     }
 
-    public AccommodationListDto getAccommodation() {
+    public AccommodationCardDto getAccommodation() {
         return accommodation;
     }
 
-    public void setAccommodation(AccommodationListDto accommodation) {
+    public void setAccommodation(AccommodationCardDto accommodation) {
         this.accommodation = accommodation;
     }
 }

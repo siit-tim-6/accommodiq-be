@@ -71,7 +71,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
+    public Collection<AccommodationCardDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits) {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
         boolean priceRangeSpecified = priceFrom != null && priceTo != null;
@@ -80,24 +80,24 @@ public class AccommodationServiceImpl implements IAccommodationService {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
         }
 
-        List<AccommodationListDto> accommodations;
+        List<AccommodationCardDto> accommodations;
         if (!dateRangeSpecified && priceRangeSpecified) {
             accommodations = searchedAccommodations.stream()
-                    .map(AccommodationListDto::new)
+                    .map(AccommodationCardDto::new)
                     .filter(accommodationListDto -> accommodationListDto.getMinPrice() != 0 && accommodationListDto.getMinPrice() >= priceFrom && accommodationListDto.getMinPrice() <= priceTo)
                     .toList();
         } else if (dateRangeSpecified && priceRangeSpecified) {
             accommodations = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
+                    .map(accommodation -> new AccommodationCardDto(accommodation, availableFrom, availableTo, guests))
                     .filter(accommodationListDto -> accommodationListDto.getTotalPrice() >= priceFrom && accommodationListDto.getTotalPrice() <= priceTo)
                     .toList();
         } else if (dateRangeSpecified) {
             accommodations = searchedAccommodations.stream()
-                    .map(accommodation -> new AccommodationListDto(accommodation, availableFrom, availableTo, guests))
+                    .map(accommodation -> new AccommodationCardDto(accommodation, availableFrom, availableTo, guests))
                     .toList();
         } else {
             accommodations = searchedAccommodations.stream()
-                    .map(AccommodationListDto::new)
+                    .map(AccommodationCardDto::new)
                     .toList();
         }
 
@@ -106,11 +106,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
+    public AccommodationCardWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto) {
         Accommodation accommodation = findAccommodation(accommodationId);
         accommodation.setStatus(statusDto.getStatus());
         update(accommodation);
-        return new AccommodationWithStatusDto(accommodation);
+        return new AccommodationCardWithStatusDto(accommodation);
     }
 
     @Override
@@ -136,11 +136,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationListDto updateAccommodation(AccommodationModifyDto updateDto) {
+    public AccommodationCardDto updateAccommodation(AccommodationModifyDto updateDto) {
         Accommodation accommodation = findAccommodation(updateDto.getId());
         accommodation.applyChanges(updateDto);
         update(accommodation);
-        return new AccommodationListDto(accommodation);
+        return new AccommodationCardDto(accommodation);
     }
 
     @Override
@@ -247,15 +247,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
-        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationWithStatusDto::new).toList();
+    public Collection<AccommodationCardWithStatusDto> getPendingAccommodations() {
+        return accommodationRepository.findAllByStatus(AccommodationStatus.PENDING).stream().map(AccommodationCardWithStatusDto::new).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId) {
+    public ResponseEntity<AccommodationBookingDetailsWithAvailabilityDto> getAccommodationBookingDetails(Long accommodationId) {
         Accommodation accommodation = findAccommodation(accommodationId);
-        AccommodationBookingDetailFormDto accommodationDetails = new AccommodationBookingDetailFormDto(accommodation);
+        AccommodationBookingDetailsWithAvailabilityDto accommodationDetails = new AccommodationBookingDetailsWithAvailabilityDto(accommodation);
         return ResponseEntity.ok(accommodationDetails);
     }
 
@@ -277,12 +277,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public AccommodationListDto deleteAccommodation(Long accommodationId) {
+    public AccommodationCardDto deleteAccommodation(Long accommodationId) {
         Accommodation accommodation = findAccommodation(accommodationId);
         reservationRepository.deleteByAccommodationId(accommodationId);
         accommodationRepository.delete(accommodation);
         accommodationRepository.flush();
-        return new AccommodationListDto(accommodation);
+        return new AccommodationCardDto(accommodation);
     }
 
     @Override

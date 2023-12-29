@@ -12,9 +12,9 @@ public interface IGuestService {
 
     ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 
-    Collection<AccommodationListDto> getFavorites(Long guestId);
+    Collection<AccommodationCardDto> getFavorites(Long guestId);
 
-    AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto);
+    AccommodationCardDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto);
 
     MessageDto removeFavorite(Long guestId, Long accommodationId);
 }

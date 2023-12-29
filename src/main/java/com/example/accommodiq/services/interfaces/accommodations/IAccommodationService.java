@@ -16,15 +16,15 @@ public interface IAccommodationService {
 
     Accommodation update(Accommodation accommodation);
 
-    Collection<AccommodationListDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits);
+    Collection<AccommodationCardDto> findByFilter(String title, String location, Long availableFrom, Long availableTo, Integer priceFrom, Integer priceTo, Integer guests, String type, Set<String> benefits);
 
-    AccommodationWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
+    AccommodationCardWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
     AccommodationDetailsDto findById(Long accommodationId);
 
     Accommodation findAccommodation(Long accommodationId);
 
-    AccommodationListDto updateAccommodation(AccommodationModifyDto updateDto);
+    AccommodationCardDto updateAccommodation(AccommodationModifyDto updateDto);
 
     ResponseEntity<List<Availability>> addAccommodationAvailability(Long accommodationId, AvailabilityDto availabilityDto);
 
@@ -38,9 +38,9 @@ public interface IAccommodationService {
 
     Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
 
-    Collection<AccommodationWithStatusDto> getPendingAccommodations();
+    Collection<AccommodationCardWithStatusDto> getPendingAccommodations();
 
-    ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(Long accommodationId);
+    ResponseEntity<AccommodationBookingDetailsWithAvailabilityDto> getAccommodationBookingDetails(Long accommodationId);
 
     AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests);
 
@@ -48,7 +48,7 @@ public interface IAccommodationService {
 
     AccommodationModifyDto getAdvancedDetails(Long accommodationId);
 
-    AccommodationListDto deleteAccommodation(Long accommodationId);
+    AccommodationCardDto deleteAccommodation(Long accommodationId);
 
     void deleteAllByHostId(Long accountId);
 }

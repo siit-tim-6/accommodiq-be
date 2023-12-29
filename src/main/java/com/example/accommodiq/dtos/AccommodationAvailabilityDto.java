@@ -1,6 +1,6 @@
 package com.example.accommodiq.dtos;
 
-public class AccommodationAvailabilityDto { // valid
+public class AccommodationAvailabilityDto {
     private boolean isAvailable;
 
     public AccommodationAvailabilityDto() {}

@@ -73,7 +73,7 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<AccommodationListDto> getFavorites(Long guestId) { // mocked
+    public Collection<AccommodationCardDto> getFavorites(Long guestId) { // mocked
         if (guestId == 4L) {
             throw ErrorUtils.generateNotFound("guestNotFound");
         }
@@ -82,11 +82,11 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public AccommodationListDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) { // mocked
+    public AccommodationCardDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto) { // mocked
         if (guestId == 4L) {
             throw ErrorUtils.generateNotFound("guestNotFound");
         }
-        return new AccommodationListDto() {{
+        return new AccommodationCardDto() {{
             setId(2L);
             setTitle("Seaside Villa");
             setImage("/images/seaside_villa.jpg");

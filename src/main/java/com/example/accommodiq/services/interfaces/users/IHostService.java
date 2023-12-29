@@ -21,7 +21,7 @@ public interface IHostService {
 
     void deleteAll();
 
-    Collection<AccommodationWithStatusDto> getHostAccommodations(Long hostId);
+    Collection<AccommodationCardWithStatusDto> getHostAccommodations(Long hostId);
 
     ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId);
 
@@ -33,5 +33,5 @@ public interface IHostService {
 
     Review addReview(Long hostId, ReviewRequestDto reviewDto);
 
-    AccommodationListDto deleteAccommodation(Long accommodationId);
+    AccommodationCardDto deleteAccommodation(Long accommodationId);
 }

@@ -74,8 +74,8 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     @Transactional
-    public Collection<AccommodationWithStatusDto> getHostAccommodations(Long hostId) {
-        return allAccommodations.findByHostId(hostId).stream().map(AccommodationWithStatusDto::new).toList();
+    public Collection<AccommodationCardWithStatusDto> getHostAccommodations(Long hostId) {
+        return allAccommodations.findByHostId(hostId).stream().map(AccommodationCardWithStatusDto::new).toList();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public AccommodationListDto deleteAccommodation(Long accommodationId) {
+    public AccommodationCardDto deleteAccommodation(Long accommodationId) {
         return accommodationService.deleteAccommodation(accommodationId);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.dtos.AccommodationListDto;
+import com.example.accommodiq.dtos.AccommodationCardDto;
 import com.example.accommodiq.dtos.GuestFavoriteDto;
 import com.example.accommodiq.dtos.ReservationListDto;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
@@ -36,13 +36,13 @@ public class GuestController {
 
     @GetMapping("/{guestId}/favorites")
     @PreAuthorize("hasAuthority('GUEST')")
-    public Collection<AccommodationListDto> getFavorites(@PathVariable Long guestId) {
+    public Collection<AccommodationCardDto> getFavorites(@PathVariable Long guestId) {
         return guestService.getFavorites(guestId);
     }
 
     @PostMapping("/{guestId}/favorites")
     @PreAuthorize("hasAuthority('GUEST')")
-    public AccommodationListDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
+    public AccommodationCardDto addFavorite(@PathVariable Long guestId, @RequestBody GuestFavoriteDto guestFavoriteDto) {
         return guestService.addFavorite(guestId, guestFavoriteDto);
     }
 
