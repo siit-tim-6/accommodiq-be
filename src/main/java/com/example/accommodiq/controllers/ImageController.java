@@ -33,7 +33,7 @@ public class ImageController {
         ImageDataDto imageData = imagesService.loadImageAsResource(filename);
         return ResponseEntity
                 .ok()
-                .contentType(imageData.getMediaType())
-                .body(imageData.getResource());
+                .contentType(imageData.mediaType())
+                .body(imageData.resource());
     }
 }
