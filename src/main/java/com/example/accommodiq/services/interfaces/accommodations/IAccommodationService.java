@@ -20,7 +20,7 @@ public interface IAccommodationService {
 
     AccommodationCardWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
-    AccommodationDetailsDto findById(Long accommodationId);
+    AccommodationDetailsDto findById(Long accommodationId, Long loggedInId);
 
     Accommodation findAccommodation(Long accommodationId);
 

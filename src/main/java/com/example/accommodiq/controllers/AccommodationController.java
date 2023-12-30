@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -52,7 +53,9 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}")
     @Operation(summary = "Get accommodation by id")
     public AccommodationDetailsDto getAccommodationDetails(@Parameter(description = "Id of accommodation to get data") @PathVariable Long accommodationId) {
-        return accommodationService.findById(accommodationId);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;
+        return accommodationService.findById(accommodationId, loggedInId);
     }
 
     @PutMapping()

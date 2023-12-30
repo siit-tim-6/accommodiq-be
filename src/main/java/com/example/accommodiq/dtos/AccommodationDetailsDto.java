@@ -77,6 +77,29 @@ public class AccommodationDetailsDto {
         this.minPrice = accommodation.getMinPrice();
     }
 
+    public AccommodationDetailsDto(Accommodation accommodation, Long loggedInId) {
+        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().size();
+        this.location = accommodation.getLocation();
+        this.host = new AccommodationDetailsHostDto(accommodation.getHost());
+        this.images = accommodation.getImages();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.description = accommodation.getDescription();
+        this.reviews = accommodation.getReviews().stream()
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .map(review -> new ReviewDto(review, loggedInId)) // this will set canDelete to true if loggedInId is the same as review author id
+                .collect(Collectors.toList());
+        this.benefits = accommodation.getBenefits();
+        this.type = accommodation.getType();
+        this.pricingType = accommodation.getPricingType();
+        this.minPrice = accommodation.getMinPrice();
+    }
+
     public Long getId() {
         return id;
     }

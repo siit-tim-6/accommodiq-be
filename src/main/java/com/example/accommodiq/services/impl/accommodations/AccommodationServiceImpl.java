@@ -118,14 +118,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationDetailsDto findById(Long accommodationId) {
+    public AccommodationDetailsDto findById(Long accommodationId, Long loggedInId) {
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
             throw ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
-        return new AccommodationDetailsDto(accommodation.get());
+        return new AccommodationDetailsDto(accommodation.get(), loggedInId);
     }
 
     @Override
