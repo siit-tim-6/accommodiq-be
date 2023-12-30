@@ -33,7 +33,5 @@ public interface IHostService {
 
     Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto);
 
-    Review addReview(Long hostId, ReviewRequestDto reviewDto);
-
     AccommodationListDto deleteAccommodation(Long accommodationId);
 }
