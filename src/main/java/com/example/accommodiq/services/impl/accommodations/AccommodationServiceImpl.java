@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
@@ -33,14 +34,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
     private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
-    IReservationService reservationService;
     IGuestService guestService;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IReservationService reservationService, IGuestService guestService) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
-        this.reservationService = reservationService;
         this.guestService = guestService;
     }
 
@@ -229,7 +228,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public Review addReview(Long accommodationId, Long guestId, ReviewRequestDto reviewDto) {
-        reservationService.canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
+        canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
         Accommodation accommodation = findAccommodation(accommodationId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest, ReviewStatus.PENDING);
@@ -305,5 +304,19 @@ public class AccommodationServiceImpl implements IAccommodationService {
         long newEnd = newAvailability.getToDate();
 
         return newStart < existingEnd && newEnd > existingStart;
+    }
+
+    private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
+        long currentTime = System.currentTimeMillis();
+        long sevenDaysAgo = currentTime - 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+        Collection<Reservation> reservations = reservationRepository
+                .findByUserIdAndAccommodationIdAndStatusNotAndEndDateBefore(
+                        guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
+        }
     }
 }

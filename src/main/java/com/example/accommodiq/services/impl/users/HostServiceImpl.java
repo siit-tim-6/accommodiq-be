@@ -1,13 +1,12 @@
 package com.example.accommodiq.services.impl.users;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
+import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
@@ -22,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,19 +31,19 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
-    final private IGuestService guestService;
+    final private ReservationRepository reservationRepository;
 
-    final private IReservationService reservationService;
+    final private IGuestService guestService;
 
     final AccommodationRepository allAccommodations;
 
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, IReservationService reservationService) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, ReservationRepository reservationRepository) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
         this.guestService = guestService;
-        this.reservationService = reservationService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -160,7 +156,7 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
-        reservationService.canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
+        canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest, ReviewStatus.ACCEPTED);
@@ -172,5 +168,21 @@ public class HostServiceImpl implements IHostService {
     @Override
     public AccommodationCardDto deleteAccommodation(Long accommodationId) {
         return accommodationService.deleteAccommodation(accommodationId);
+    }
+
+    private void canGuestCommentAndRateHost(Long guestId, Long hostId) {
+        Collection<Accommodation> hostAccommodations = accommodationService.findAccommodationsByHostId(hostId);
+
+        List<Long> accommodationIds = hostAccommodations.stream()
+                .map(Accommodation::getId)
+                .collect(Collectors.toList());
+
+        long currentTime = System.currentTimeMillis();
+        Collection<Reservation> reservations = reservationRepository
+                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
+        }
     }
 }

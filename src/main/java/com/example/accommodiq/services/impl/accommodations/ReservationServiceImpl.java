@@ -161,21 +161,6 @@ public class ReservationServiceImpl implements IReservationService {
         allReservations.flush();
     }
 
-    @Override
-    public void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
-        long currentTime = System.currentTimeMillis();
-        long sevenDaysAgo = currentTime - 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-
-        Collection<Reservation> reservations = allReservations
-                .findByUserIdAndAccommodationIdAndStatusNotAndEndDateBefore(
-                        guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);
-
-        if (reservations.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
-        }
-    }
-
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);
@@ -185,22 +170,5 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setUser(null);
         reservation.setAccommodation(null);
         return reservation;
-    }
-
-    @Override
-    public void canGuestCommentAndRateHost(Long guestId, Long hostId) {
-        Collection<Accommodation> hostAccommodations = accommodationService.findAccommodationsByHostId(hostId);
-
-        List<Long> accommodationIds = hostAccommodations.stream()
-                .map(Accommodation::getId)
-                .collect(Collectors.toList());
-
-        long currentTime = System.currentTimeMillis();
-        Collection<Reservation> reservations = allReservations
-                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
-
-        if (reservations.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
-        }
     }
 }

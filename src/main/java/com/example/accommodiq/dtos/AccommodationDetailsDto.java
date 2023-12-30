@@ -7,9 +7,11 @@ import java.util.List;
 
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.OptionalDouble;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AccommodationDetailsDto {
     private Long id;
@@ -22,7 +24,7 @@ public class AccommodationDetailsDto {
     private int minGuests;
     private int maxGuests;
     private String description;
-    private List<AccommodationDetailsReviewDto> reviews;
+    private List<ReviewDto> reviews;
     private Set<String> benefits;
     private String type;
     private PricingType pricingType;
@@ -33,7 +35,7 @@ public class AccommodationDetailsDto {
     }
 
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
-                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type,
+                                   int minGuests, int maxGuests, String description, ArrayList<ReviewDto> reviews, Set<String> benefits, String type,
                                    PricingType pricingType, double minPrice) {
         this.id = id;
         this.title = title;
@@ -65,7 +67,10 @@ public class AccommodationDetailsDto {
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
-        this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
+        this.reviews = accommodation.getReviews().stream()
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .map(ReviewDto::new)
+                .collect(Collectors.toList());
         this.benefits = accommodation.getBenefits();
         this.type = accommodation.getType();
         this.pricingType = accommodation.getPricingType();
@@ -152,11 +157,11 @@ public class AccommodationDetailsDto {
         this.description = description;
     }
 
-    public List<AccommodationDetailsReviewDto> getReviews() {
+    public List<ReviewDto> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<AccommodationDetailsReviewDto> reviews) {
+    public void setReviews(List<ReviewDto> reviews) {
         this.reviews = reviews;
     }
 
