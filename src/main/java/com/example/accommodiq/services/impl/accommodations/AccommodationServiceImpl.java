@@ -1,15 +1,14 @@
 package com.example.accommodiq.services.impl.accommodations;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,11 +32,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
     private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
+    IReservationService reservationService;
+    IGuestService guestService;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IReservationService reservationService, IGuestService guestService) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
+        this.reservationService = reservationService;
+        this.guestService = guestService;
     }
 
     @Override
@@ -224,25 +227,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) { // mocked
-        if (accommodationId == 4L) {
-            throw generateNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                "Green Valley",
-                null,
-                2,
-                4,
-                "Cottage",
-                AccommodationStatus.ACCEPTED,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    public Review addReview(Long accommodationId, Long guestId, ReviewRequestDto reviewDto) {
+        reservationService.canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
+        Accommodation accommodation = findAccommodation(accommodationId);
+        Guest guest = guestService.findGuest(guestId);
+        Review review = new Review(reviewDto, guest);
+        accommodation.getReviews().add(review);
+        update(accommodation);
+        return review;
     }
 
     @Override

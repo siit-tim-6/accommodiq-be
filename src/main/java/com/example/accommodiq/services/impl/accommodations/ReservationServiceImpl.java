@@ -161,6 +161,21 @@ public class ReservationServiceImpl implements IReservationService {
         allReservations.flush();
     }
 
+    @Override
+    public void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
+        long currentTime = System.currentTimeMillis();
+        long sevenDaysAgo = currentTime - 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+        Collection<Reservation> reservations = allReservations
+                .findByUserIdAndAccommodationIdAndStatusNotAndEndDateBefore(
+                        guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
+        }
+    }
+
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);

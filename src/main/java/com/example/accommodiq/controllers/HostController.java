@@ -119,7 +119,7 @@ public class HostController {
     }
 
     @GetMapping("{hostId}/reviews")
-    @Operation(summary = "Get host reviews")
+    @Operation(summary = "Get host reviews that are not declined")
     public Collection<ReviewDto> getHostReviews(@PathVariable Long hostId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;

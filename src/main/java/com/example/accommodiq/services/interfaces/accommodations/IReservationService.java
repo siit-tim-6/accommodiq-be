@@ -35,4 +35,6 @@ public interface IReservationService {
     void deleteByAccommodationId(Long accommodationId);
 
     void deleteByUserId(Long userId);
+
+    void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId);
 }

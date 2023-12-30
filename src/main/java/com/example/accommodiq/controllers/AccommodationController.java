@@ -1,15 +1,19 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -22,9 +26,12 @@ import java.util.Set;
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 
+    final private IAccountService accountService;
+
     @Autowired
-    public AccommodationController(IAccommodationService accommodationService) {
+    public AccommodationController(IAccommodationService accommodationService, IAccountService accountService) {
         this.accommodationService = accommodationService;
+        this.accountService = accountService;
     }
 
     @GetMapping()
@@ -93,8 +100,11 @@ public class AccommodationController {
     @PostMapping("{accommodationId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public Accommodation addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
-        return accommodationService.addReview(accommodationId, reviewDto);
+    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long guestId = ((Account) accountService.loadUserByUsername(email)).getId();
+        Review addedReview = accommodationService.addReview(accommodationId, guestId, reviewDto);
+        return new ReviewDto(addedReview, guestId);
     }
 
     @GetMapping("/pending")

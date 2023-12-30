@@ -36,7 +36,7 @@ public interface IAccommodationService {
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
-    Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto);
+    Review addReview(Long accommodationId,Long guestId, ReviewRequestDto reviewDto);
 
     Collection<AccommodationCardWithStatusDto> getPendingAccommodations();
 
