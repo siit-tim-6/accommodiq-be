@@ -55,7 +55,9 @@ public class AccommodationDetailsDto {
     }
 
     public AccommodationDetailsDto(Accommodation accommodation) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble averageRating = accommodation.getReviews().stream()
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .mapToDouble(Review::getRating).average();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
@@ -78,7 +80,9 @@ public class AccommodationDetailsDto {
     }
 
     public AccommodationDetailsDto(Accommodation accommodation, Long loggedInId) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble averageRating = accommodation.getReviews().stream()
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .mapToDouble(Review::getRating).average();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();

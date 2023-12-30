@@ -2,6 +2,7 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.OptionalDouble;
 
@@ -23,7 +24,9 @@ public class AccommodationDetailsHostDto {
     }
 
     public AccommodationDetailsHostDto(Host host) {
-        OptionalDouble averageRating = host.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble averageRating = host.getReviews().stream()
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .mapToDouble(Review::getRating).average();
 
         this.id = host.getId();
         this.name = host.getFirstName() + " " + host.getLastName();
