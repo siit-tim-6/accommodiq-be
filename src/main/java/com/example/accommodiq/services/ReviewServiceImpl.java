@@ -73,6 +73,8 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public MessageDto delete(Long reviewId) {
         Review review = findReview(reviewId);
+        allReviews.deleteFromAccommodationReviews(reviewId);
+        allReviews.deleteFromHostReviews(reviewId);
         allReviews.delete(review);
         allReviews.flush();
         return new MessageDto("Review successfully deleted.");
