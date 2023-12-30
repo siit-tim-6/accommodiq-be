@@ -10,10 +10,10 @@ import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
-import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.exception.ConstraintViolationException;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
+import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -268,6 +268,21 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Collection<Accommodation> findAccommodationsByHostId(Long hostId) {
         return accommodationRepository.findAllByHostId(hostId);
+    }
+
+    @Override
+    public AccommodationListDto deleteAccommodation(Long accommodationId) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        reservationRepository.deleteByAccommodationId(accommodationId);
+        accommodationRepository.delete(accommodation);
+        accommodationRepository.flush();
+        return new AccommodationListDto(accommodation);
+    }
+
+    @Override
+    public void deleteAllByHostId(Long accountId) {
+        accommodationRepository.deleteAllByHostId(accountId);
+        accommodationRepository.flush();
     }
 
     private boolean isOverlapping(Availability existing, Availability newAvailability) {

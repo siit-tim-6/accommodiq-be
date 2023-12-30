@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ErrorUtils.throwNotFound;
@@ -100,5 +101,16 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Collection<Review> getAccommodationReviews(Long accommodationId) {
         return accommodationService.getAccommodationReviews(accommodationId);
+    }
+
+    @Override
+    public void deleteByGuestId(Long id) {
+        List<Review> reviews = allReviews.findByGuestId(id);
+        for (Review review : reviews) {
+            allReviews.deleteFromAccommodationReviews(review.getId());
+            allReviews.deleteFromHostReviews(review.getId());
+        }
+        allReviews.deleteByGuestId(id);
+        allReviews.flush();
     }
 }

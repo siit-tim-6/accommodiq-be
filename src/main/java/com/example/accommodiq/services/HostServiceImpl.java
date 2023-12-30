@@ -167,4 +167,9 @@ public class HostServiceImpl implements IHostService {
         update(host);
         return review;
     }
+
+    @Override
+    public AccommodationListDto deleteAccommodation(Long accommodationId) {
+        return accommodationService.deleteAccommodation(accommodationId);
+    }
 }

@@ -49,4 +49,8 @@ public interface IAccommodationService {
     AccommodationUpdateDto getAdvancedDetails(Long accommodationId);
 
     Collection<Accommodation> findAccommodationsByHostId(Long hostId);
+
+    AccommodationListDto deleteAccommodation(Long accommodationId);
+
+    void deleteAllByHostId(Long accountId);
 }

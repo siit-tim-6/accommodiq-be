@@ -17,7 +17,7 @@ public class Review {
     private String comment;
     private Long date;
     private ReviewStatus status;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User guest;
 
 

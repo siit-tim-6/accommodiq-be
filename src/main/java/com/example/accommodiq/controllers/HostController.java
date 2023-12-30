@@ -3,12 +3,10 @@ package com.example.accommodiq.controllers;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.IAccountService;
 import com.example.accommodiq.services.interfaces.IHostService;
 import com.example.accommodiq.services.interfaces.IReviewService;
-import com.example.accommodiq.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +22,12 @@ import java.util.Objects;
 public class HostController {
     final private IHostService hostService;
     final private IReviewService reviewService;
-    final private IUserService userService;
     final private IAccountService accountService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService, IUserService userService, IAccountService accountService) {
+    public HostController(IHostService hostService, IReviewService reviewService, IAccountService accountService) {
         this.hostService = hostService;
         this.reviewService = reviewService;
-        this.userService = userService;
         this.accountService = accountService;
     }
 
@@ -115,5 +111,10 @@ public class HostController {
         Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;
         Collection<Review> hostReviews = reviewService.getHostReviews(hostId);
         return hostReviews.stream().map(review -> new ReviewDto(review, loggedInId)).toList();
+    }
+
+    @DeleteMapping("accommodations/{accommodationId}")
+    public AccommodationListDto deleteAccommodation(@PathVariable Long accommodationId) {
+        return hostService.deleteAccommodation(accommodationId);
     }
 }

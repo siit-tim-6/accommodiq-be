@@ -6,6 +6,7 @@ import com.example.accommodiq.enums.AccommodationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,4 +17,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     Collection<Accommodation> findAllByStatus(AccommodationStatus accommodationStatus);
 
     Collection<Accommodation> findAllByHostId(Long hostId);
+
+    @Transactional
+    void deleteAllByHostId(Long accountId);
 }
