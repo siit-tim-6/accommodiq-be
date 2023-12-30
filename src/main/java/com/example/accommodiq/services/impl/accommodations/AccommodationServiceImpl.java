@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
@@ -231,7 +232,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         reservationService.canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
         Accommodation accommodation = findAccommodation(accommodationId);
         Guest guest = guestService.findGuest(guestId);
-        Review review = new Review(reviewDto, guest);
+        Review review = new Review(reviewDto, guest, ReviewStatus.PENDING);
         accommodation.getReviews().add(review);
         update(accommodation);
         return review;

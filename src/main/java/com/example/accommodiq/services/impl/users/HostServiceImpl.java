@@ -163,7 +163,7 @@ public class HostServiceImpl implements IHostService {
         reservationService.canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
-        Review review = new Review(reviewDto, guest);
+        Review review = new Review(reviewDto, guest, ReviewStatus.ACCEPTED);
         host.getReviews().add(review);
         update(host);
         return review;

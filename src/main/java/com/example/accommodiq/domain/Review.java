@@ -42,11 +42,11 @@ public class Review {
         super();
     }
 
-    public Review(ReviewRequestDto reviewDto, Guest guest) {
+    public Review(ReviewRequestDto reviewDto, Guest guest, ReviewStatus status) {
         this.rating = reviewDto.getRating();
         this.comment = reviewDto.getComment();
         this.date = Instant.now().toEpochMilli();
-        this.status = ReviewStatus.ACCEPTED;
+        this.status = status;
         this.guest = guest;
     }
 
