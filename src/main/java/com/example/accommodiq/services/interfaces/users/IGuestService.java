@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.dtos.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
 
@@ -12,9 +13,9 @@ public interface IGuestService {
 
     ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 
-    Collection<AccommodationCardDto> getFavorites(Long guestId);
+    Collection<AccommodationCardDto> getFavorites();
 
-    AccommodationCardDto addFavorite(Long guestId, GuestFavoriteDto favoriteDto);
+    AccommodationCardDto addFavorite(GuestFavoriteDto favoriteDto);
 
-    MessageDto removeFavorite(Long guestId, Long accommodationId);
+    ResponseEntity<String> removeFavorite(Long accommodationId);
 }
