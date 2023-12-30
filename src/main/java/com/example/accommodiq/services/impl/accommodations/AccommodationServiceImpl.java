@@ -308,10 +308,11 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
         long currentTime = System.currentTimeMillis();
-        long sevenDaysAgo = currentTime - 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+        long sevenDaysAgo = (currentTime / 1000) - (7 * 24 * 60 * 60); // Convert to seconds
 
+        Collection<Reservation> reservations1 = reservationRepository.findAll();
         Collection<Reservation> reservations = reservationRepository
-                .findByUserIdAndAccommodationIdAndStatusNotAndEndDateBefore(
+                .findReservationsByGuestAndAccommodationWithStatusAfterDate(
                         guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);
 
         if (reservations.isEmpty()) {

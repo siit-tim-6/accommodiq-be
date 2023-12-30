@@ -5,12 +5,13 @@ import com.example.accommodiq.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 
-
+@Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
      Collection<Reservation> findByUserId(Long userId);
      Collection<Reservation> findByAccommodationId(Long accommodationId);
@@ -34,11 +35,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("currentTime") Long currentTime
     );
 
-    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id = :accommodationId AND r.status <> :status AND r.endDate < :endTime")
-    Collection<Reservation> findByUserIdAndAccommodationIdAndStatusNotAndEndDateBefore(
+    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id = :accommodationId AND r.status <> :status AND r.endDate > :sevenDaysAgo")
+    Collection<Reservation> findReservationsByGuestAndAccommodationWithStatusAfterDate(
             @Param("userId") Long userId,
             @Param("accommodationId") Long accommodationId,
             @Param("status") ReservationStatus status,
-            @Param("endTime") Long endTime
+            @Param("sevenDaysAgo") Long sevenDaysAgo
     );
 }

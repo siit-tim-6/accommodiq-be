@@ -177,7 +177,7 @@ public class HostServiceImpl implements IHostService {
                 .map(Accommodation::getId)
                 .collect(Collectors.toList());
 
-        long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis()/1000; // current time in seconds
         Collection<Reservation> reservations = reservationRepository
                 .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
 

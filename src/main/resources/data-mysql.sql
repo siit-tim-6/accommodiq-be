@@ -88,6 +88,6 @@ VALUES
     (2, 1672704000, 4, 1672617600, 1, 2, 3),
     (3, 1672790400, 1, 1672704000, 0, 3, 3);
 
-DELETE FROM `reservation`; DELETE FROM `report`; DELETE FROM `host_reviews`; DELETE FROM `accommodation_reviews`; DELETE FROM `review`;
-DELETE FROM `accommodation_available`; DELETE FROM `accommodation_images`; DELETE FROM `accommodation`; DELETE FROM `availability`;
-DELETE FROM `host`; DELETE FROM `account`; DELETE FROM `user`;
+-- DELETE FROM `reservation`; DELETE FROM `report`; DELETE FROM `host_reviews`; DELETE FROM `accommodation_reviews`; DELETE FROM `review`;
+-- DELETE FROM `accommodation_available`; DELETE FROM `accommodation_images`; DELETE FROM `accommodation`; DELETE FROM `availability`;
+-- DELETE FROM `host`; DELETE FROM `account`; DELETE FROM `user`;
