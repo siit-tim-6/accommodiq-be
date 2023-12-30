@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/hosts")
@@ -111,7 +112,7 @@ public class HostController {
     @GetMapping("{hostId}/reviews")
     public Collection<ReviewDto> getHostReviews(@PathVariable Long hostId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long loggedInId = ((Account) accountService.loadUserByUsername(email)).getId();
+        Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;
         Collection<Review> hostReviews = reviewService.getHostReviews(hostId);
         return hostReviews.stream().map(review -> new ReviewDto(review, loggedInId)).toList();
     }
