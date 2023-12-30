@@ -6,6 +6,7 @@ import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HostServiceImpl implements IHostService {
@@ -141,7 +143,9 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Collection<Review> getHostReviews(Long hostId) {
         Host host = findHost(hostId);
-        return host.getReviews();
+        return host.getReviews().stream()
+                .filter(review -> review.getStatus() != ReviewStatus.DECLINED)
+                .collect(Collectors.toList());
     }
 
     @Override

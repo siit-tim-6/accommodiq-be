@@ -110,4 +110,12 @@ public class ReviewDto {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+        public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
+    }
 }

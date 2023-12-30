@@ -15,6 +15,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/reviews")
+@CrossOrigin
 public class ReviewController {
 
     final IReviewService reviewService;
