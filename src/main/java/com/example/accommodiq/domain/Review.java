@@ -6,7 +6,6 @@ import com.example.accommodiq.enums.ReviewStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.Date;
 
 @Entity
 public class Review {

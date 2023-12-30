@@ -6,9 +6,10 @@ import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
-import com.example.accommodiq.services.interfaces.IReservationService;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,40 +30,47 @@ public class ReservationController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all reservations")
     public Collection<Reservation> getReservations() {
         return reservationService.getAll();
     }
 
     @GetMapping("/{reservationId}")
-    public ReservationDto findReservationById(@PathVariable Long reservationId) {
+    @Operation(summary = "Get reservation by id")
+    public ReservationDto findReservationById(@Parameter(description = "Id of reservation to get data") @PathVariable Long reservationId) {
         return reservationService.findReservationDto(reservationId);
     }
 
     @PostMapping
+    @Operation(summary = "Create reservation")
     public Reservation insert(@RequestBody ReservationRequestDto reservationDto) {
         return reservationService.insert(reservationDto);
     }
 
     @PutMapping
-    public ReservationDto update(@RequestBody ReservationDto reservationDto) {
+    @Operation(summary = "Update reservation")
+    public ReservationDto update(@Parameter(description = "Updated reservation") @RequestBody ReservationDto reservationDto) {
         return reservationService.update(reservationDto);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Delete all reservations")
     public void deleteAll() {
         reservationService.deleteAll();
     }
 
     @DeleteMapping("/{reservationId}")
     @PreAuthorize("hasAuthority('GUEST')")
-    public MessageDto deleteReservation(@PathVariable Long reservationId) {
+    @Operation(summary = "Delete reservation")
+    public MessageDto deleteReservation(@Parameter(description = "Id of reservation to be deleted") @PathVariable Long reservationId) {
         return reservationService.delete(reservationId);
     }
 
     @PutMapping("/{reservationId}/status")
     @PreAuthorize("hasAuthority('HOST')")
-    public Reservation acceptReservation(@PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
+    @Operation(summary = "Change reservation status")
+    public Reservation acceptReservation(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
         return reservationService.setReservationStatus(reservationId, body);
     }
 }

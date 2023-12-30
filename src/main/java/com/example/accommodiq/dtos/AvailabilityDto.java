@@ -1,11 +1,13 @@
 package com.example.accommodiq.dtos;
 
-import java.util.Date;
-
 public class AvailabilityDto {
     private Long fromDate;
     private Long toDate;
     private double price;
+
+    public AvailabilityDto() {
+        super();
+    }
 
     public AvailabilityDto(Long fromDate, Long toDate, double price) {
         this.fromDate = fromDate;

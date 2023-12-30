@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
      Collection<Reservation> findByUserId(Long userId);

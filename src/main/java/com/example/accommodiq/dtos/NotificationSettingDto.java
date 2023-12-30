@@ -1,6 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.enums.NotificationType;
 
@@ -8,6 +7,9 @@ public class NotificationSettingDto {
     private Long id;
     private NotificationType type;
     private boolean isOn;
+
+    public NotificationSettingDto() {
+    }
 
     public NotificationSettingDto(NotificationSetting notificationSetting) {
         this.id = notificationSetting.getId();

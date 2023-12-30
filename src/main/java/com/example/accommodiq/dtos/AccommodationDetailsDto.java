@@ -28,6 +28,10 @@ public class AccommodationDetailsDto {
     private PricingType pricingType;
     private double minPrice;
 
+    public AccommodationDetailsDto() {
+        super();
+    }
+
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
                                    int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type,
                                    PricingType pricingType, double minPrice) {

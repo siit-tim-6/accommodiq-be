@@ -4,10 +4,11 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
-import com.example.accommodiq.services.interfaces.IReviewService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.feedback.IReviewService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,8 @@ public class ReviewController {
     }
 
     @PutMapping
-    public ReviewDto updateReview(@RequestBody ReviewDto reviewDto) {
+    @Operation(summary = "Update review")
+    public ReviewDto updateReview(@Parameter(description = "Updated parameter") @RequestBody ReviewDto reviewDto) {
         Review existingReview = reviewService.findReview(reviewDto.getId());
 
         existingReview.setRating(reviewDto.getRating());
@@ -43,25 +45,29 @@ public class ReviewController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Delete all reviews")
     public void deleteAll() {
         reviewService.deleteAll();
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all reviews")
     public Collection<Review> getReviews() {
         return reviewService.getAll();
     }
 
     @DeleteMapping("/{reviewId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('GUEST')")
-    public MessageDto deleteReview(@PathVariable Long reviewId) {
+    @Operation(summary = "Delete review")
+    public MessageDto deleteReview(@Parameter(description = "Id of review to be deleted") @PathVariable Long reviewId) {
         return reviewService.delete(reviewId);
     }
 
     @PutMapping("/{reviewId}/status")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('HOST')")
-    public MessageDto setReviewStatus(@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+    @Operation(summary = "Change review status")
+    public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
         reviewService.setReviewStatus(reviewId, body);
         return new MessageDto("Review status updated successfully");
     }

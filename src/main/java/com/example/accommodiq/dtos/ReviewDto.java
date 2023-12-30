@@ -4,7 +4,6 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.ReviewStatus;
 
 import java.time.Instant;
-import java.util.Date;
 
 public class ReviewDto {
     private Long id;

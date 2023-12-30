@@ -6,6 +6,10 @@ public class AccommodationReportDto {
     private int reservationCount;
     private ArrayList<AccommodationReportRevenueDto> revenues;
 
+    public AccommodationReportDto() {
+        super();
+    }
+
     public AccommodationReportDto(int reservationCount, ArrayList<AccommodationReportRevenueDto> revenues) {
         this.reservationCount = reservationCount;
         this.revenues = revenues;
