@@ -12,7 +12,6 @@ import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -103,13 +102,13 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public ResponseEntity<String> removeFavorite(Long accommodationId) { // mocked
+    public MessageDto removeFavorite(Long accommodationId) { // mocked
         Long guestId = getGuestId();
         Guest guest = findGuest(guestId);
         guest.getFavorite().removeIf(accommodation -> Objects.equals(accommodation.getId(), accommodationId));
         guestRepository.save(guest);
         guestRepository.flush();
-        return ResponseEntity.ok("Favorite removed");
+        return new MessageDto("Favorite removed");
     }
 
 
