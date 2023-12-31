@@ -21,7 +21,7 @@ public interface IReportService {
 
     void deleteAll();
 
-    void reportUser(Long reportedUserId, ReportDto reportDto);
+    void reportUser(Long reportedUserId,Long reportingUserId, ReportDto reportDto);
 
     void deleteByReportedUserId(Long id);
 

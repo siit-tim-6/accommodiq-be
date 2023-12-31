@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.impl.feedback;
 
 import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.repositories.ReportRepository;
@@ -99,15 +100,12 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public void reportUser(Long reportedUserId, ReportDto reportDto) {
+    public void reportUser(Long reportedUserId,Long reportingUserId, ReportDto reportDto) {
+        validateReportInput(reportedUserId,reportingUserId, reportDto);
 
-        validateReportInput(reportedUserId, reportDto);
-
-        Report report = new Report();
-        report.setReportedUser(userService.findUser(reportedUserId));
-        report.setReason(reportDto.getReason());
-        report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
-        report.setTimestamp(reportDto.getTimestamp());
+        User reportedUser = userService.findUser(reportedUserId);
+        User reportingUser = userService.findUser(reportingUserId);
+        Report report = new Report(reportedUser, reportingUser, reportDto);
         insert(report);
     }
 
@@ -123,11 +121,11 @@ public class ReportServiceImpl implements IReportService {
         allReports.flush();
     }
 
-    private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
-        if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
+    private void validateReportInput(Long reportedUserId, Long reportingUserId, ReportDto reportDto) {
+        if (Objects.equals(reportedUserId, reportingUserId)) {
             throw generateBadRequest("reportYourself");
         }
-        if (reportedUserId == null || reportDto.getReportingUserId() == null) {
+        if (reportedUserId == null || reportingUserId == null) {
             throw generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {

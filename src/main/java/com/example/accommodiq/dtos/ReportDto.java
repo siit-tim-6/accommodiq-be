@@ -3,13 +3,11 @@ package com.example.accommodiq.dtos;
 public class ReportDto {
     private Long id;
     private String reason;
-    private Long reportingUserId;
     private Long timestamp;
 
-    public ReportDto(Long id, String reason, Long reportingUserId, Long timestamp) {
+    public ReportDto(Long id, String reason, Long timestamp) {
         this.id = id;
         this.reason = reason;
-        this.reportingUserId = reportingUserId;
         this.timestamp = timestamp;
     }
 
@@ -26,10 +24,6 @@ public class ReportDto {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getReportingUserId() {
-        return reportingUserId;
     }
 
     public Long getTimestamp() {
