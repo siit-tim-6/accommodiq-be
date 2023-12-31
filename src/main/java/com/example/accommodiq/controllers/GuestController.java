@@ -5,7 +5,6 @@ import com.example.accommodiq.services.interfaces.users.IGuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +52,7 @@ public class GuestController {
     @DeleteMapping("/favorites/{accommodationId}")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Remove favorite from guest")
-    public ResponseEntity<String> removeFavorite(@Parameter(description = "Id of accommodation to remove from favorites") @PathVariable Long accommodationId) {
+    public MessageDto removeFavorite(@Parameter(description = "Id of accommodation to remove from favorites") @PathVariable Long accommodationId) {
         return guestService.removeFavorite(accommodationId);
     }
 
