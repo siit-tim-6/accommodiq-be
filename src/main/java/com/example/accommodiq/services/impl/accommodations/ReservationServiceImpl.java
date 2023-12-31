@@ -19,11 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -159,6 +159,19 @@ public class ReservationServiceImpl implements IReservationService {
     public void deleteByUserId(Long userId) {
         allReservations.deleteByUserId(userId);
         allReservations.flush();
+    }
+
+    @Override
+    public boolean hasPastReservation(Long ownerId, Long guestId) {
+        Collection<Accommodation> accommodations = accommodationService.findAccommodationsByHostId(ownerId);
+        List<Long> accommodationIds = accommodations.stream().map(Accommodation::getId).toList();
+
+        return !allReservations.findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(
+                guestId,
+                accommodationIds,
+                ReservationStatus.CANCELLED,
+                Instant.now().getEpochSecond()
+        ).isEmpty();
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {

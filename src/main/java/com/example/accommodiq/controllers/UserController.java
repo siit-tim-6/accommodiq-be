@@ -169,10 +169,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Report user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportDto.class))})})
-    public void reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
+    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account reportingAccount = (Account) accountService.loadUserByUsername(email);
-        reportService.reportUser(id,reportingAccount.getId(), reportDto);
+        Account reportedAccount = accountService.findAccount(id);
+        reportService.reportUser(reportedAccount,reportingAccount, reportDto);
+        return new MessageDto("Reported Successfully");
     }
 
     @GetMapping("/{userId}/profile")

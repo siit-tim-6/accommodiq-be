@@ -1,11 +1,15 @@
 package com.example.accommodiq.services.impl.feedback;
 
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.repositories.ReportRepository;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +28,14 @@ public class ReportServiceImpl implements IReportService {
     final ReportRepository allReports;
 
     final IUserService userService;
+    
+    final IReservationService reservationService;
 
     @Autowired
-    public ReportServiceImpl(ReportRepository allReports, IUserService userService) {
+    public ReportServiceImpl(ReportRepository allReports, IUserService userService, IReservationService reservationService) {
         this.allReports = allReports;
         this.userService = userService;
+        this.reservationService = reservationService;
     }
 
     @Override
@@ -100,11 +107,15 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public void reportUser(Long reportedUserId,Long reportingUserId, ReportDto reportDto) {
-        validateReportInput(reportedUserId,reportingUserId, reportDto);
+    public void reportUser(Account reportedUserAccount,Account reportingUserAccount, ReportDto reportDto) {
+        validateReportInput(reportedUserAccount,reportingUserAccount, reportDto);
 
-        User reportedUser = userService.findUser(reportedUserId);
-        User reportingUser = userService.findUser(reportingUserId);
+        if (!hasPastReservationBetweenUsers(reportedUserAccount, reportingUserAccount)) {
+            throw new IllegalStateException("Cannot report user without a past reservation.");
+        }
+
+        User reportedUser = reportedUserAccount.getUser();
+        User reportingUser = reportingUserAccount.getUser();
         Report report = new Report(reportedUser, reportingUser, reportDto);
         insert(report);
     }
@@ -121,15 +132,18 @@ public class ReportServiceImpl implements IReportService {
         allReports.flush();
     }
 
-    private void validateReportInput(Long reportedUserId, Long reportingUserId, ReportDto reportDto) {
-        if (Objects.equals(reportedUserId, reportingUserId)) {
+    private void validateReportInput(Account reportedUser, Account reportingUser, ReportDto reportDto) {
+        if (Objects.equals(reportedUser.getId(), reportingUser.getId())) {
             throw generateBadRequest("reportYourself");
         }
-        if (reportedUserId == null || reportingUserId == null) {
+        if (reportedUser.getId() == null || reportingUser.getId() == null) {
             throw generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
             throw generateBadRequest("reportReasonNull");
+        }
+        if (reportedUser.getRole() == reportingUser.getRole()) {
+            throw generateBadRequest("reportSameRole");
         }
     }
 
@@ -140,5 +154,15 @@ public class ReportServiceImpl implements IReportService {
         report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
         report.setTimestamp(reportDto.getTimestamp());
         return report;
+    }
+
+    private boolean hasPastReservationBetweenUsers(Account firstAccount, Account secondAccount) {
+        boolean hasReservation;
+        if (firstAccount.getRole() == AccountRole.HOST) {
+            hasReservation = reservationService.hasPastReservation(firstAccount.getId(), secondAccount.getId());
+        } else {
+            hasReservation = reservationService.hasPastReservation(secondAccount.getId(), firstAccount.getId());
+        }
+        return hasReservation;
     }
 }

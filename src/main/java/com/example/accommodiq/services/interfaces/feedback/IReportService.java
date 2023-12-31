@@ -1,5 +1,6 @@
 package com.example.accommodiq.services.interfaces.feedback;
 
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
@@ -21,7 +22,7 @@ public interface IReportService {
 
     void deleteAll();
 
-    void reportUser(Long reportedUserId,Long reportingUserId, ReportDto reportDto);
+    void reportUser(Account reportedUser, Account reportingUser, ReportDto reportDto);
 
     void deleteByReportedUserId(Long id);
 

@@ -3,6 +3,8 @@ package com.example.accommodiq.domain;
 import com.example.accommodiq.dtos.ReportDto;
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 @Entity
 public class Report {
     @Id
@@ -27,7 +29,7 @@ public class Report {
 
     public Report(User reportedUser, User reportingUser, ReportDto reportDto) {
         this.reason = reportDto.getReason();
-        this.timestamp = reportDto.getTimestamp();
+        this.timestamp = Instant.now().getEpochSecond();
         this.reportingUser = reportingUser;
         this.reportedUser = reportedUser;
     }
