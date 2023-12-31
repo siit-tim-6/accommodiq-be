@@ -25,13 +25,19 @@ public class AccommodationDetailsHostDto {
 
     public AccommodationDetailsHostDto(Host host) {
         OptionalDouble averageRating = host.getReviews().stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .filter(this::isReviewAcceptedOrReported)
                 .mapToDouble(Review::getRating).average();
 
         this.id = host.getId();
         this.name = host.getFirstName() + " " + host.getLastName();
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
-        this.reviewCount = host.getReviews().size();
+        this.reviewCount = host.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .toList().size();
+    }
+
+    private boolean isReviewAcceptedOrReported(Review review) {
+        return review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED;
     }
 
     public Long getId() {

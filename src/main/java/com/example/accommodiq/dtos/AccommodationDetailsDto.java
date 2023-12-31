@@ -56,13 +56,15 @@ public class AccommodationDetailsDto {
 
     public AccommodationDetailsDto(Accommodation accommodation) {
         OptionalDouble averageRating = accommodation.getReviews().stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .filter(this::isReviewAcceptedOrReported)
                 .mapToDouble(Review::getRating).average();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
-        this.reviewCount = accommodation.getReviews().size();
+        this.reviewCount = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .toList().size();
         this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
         this.images = accommodation.getImages();
@@ -70,7 +72,7 @@ public class AccommodationDetailsDto {
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
         this.reviews = accommodation.getReviews().stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .filter(this::isReviewAcceptedOrReported)
                 .map(ReviewDto::new)
                 .collect(Collectors.toList());
         this.benefits = accommodation.getBenefits();
@@ -81,13 +83,15 @@ public class AccommodationDetailsDto {
 
     public AccommodationDetailsDto(Accommodation accommodation, Long loggedInId) {
         OptionalDouble averageRating = accommodation.getReviews().stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
+                .filter(this::isReviewAcceptedOrReported)
                 .mapToDouble(Review::getRating).average();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
-        this.reviewCount = accommodation.getReviews().size();
+        this.reviewCount = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .toList().size();
         this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
         this.images = accommodation.getImages();
@@ -95,8 +99,8 @@ public class AccommodationDetailsDto {
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
         this.reviews = accommodation.getReviews().stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED)
-                .map(review -> new ReviewDto(review, loggedInId)) // this will set canDelete to true if loggedInId is the same as review author id
+                .filter(this::isReviewAcceptedOrReported)
+                .map(review -> new ReviewDto(review, loggedInId))
                 .collect(Collectors.toList());
         this.benefits = accommodation.getBenefits();
         this.type = accommodation.getType();
@@ -222,5 +226,9 @@ public class AccommodationDetailsDto {
 
     public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
+    }
+
+    private boolean isReviewAcceptedOrReported(Review review) {
+        return review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED;
     }
 }
