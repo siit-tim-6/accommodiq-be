@@ -1,15 +1,19 @@
 package com.example.accommodiq.services.impl.notifications;
 
 import com.example.accommodiq.domain.Notification;
+import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
@@ -22,10 +26,13 @@ public class NotificationServiceImpl implements INotificationService {
 
     final IUserService userService;
 
+    final INotificationSettingService notificationSettingService;
+
     @Autowired
-    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService) {
+    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService, INotificationSettingService notificationSettingService) {
         this.allNotifications = allNotifications;
         this.userService = userService;
+        this.notificationSettingService = notificationSettingService;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     public Notification insert(Long userId, Notification notification) {
         User user = userService.findUser(userId);
-        user.getNotifications().add(notification);
+//        user.getNotifications().add(notification);
         userService.update(user);
         return notification;
     }
@@ -76,5 +83,10 @@ public class NotificationServiceImpl implements INotificationService {
         allNotifications.flush();
     }
 
-
+    @Override
+    public Collection<Notification> getAllByUserId(Long userId) {
+        List<NotificationType> notificationTypes = notificationSettingService.getAllByUserId(userId).stream()
+                .filter(NotificationSetting::isOn).map(NotificationSetting::getType).toList();
+        return allNotifications.findAllByUserIdAndTypeIsIn(userId, notificationTypes);
+    }
 }

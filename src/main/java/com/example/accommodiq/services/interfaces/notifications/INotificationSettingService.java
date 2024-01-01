@@ -3,6 +3,7 @@ package com.example.accommodiq.services.interfaces.notifications;
 import com.example.accommodiq.domain.NotificationSetting;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface INotificationSettingService {
     Collection<NotificationSetting> getAll();
@@ -18,4 +19,6 @@ public interface INotificationSettingService {
     void deleteAll();
 
     void setNotificationSettingsForUser(Long userId);
+
+    List<NotificationSetting> getAllByUserId(Long userId);
 }

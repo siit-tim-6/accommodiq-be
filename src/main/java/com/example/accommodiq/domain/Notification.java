@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.NotificationType;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -12,21 +13,18 @@ public class Notification {
 
     private String text;
 
+    private boolean seen;
+
+    private NotificationType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     public Long getTime() {
         return time;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
-    }
-
     private Long time;
-
-    public Notification(Long id, String text, Long time) {
-        this.id = id;
-        this.text = text;
-        this.time = time;
-    }
 
     public Notification() {
     }
@@ -42,10 +40,6 @@ public class Notification {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public Long getId() {
         return id;
     }
@@ -54,4 +48,11 @@ public class Notification {
         this.id = id;
     }
 
+    public NotificationType getType() {
+        return type;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
 }

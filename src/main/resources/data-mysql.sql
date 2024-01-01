@@ -87,6 +87,27 @@ VALUES
     (2, 1672704000, 4, 1672617600, 1, 2, 2),
     (3, 1672790400, 1, 1672704000, 0, 3, 3);
 
+insert into notification_setting (id, is_on, type, user_id)
+values
+    (1, true, 0, 1),
+    (2, true, 1, 1),
+    (3, true, 2, 1),
+    (4, true, 3, 1),
+    (5, true, 0, 2),
+    (6, true, 1, 2),
+    (7, true, 2, 2),
+    (8, true, 3, 2),
+    (9, true, 4, 3);
+
+insert into notification (id, text, time, seen, type, user_id)
+VALUES
+   (1, 'New Reservation request', 1704150472000, false, 0, 1),
+   (2, 'Reservation have been canceled', 1704150472000, false, 1, 1),
+   (3, 'Guest rated you', 1704150472000, false, 2, 1),
+   (4, 'Guest rated your accommodation', 1704150472000, false, 3, 1);
+
+
+
 DELETE FROM `reservation`; DELETE FROM `report`; DELETE FROM `host_reviews`; DELETE FROM `accommodation_reviews`; DELETE FROM `review`;
 DELETE FROM `accommodation_available`; DELETE FROM `accommodation_images`; DELETE FROM `accommodation`; DELETE FROM `availability`;
 DELETE FROM `host`; DELETE FROM `account`; DELETE FROM `user`;
