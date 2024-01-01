@@ -21,7 +21,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Transactional
     void deleteByUserId(Long userId);
 
-    List<Reservation> findByStatusAndUserIdOrderByStartDateDesc(ReservationStatus status, Long userId);
+    List<Reservation> findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long userId, Long endDate);
+
+    List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId " +
             "AND r.startDate < :availabilityEnd AND r.endDate > :availabilityStart")
