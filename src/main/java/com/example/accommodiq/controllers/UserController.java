@@ -7,6 +7,7 @@ import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import com.example.accommodiq.utilities.ErrorUtils;
@@ -35,14 +36,16 @@ public class UserController {
     final IUserService userService;
     final IReportService reportService;
     final PasswordEncoder passwordEncoder;
+    final INotificationSettingService notificationSettingService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService, PasswordEncoder passwordEncoder) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService, PasswordEncoder passwordEncoder, INotificationSettingService notificationSettingService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.reportService = reportService;
         this.passwordEncoder = passwordEncoder;
+        this.notificationSettingService = notificationSettingService;
     }
 
     @GetMapping
@@ -153,7 +156,7 @@ public class UserController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
         User user = account.getUser();
-        return null; // mocked
+        return notificationSettingService.getAllByUserId(user.getId()).stream().map(NotificationSettingDto::new).toList();
     }
 
     @PutMapping("/notification-settings")
