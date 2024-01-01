@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
@@ -46,7 +47,7 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     @Override
     public NotificationSetting insert(Long userId, NotificationSetting notificationSetting) {
         User user = userService.findUser(userId);
-        user.getNotificationSettings().add(notificationSetting);
+        //user.getNotificationSettings().add(notificationSetting);
         userService.update(user);
         return notificationSetting;
     }
@@ -81,8 +82,13 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     public void setNotificationSettingsForUser(Long userId) {
         User user = userService.findUser(userId);
         for (NotificationType type : NotificationType.values()) {
-            user.getNotificationSettings().add(new NotificationSetting((long) -1, type, true));
+            // user.getNotificationSettings().add(new NotificationSetting((long) -1, type, true));
         }
         userService.update(user);
+    }
+
+    @Override
+    public List<NotificationSetting> getAllByUserId(Long userId) {
+        return allNotificationSettings.findAllByUserId(userId);
     }
 }

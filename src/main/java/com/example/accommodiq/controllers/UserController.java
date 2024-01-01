@@ -142,7 +142,7 @@ public class UserController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
         User user = account.getUser();
-        return user.getNotifications().stream().map(NotificationDto::new).toList();
+        return notificationService.getAllByUserId(user.getId()).stream().map(NotificationDto::new).toList();
     }
 
     @GetMapping("/notification-settings")
@@ -153,7 +153,7 @@ public class UserController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
         User user = account.getUser();
-        return user.getNotificationSettings().stream().map(NotificationSettingDto::new).toList();
+        return null; // mocked
     }
 
     @PutMapping("/notification-settings")
