@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -160,8 +161,13 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public List<Reservation> findAcceptedReservationsNotStartedYet(Long userId) {
-        return allReservations.findByStatusAndUserIdOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId);
+    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public List<Reservation> findHostReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
