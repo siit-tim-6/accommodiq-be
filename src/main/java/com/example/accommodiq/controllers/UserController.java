@@ -2,7 +2,6 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Notification;
-import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
@@ -26,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -163,8 +163,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Update notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
-    public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody Collection<NotificationSetting> notificationSettings) {
-        return notificationSettings.stream().map(NotificationSettingDto::new).toList(); // mocked
+    public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        User user = account.getUser();
+        return notificationSettingService.update(user.getId(), notificationSettings);
     }
 
     @PostMapping("/{id}/reports")

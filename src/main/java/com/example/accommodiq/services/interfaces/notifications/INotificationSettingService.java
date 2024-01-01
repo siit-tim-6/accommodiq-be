@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.interfaces.notifications;
 
 import com.example.accommodiq.domain.NotificationSetting;
+import com.example.accommodiq.dtos.NotificationSettingDto;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,4 +22,6 @@ public interface INotificationSettingService {
     void setNotificationSettingsForUser(Long userId);
 
     List<NotificationSetting> getAllByUserId(Long userId);
+
+    List<NotificationSettingDto> update(Long userId, List<NotificationSettingDto> notificationSettings);
 }
