@@ -156,7 +156,7 @@ public class UserController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
         User user = account.getUser();
-        return notificationSettingService.getAllByUserId(user.getId()).stream().map(NotificationSettingDto::new).toList();
+        return notificationSettingService.getUserNotificationSettings(user.getId()).stream().map(NotificationSettingDto::new).toList();
     }
 
     @PutMapping("/notification-settings")

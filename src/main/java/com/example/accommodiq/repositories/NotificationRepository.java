@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findAllByUserIdAndTypeIsIn(Long userId, List<NotificationType> types);
+    List<Notification> findAllByUserIdAndTypeIsInOrderByTimeDesc(Long userId, List<NotificationType> types);
 }

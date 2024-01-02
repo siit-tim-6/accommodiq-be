@@ -85,8 +85,8 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public Collection<Notification> getAllByUserId(Long userId) {
-        List<NotificationType> notificationTypes = notificationSettingService.getAllByUserId(userId).stream()
+        List<NotificationType> notificationTypes = notificationSettingService.getUserNotificationSettings(userId).stream()
                 .filter(NotificationSetting::isOn).map(NotificationSetting::getType).toList();
-        return allNotifications.findAllByUserIdAndTypeIsIn(userId, notificationTypes);
+        return allNotifications.findAllByUserIdAndTypeIsInOrderByTimeDesc(userId, notificationTypes);
     }
 }
