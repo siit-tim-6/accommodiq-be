@@ -55,4 +55,8 @@ public class Notification {
     public boolean isSeen() {
         return seen;
     }
+
+    public User getUser() {
+        return user;
+    }
 }

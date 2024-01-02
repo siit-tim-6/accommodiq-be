@@ -2,14 +2,13 @@ package com.example.accommodiq.services.impl.notifications;
 
 import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
-import com.example.accommodiq.domain.User;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -28,16 +27,14 @@ public class NotificationServiceImpl implements INotificationService {
 
     final INotificationSettingService notificationSettingService;
 
+    final SimpMessagingTemplate messagingTemplate;
+
     @Autowired
-    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService, INotificationSettingService notificationSettingService) {
+    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService, INotificationSettingService notificationSettingService, SimpMessagingTemplate messagingTemplate) {
         this.allNotifications = allNotifications;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
-    }
-
-    @Override
-    public Collection<Notification> getAll() {
-        return allNotifications.findAll();
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -50,26 +47,6 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     @Override
-    public Notification insert(Long userId, Notification notification) {
-        User user = userService.findUser(userId);
-//        user.getNotifications().add(notification);
-        userService.update(user);
-        return notification;
-    }
-
-    @Override
-    public Notification update(Notification notification) {
-        try {
-            findNotification(notification.getId());
-            allNotifications.save(notification);
-            allNotifications.flush();
-            return notification;
-        } catch (ConstraintViolationException ex) {
-            throw generateNotFound("reviewUpdateFailed");
-        }
-    }
-
-    @Override
     public Notification delete(Long notificationId) {
         Notification notification = findNotification(notificationId);
         allNotifications.delete(notification);
@@ -78,15 +55,16 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     @Override
-    public void deleteAll() {
-        allNotifications.deleteAll();
-        allNotifications.flush();
-    }
-
-    @Override
     public Collection<Notification> getAllByUserId(Long userId) {
         List<NotificationType> notificationTypes = notificationSettingService.getUserNotificationSettings(userId).stream()
                 .filter(NotificationSetting::isOn).map(NotificationSetting::getType).toList();
         return allNotifications.findAllByUserIdAndTypeIsInOrderByTimeDesc(userId, notificationTypes);
+    }
+
+    @Override
+    public void createAndSendNotification(Notification notification) {
+        allNotifications.save(notification);
+        allNotifications.flush();
+        messagingTemplate.convertAndSend("/socket-publisher/" + notification.getUser().getId(), notification);
     }
 }
