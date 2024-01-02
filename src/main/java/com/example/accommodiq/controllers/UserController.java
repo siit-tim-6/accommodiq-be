@@ -134,7 +134,7 @@ public class UserController {
     @Operation(summary = "Send new notification")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Notification.class))})})
     public Notification createNotification(@Parameter(description = "Id of user to send notification") @PathVariable Long userId, @RequestBody Notification notification) {
-        return notificationService.insert(userId, notification);
+        return null;
     }
 
     @GetMapping("/notifications")

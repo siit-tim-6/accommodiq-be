@@ -19,14 +19,21 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    public Long getTime() {
-        return time;
-    }
-
     private Long time;
 
     public Notification() {
+    }
+
+    public Notification(String text, NotificationType type, User user) {
+        this.text = text;
+        this.type = type;
+        this.user = user;
+        this.seen = false;
+        this.time = Instant.now().toEpochMilli();
+    }
+
+    public Long getTime() {
+        return time;
     }
 
     @PrePersist

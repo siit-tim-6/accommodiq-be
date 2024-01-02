@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public interface IHostService {
 
     AccommodationDetailsDto createAccommodation(Long hostId, AccommodationModifyDto accommodationDto);
 
-    Review addReview(Long hostId, ReviewRequestDto reviewDto);
+    Review addReview(User user, ReviewRequestDto reviewDto);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
 }

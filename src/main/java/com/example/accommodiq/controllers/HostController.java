@@ -111,7 +111,8 @@ public class HostController {
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
     public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
-        return hostService.addReview(hostId, reviewDto);
+        Host host = hostService.findHost(hostId);
+        return hostService.addReview(host, reviewDto);
     }
 
     @GetMapping("{hostId}/reviews")

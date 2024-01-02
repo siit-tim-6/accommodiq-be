@@ -1,14 +1,14 @@
 package com.example.accommodiq.services.impl.users;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
-import com.example.accommodiq.repositories.AccommodationRepository;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +31,14 @@ public class HostServiceImpl implements IHostService {
     final
     AccommodationRepository allAccommodations;
 
+    final private INotificationService notificationService;
+
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, INotificationService notificationService) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -134,11 +137,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Review addReview(Long hostId, ReviewRequestDto reviewDto) { // mocked
-        if (hostId == 4L) {
-            throw ErrorUtils.generateNotFound("hostNotFound");
-        }
-
+    public Review addReview(User user, ReviewRequestDto reviewDto) { // mocked
+        Notification n = new Notification("You have a new rate!", NotificationType.HOST_RATING, user);
+        notificationService.createAndSendNotification(n);
         return new Review(1L, 5, "Great place!", new Date().getTime(), ReviewStatus.ACCEPTED);
     }
 
