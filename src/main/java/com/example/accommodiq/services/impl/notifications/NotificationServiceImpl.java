@@ -65,6 +65,8 @@ public class NotificationServiceImpl implements INotificationService {
     public void createAndSendNotification(Notification notification) {
         allNotifications.save(notification);
         allNotifications.flush();
-        messagingTemplate.convertAndSend("/socket-publisher/" + notification.getUser().getId(), notification);
+        long id = notification.getUser().getId();
+        notification.setUser(null);
+        messagingTemplate.convertAndSend("/socket-publisher/" + id, notification);
     }
 }

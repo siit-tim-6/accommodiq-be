@@ -42,6 +42,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/swagger-ui/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers("/users/*").permitAll()
+                        .requestMatchers("/socket/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(HttpMethod.GET,"/images/*").permitAll()
                         .requestMatchers(HttpMethod.GET,"/email-verification").permitAll()
