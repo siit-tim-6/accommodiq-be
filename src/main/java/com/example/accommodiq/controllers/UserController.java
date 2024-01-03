@@ -170,6 +170,17 @@ public class UserController {
         return notificationSettingService.update(user.getId(), notificationSettings);
     }
 
+    @PutMapping("/notifications/seen")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
+    @Operation(summary = "Mark all notifications as seen")
+    public void markAllNotificationsAsSeen() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        User user = account.getUser();
+        notificationService.markAllAsSeen(user.getId());
+    }
+
+
     @PostMapping("/{id}/reports")
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @ResponseStatus(HttpStatus.OK)

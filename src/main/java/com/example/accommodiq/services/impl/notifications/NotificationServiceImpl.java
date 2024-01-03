@@ -69,4 +69,13 @@ public class NotificationServiceImpl implements INotificationService {
         notification.setUser(null);
         messagingTemplate.convertAndSend("/socket-publisher/" + id, notification);
     }
+
+    @Override
+    public void markAllAsSeen(Long userId) {
+        allNotifications.findAllByUserIdAndSeenIsFalse(userId).forEach(notification -> {
+            notification.setSeen(true);
+            allNotifications.save(notification);
+        });
+        allNotifications.flush();
+    }
 }

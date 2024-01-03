@@ -12,15 +12,11 @@ public class Notification {
     private Long id;
 
     private String text;
-
     private boolean seen;
-
     private NotificationType type;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     private Long time;
-
     public Notification() {
     }
 
@@ -61,6 +57,10 @@ public class Notification {
 
     public boolean isSeen() {
         return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 
     public User getUser() {

@@ -12,4 +12,6 @@ public interface INotificationService {
     Collection<Notification> getAllByUserId(Long userId);
 
     void createAndSendNotification(Notification notification);
+
+    void markAllAsSeen(Long userId);
 }
