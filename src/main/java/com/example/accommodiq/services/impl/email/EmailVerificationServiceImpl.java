@@ -2,15 +2,14 @@ package com.example.accommodiq.services.impl.email;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.enums.AccountStatus;
-import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.email.IEmailVerificationService;
 import com.example.accommodiq.services.interfaces.email.IVerificationTokenService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Optional;
 
 @Service
 public class EmailVerificationServiceImpl implements IEmailVerificationService {
@@ -26,12 +25,10 @@ public class EmailVerificationServiceImpl implements IEmailVerificationService {
 
     @Override
     public ResponseEntity<String> activateAccount(String verificationToken, Long accountId) {
-        Optional<Account> optionalAccount = Optional.ofNullable(accountService.findAccount(accountId));
+        Account account = accountService.findAccount(accountId);
 
-        if (optionalAccount.isEmpty())
+        if (account == null)
             return ResponseEntity.badRequest().body("Invalid activation link");
-
-        Account account = optionalAccount.get();
 
         if (!isVerificationTokenValid(accountId, account.getEmail(), verificationToken))
             return ResponseEntity.badRequest().body("Account is already activated");

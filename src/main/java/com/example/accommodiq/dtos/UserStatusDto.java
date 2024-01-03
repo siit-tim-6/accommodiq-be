@@ -9,7 +9,9 @@ public class UserStatusDto {
         this.status = status;
     }
 
-    public UserStatusDto() {}
+    public UserStatusDto() {
+        super();
+    }
 
     public AccountStatus getStatus() {
         return status;

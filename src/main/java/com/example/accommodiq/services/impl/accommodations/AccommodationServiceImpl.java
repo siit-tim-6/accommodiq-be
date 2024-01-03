@@ -30,7 +30,7 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
-    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS = 1;
+    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
 
@@ -44,7 +44,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation insert(Host host, AccommodationModifyDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
-        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS);
+        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_DAYS);
         accommodation.setStatus(AccommodationStatus.PENDING);
         try {
             accommodationRepository.save(accommodation);
