@@ -12,6 +12,7 @@ public class UpdatePasswordDto {
     }
 
     public UpdatePasswordDto() {
+        super();
     }
 
     public String getNewPassword() {

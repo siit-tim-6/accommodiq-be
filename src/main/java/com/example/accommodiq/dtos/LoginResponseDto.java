@@ -12,6 +12,7 @@ public class LoginResponseDto {
     }
 
     public LoginResponseDto() {
+        super();
     }
 
     public AccountRole getRole() {

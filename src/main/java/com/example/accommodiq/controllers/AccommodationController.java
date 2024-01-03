@@ -3,7 +3,7 @@ package com.example.accommodiq.controllers;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.services.interfaces.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class AccommodationController {
     }
 
     @GetMapping()
-    public Collection<AccommodationListDto> getAllAccommodations(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
+    public Collection<AccommodationCardDto> getAllAccommodations(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) Long availableFrom, @RequestParam(required = false) Long availableTo,
                                                                  @RequestParam(required = false) Integer priceFrom, @RequestParam(required = false) Integer priceTo, @RequestParam(required = false) Integer guests, @RequestParam(required = false) String type, @RequestParam(required = false) Set<String> benefits) {
         return accommodationService.findByFilter(title, location, availableFrom, availableTo, priceFrom, priceTo, guests, type, benefits);
     }
@@ -34,7 +34,7 @@ public class AccommodationController {
     @PutMapping("/{accommodationId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public AccommodationWithStatusDto changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
+    public AccommodationCardWithStatusDto changeAccommodationStatus(@PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
         return accommodationService.changeAccommodationStatus(accommodationId, body);
     }
 
@@ -45,13 +45,13 @@ public class AccommodationController {
 
     @PutMapping()
     @PreAuthorize("hasAuthority('HOST')")
-    public AccommodationListDto updateAccommodation(@RequestBody AccommodationUpdateDto body) {
+    public AccommodationCardDto updateAccommodation(@RequestBody AccommodationModifyDto body) {
         return accommodationService.updateAccommodation(body);
     }
 
     @GetMapping("/{accommodationId}/booking-details")
     @PreAuthorize("hasAuthority('HOST')")
-    public ResponseEntity<AccommodationBookingDetailFormDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
+    public ResponseEntity<AccommodationBookingDetailsWithAvailabilityDto> getAccommodationBookingDetails(@PathVariable Long accommodationId) {
         return accommodationService.getAccommodationBookingDetails(accommodationId);
     }
 
@@ -87,7 +87,7 @@ public class AccommodationController {
 
     @GetMapping("/pending")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Collection<AccommodationWithStatusDto> getPendingAccommodations() {
+    public Collection<AccommodationCardWithStatusDto> getPendingAccommodations() {
         return accommodationService.getPendingAccommodations();
     }
 
@@ -103,7 +103,7 @@ public class AccommodationController {
 
     @GetMapping("{accommodationId}/advanced")
     @PreAuthorize("hasAuthority('HOST')")
-    public AccommodationUpdateDto getAdvancedDetails(@PathVariable Long accommodationId) {
+    public AccommodationModifyDto getAdvancedDetails(@PathVariable Long accommodationId) {
         return accommodationService.getAdvancedDetails(accommodationId);
     }
 }

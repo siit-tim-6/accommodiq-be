@@ -1,7 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.ImageDataDto;
-import com.example.accommodiq.services.interfaces.IImageService;
+import com.example.accommodiq.services.interfaces.accommodations.IImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -34,7 +33,7 @@ public class ImageController {
         ImageDataDto imageData = imagesService.loadImageAsResource(filename);
         return ResponseEntity
                 .ok()
-                .contentType(imageData.getMediaType())
-                .body(imageData.getResource());
+                .contentType(imageData.mediaType())
+                .body(imageData.resource());
     }
 }

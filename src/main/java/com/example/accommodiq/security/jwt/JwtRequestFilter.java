@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,15 +29,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
             throws ServletException, IOException {
 
         if (request.getRequestURL().toString().contains("/")) {
             System.out.println("####" + request.getMethod() + ":" + request.getRequestURL());
             System.out.println("#### Authorization: " + request.getHeader("Authorization"));
             String requestTokenHeader = request.getHeader("Authorization");
-            String username = null;
-            String jwtToken = null;
+            String username;
+            String jwtToken;
             if (requestTokenHeader != null && requestTokenHeader.contains("Bearer")) {
                 jwtToken = requestTokenHeader.substring(requestTokenHeader.indexOf("Bearer ") + 7);
                 System.out.println(">>>>>JWT TOKEN: " + jwtToken);

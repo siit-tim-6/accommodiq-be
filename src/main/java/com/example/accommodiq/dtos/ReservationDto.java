@@ -13,6 +13,7 @@ public class ReservationDto {
     private Long accommodationId;
 
     public ReservationDto() {
+        super();
     }
 
     public ReservationDto(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, Long userId, Long accommodationId) {

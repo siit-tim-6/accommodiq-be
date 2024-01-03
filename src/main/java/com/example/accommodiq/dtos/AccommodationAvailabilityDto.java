@@ -3,6 +3,10 @@ package com.example.accommodiq.dtos;
 public class AccommodationAvailabilityDto {
     private boolean isAvailable;
 
+    public AccommodationAvailabilityDto() {
+        super();
+    }
+
     public AccommodationAvailabilityDto(boolean isAvailable) {
         this.isAvailable = isAvailable;
     }

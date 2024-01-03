@@ -11,6 +11,10 @@ public class AccommodationDetailsHostDto {
     private double rating;
     private int reviewCount;
 
+    public AccommodationDetailsHostDto() {
+        super();
+    }
+
     public AccommodationDetailsHostDto(Long id, String name, double rating, int reviewCount) {
         this.id = id;
         this.name = name;

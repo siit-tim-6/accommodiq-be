@@ -1,9 +1,5 @@
 package com.example.accommodiq.dtos;
 
-import com.example.accommodiq.enums.ReservationStatus;
-
-import java.util.Date;
-
 public class ReservationRequestDto {
     private long startDate;
     private long endDate;

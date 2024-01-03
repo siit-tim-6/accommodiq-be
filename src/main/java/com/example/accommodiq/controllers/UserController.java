@@ -5,10 +5,10 @@ import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.services.interfaces.IAccountService;
-import com.example.accommodiq.services.interfaces.INotificationService;
-import com.example.accommodiq.services.interfaces.IReportService;
-import com.example.accommodiq.services.interfaces.IUserService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
+import com.example.accommodiq.services.interfaces.feedback.IReportService;
+import com.example.accommodiq.services.interfaces.users.IUserService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -97,7 +97,7 @@ public class UserController {
         Account account = (Account) accountService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(passwordDto.getOldPassword(), account.getPassword())) {
-            ErrorUtils.throwBadRequest("wrongOldPassword");
+            throw ErrorUtils.generateBadRequest("wrongOldPassword");
         }
 
         passwordDto.encode(passwordEncoder);

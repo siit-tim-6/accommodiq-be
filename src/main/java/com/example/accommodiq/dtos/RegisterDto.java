@@ -10,7 +10,7 @@ public class RegisterDto {
     private User user;
 
     public RegisterDto() {
-
+        super();
     }
 
     public RegisterDto(AccountRole accountRole, String email, String password, User user) {

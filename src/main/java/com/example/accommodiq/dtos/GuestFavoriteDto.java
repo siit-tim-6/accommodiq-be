@@ -7,7 +7,9 @@ public class GuestFavoriteDto {
         this.favoriteId = favoriteId;
     }
 
-    public GuestFavoriteDto() {}
+    public GuestFavoriteDto() {
+        super();
+    }
 
     public Long getFavoriteId() {
         return favoriteId;

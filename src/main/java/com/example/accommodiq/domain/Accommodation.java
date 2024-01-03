@@ -1,7 +1,6 @@
 package com.example.accommodiq.domain;
 
-import com.example.accommodiq.dtos.AccommodationCreateDto;
-import com.example.accommodiq.dtos.AccommodationUpdateDto;
+import com.example.accommodiq.dtos.AccommodationModifyDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.utilities.ErrorUtils;
@@ -53,7 +52,7 @@ public class Accommodation {
         this.host = host;
     }
 
-    public Accommodation(AccommodationCreateDto accommodationDto) {
+    public Accommodation(AccommodationModifyDto accommodationDto) {
         this.title = accommodationDto.getTitle();
         this.description = accommodationDto.getDescription();
         this.location = accommodationDto.getLocation();
@@ -67,21 +66,7 @@ public class Accommodation {
         this.benefits = accommodationDto.getBenefits();
     }
 
-    public Accommodation(AccommodationUpdateDto accommodationDto) {
-        this.title = accommodationDto.getTitle();
-        this.description = accommodationDto.getDescription();
-        this.location = accommodationDto.getLocation();
-        this.minGuests = accommodationDto.getMinGuests();
-        this.maxGuests = accommodationDto.getMaxGuests();
-        this.available = accommodationDto.getAvailable();
-        this.pricingType = accommodationDto.getPricingType();
-        this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
-        this.images = accommodationDto.getImages();
-        this.type = accommodationDto.getType();
-        this.benefits = accommodationDto.getBenefits();
-    }
-
-    public void applyChanges(AccommodationUpdateDto accommodationDto) {
+    public void applyChanges(AccommodationModifyDto accommodationDto) {
         this.title = accommodationDto.getTitle() == null ? this.title : accommodationDto.getTitle();
         this.description = accommodationDto.getDescription() == null ? this.description : accommodationDto.getDescription();
         this.location = accommodationDto.getLocation() == null ? this.location : accommodationDto.getLocation();
@@ -263,14 +248,14 @@ public class Accommodation {
         }
 
         if (!isAvailable(fromDate, toDate)) {
-            ErrorUtils.throwBadRequest("accommodationUnavailable");
+            throw ErrorUtils.generateBadRequest("accommodationUnavailable");
         }
 
-        if (pricingType == PricingType.PER_GUEST && (guests > maxGuests || guests < minGuests)) {
-            ErrorUtils.throwBadRequest("invalidGuestNumber");
+        if (pricingType == PricingType.PER_GUEST && guests != null && (guests > maxGuests || guests < minGuests)) {
+            throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
-        Long oneDay = (long) (60 * 60 * 24);
+        long oneDay = 60 * 60 * 24;
 
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
                 (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
@@ -284,12 +269,15 @@ public class Accommodation {
                 totalPrice += availabilityCandidate.getPrice();
                 fromDateCopy += oneDay;
 
+                assert guests != null;
+
                 if (fromDateCopy > toDate) {
                     return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
                 }
             }
         }
 
+        assert guests != null;
         return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
     }
 

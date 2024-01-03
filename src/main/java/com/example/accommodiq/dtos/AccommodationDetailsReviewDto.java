@@ -10,6 +10,10 @@ public class AccommodationDetailsReviewDto {
     private double rating;
     private Long date;
 
+    public AccommodationDetailsReviewDto() {
+        super();
+    }
+
     public AccommodationDetailsReviewDto(String author, String comment, double rating, Long date) {
         this.author = author;
         this.comment = comment;
