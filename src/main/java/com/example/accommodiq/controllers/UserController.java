@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -178,6 +179,16 @@ public class UserController {
         Account account = (Account) accountService.loadUserByUsername(email);
         User user = account.getUser();
         notificationService.markAllAsSeen(user.getId());
+    }
+
+    @PutMapping("/notifications/{notificationId}/seen")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
+    @Operation(summary = "Mark notification as seen")
+    public void markNotificationAsSeen(@PathVariable Long notificationId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        User user = account.getUser();
+        notificationService.markAsSeen(user.getId(), notificationId);
     }
 
 

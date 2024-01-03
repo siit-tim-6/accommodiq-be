@@ -14,4 +14,6 @@ public interface INotificationService {
     void createAndSendNotification(Notification notification);
 
     void markAllAsSeen(Long userId);
+
+    void markAsSeen(Long userId, Long notificationId);
 }

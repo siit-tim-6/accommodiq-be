@@ -78,4 +78,15 @@ public class NotificationServiceImpl implements INotificationService {
         });
         allNotifications.flush();
     }
+
+    @Override
+    public void markAsSeen(Long userId, Long notificationId) {
+        Notification notification = findNotification(notificationId);
+        if (!notification.getUser().getId().equals(userId)) {
+            throw generateNotFound("notificationNotFound");
+        }
+        notification.setSeen(true);
+        allNotifications.save(notification);
+        allNotifications.flush();
+    }
 }
