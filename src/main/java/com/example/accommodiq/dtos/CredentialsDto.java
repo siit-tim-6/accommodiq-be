@@ -10,6 +10,7 @@ public class CredentialsDto {
     }
 
     public CredentialsDto() {
+        super();
     }
 
     public String getEmail() {
