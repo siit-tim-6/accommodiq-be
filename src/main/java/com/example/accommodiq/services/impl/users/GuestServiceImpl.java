@@ -12,6 +12,7 @@ import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class GuestServiceImpl implements IGuestService {
     final private AccommodationRepository accommodationRepository;
     final private IAccountService accountService;
 
+    @Autowired
     public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService) {
         this.guestRepository = guestRepository;
         this.accommodationRepository = accommodationRepository;
@@ -102,7 +104,7 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public MessageDto removeFavorite(Long accommodationId) { // mocked
+    public MessageDto removeFavorite(Long accommodationId) {
         Long guestId = getGuestId();
         Guest guest = findGuest(guestId);
         guest.getFavorite().removeIf(accommodation -> Objects.equals(accommodation.getId(), accommodationId));
