@@ -1,6 +1,7 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.enums.PricingType;
 
 public class AccommodationCardDto {
@@ -9,7 +10,7 @@ public class AccommodationCardDto {
     private String image;
     private Double rating;
     private int reviewCount;
-    private String location;
+    private Location location;
     private double minPrice;
     private int minGuests;
     private int maxGuests;
@@ -21,7 +22,7 @@ public class AccommodationCardDto {
     }
 
     public AccommodationCardDto(Long id, String title, String image, Double rating,
-                                int reviewCount, String location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
+                                int reviewCount, Location location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -103,11 +104,11 @@ public class AccommodationCardDto {
         this.reviewCount = reviewCount;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
