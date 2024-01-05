@@ -20,7 +20,7 @@ public class AccommodationSpecification {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
             }
             if (location != null) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("location").get("address")), "%" + location.toLowerCase() + "%"));
             }
             if (guests != null) {
                 predicates.add(criteriaBuilder.and(
