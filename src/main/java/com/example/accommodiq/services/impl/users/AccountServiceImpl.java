@@ -132,8 +132,6 @@ public class AccountServiceImpl implements IAccountService {
             }
             accommodationService.deleteAllByHostId(accountId);
         }
-        reportService.deleteByReportingUserId(accountId);
-        reportService.deleteByReportedUserId(accountId);
 
         if (found.getRole() == AccountRole.GUEST) {
             reviewService.deleteByGuestId(accountId);
@@ -145,6 +143,9 @@ public class AccountServiceImpl implements IAccountService {
 
             reservationService.deleteByUserId(accountId);
         }
+
+        reportService.deleteByReportingUserId(accountId);
+        reportService.deleteByReportedUserId(accountId);
 
         allAccounts.delete(found);
         allAccounts.flush();

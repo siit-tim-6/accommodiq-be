@@ -18,6 +18,7 @@ public class AccountDetailsDto {
     }
 
     public AccountDetailsDto() {
+        super();
     }
 
     public String getEmail() {

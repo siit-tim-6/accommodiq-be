@@ -19,6 +19,7 @@ public class NotificationDto {
     }
 
     public NotificationDto() {
+        super();
     }
 
     public Long getId() {

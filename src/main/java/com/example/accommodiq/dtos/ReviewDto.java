@@ -14,6 +14,7 @@ public class ReviewDto {
     private Long guestId;
 
     public ReviewDto() {
+        super();
     }
 
     public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId) {
