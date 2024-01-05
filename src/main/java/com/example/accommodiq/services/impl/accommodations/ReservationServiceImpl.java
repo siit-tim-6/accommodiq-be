@@ -5,6 +5,7 @@ import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
@@ -17,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -155,6 +158,16 @@ public class ReservationServiceImpl implements IReservationService {
     public void deleteByUserId(Long userId) {
         allReservations.deleteByUserId(userId);
         allReservations.flush();
+    }
+
+    @Override
+    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public List<Reservation> findHostReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
