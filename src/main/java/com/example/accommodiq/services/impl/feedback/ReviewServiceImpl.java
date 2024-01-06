@@ -115,4 +115,10 @@ public class ReviewServiceImpl implements IReviewService {
         allReviews.deleteByGuestId(id);
         allReviews.flush();
     }
+
+    @Override
+    public Collection<Review> findAllByGuestId(Long guestId) {
+        return allReviews.findByGuestId(guestId);
+    }
+
 }
