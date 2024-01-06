@@ -173,4 +173,10 @@ public class AccountServiceImpl implements IAccountService {
             return user;
         }
     }
+
+    @Override
+    public AccountDetailsDto getAccountDetails(Long accountId) {
+        Account account = findAccount(accountId);
+        return new AccountDetailsDto(account);
+    }
 }

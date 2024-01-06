@@ -21,7 +21,7 @@ public interface IReviewService {
 
     void deleteAll();
 
-    Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
+    MessageDto setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
 
     Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId);
 

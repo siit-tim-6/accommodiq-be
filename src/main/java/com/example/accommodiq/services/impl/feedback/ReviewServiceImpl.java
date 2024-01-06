@@ -87,12 +87,12 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
+    public MessageDto setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
         Review review = findReview(reviewId);
         review.setStatus(reviewStatusDto.getStatus());
         allReviews.save(review);
         allReviews.flush();
-        return review;
+        return new MessageDto("Review status updated successfully");
     }
 
     @Override

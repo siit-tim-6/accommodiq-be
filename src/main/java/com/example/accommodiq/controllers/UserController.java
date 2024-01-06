@@ -175,7 +175,6 @@ public class UserController {
 
     @GetMapping("/{userId}/profile")
     public AccountDetailsDto getAccountDetails(@PathVariable Long userId) {
-        Account account = accountService.findAccount(userId);
-        return new AccountDetailsDto(account);
+        return accountService.getAccountDetails(userId);
     }
 }

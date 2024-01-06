@@ -69,16 +69,14 @@ public class ReviewController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change review status")
     public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
-        reviewService.setReviewStatus(reviewId, body);
-        return new MessageDto("Review status updated successfully");
+        return reviewService.setReviewStatus(reviewId, body);
     }
 
     @PutMapping("/{reviewId}/report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Report review")
     public MessageDto reportReview(@Parameter(description = "Id of review to report")@PathVariable Long reviewId) {
-        reviewService.setReviewStatus(reviewId, new ReviewStatusDto(ReviewStatus.REPORTED));
-        return new MessageDto("Review reported successfully");
+        return reviewService.setReviewStatus(reviewId, new ReviewStatusDto(ReviewStatus.REPORTED));
     }
 
 }
