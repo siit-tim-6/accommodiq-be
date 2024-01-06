@@ -59,10 +59,9 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<ReservationListDto> getReservations() {
-        Long userId = getGuestId();
-
-        return new ArrayList<>();
+    public Collection<ReservationCardDto> getReservations() {
+        Long guestId = getGuestId();
+        return reservationRepository.findByGuestId(guestId).stream().map(ReservationCardDto::new).toList();
     }
 
     @Transactional

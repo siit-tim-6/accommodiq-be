@@ -24,7 +24,7 @@ public class GuestController {
     @GetMapping("/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Get all reservations of guest")
-    public Collection<ReservationListDto> getReservations() {
+    public Collection<ReservationCardDto> getReservations() {
         return guestService.getReservations();
     }
 
