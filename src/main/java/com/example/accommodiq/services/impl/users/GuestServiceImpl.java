@@ -8,6 +8,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
+import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.utilities.ErrorUtils;
@@ -26,12 +27,14 @@ public class GuestServiceImpl implements IGuestService {
     final private GuestRepository guestRepository;
     final private AccommodationRepository accommodationRepository;
     final private IAccountService accountService;
+    final private ReservationRepository reservationRepository;
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService) {
+    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService, ReservationRepository reservationRepository) {
         this.guestRepository = guestRepository;
         this.accommodationRepository = accommodationRepository;
         this.accountService = accountService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -56,10 +59,8 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<ReservationListDto> getReservations(Long guestId) { // mocked
-        if (guestId == 4L) {
-            throw ErrorUtils.generateNotFound("guestNotFound");
-        }
+    public Collection<ReservationListDto> getReservations() {
+        Long userId = getGuestId();
 
         return new ArrayList<>();
     }

@@ -21,11 +21,11 @@ public class GuestController {
         this.guestService = guestService;
     }
 
-    @GetMapping("/{guestId}/reservations")
+    @GetMapping("/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Get all reservations of guest")
-    public Collection<ReservationListDto> getReservations(@PathVariable Long guestId) {
-        return guestService.getReservations(guestId);
+    public Collection<ReservationListDto> getReservations() {
+        return guestService.getReservations();
     }
 
     @PostMapping("/{guestId}/reservations")

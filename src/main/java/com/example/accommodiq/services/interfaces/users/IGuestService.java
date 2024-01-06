@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface IGuestService {
     Guest findGuest(Long guestId);
 
-    Collection<ReservationListDto> getReservations(Long guestId);
+    Collection<ReservationListDto> getReservations();
 
     ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 
