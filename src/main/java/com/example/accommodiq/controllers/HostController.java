@@ -114,8 +114,7 @@ public class HostController {
     public ReviewDto addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long guestId = ((Account) accountService.loadUserByUsername(email)).getId();
-        Review addedReview = hostService.addReview(hostId, guestId, reviewDto);
-        return new ReviewDto(addedReview, guestId);
+        return hostService.addReview(hostId, guestId, reviewDto);
     }
 
     @GetMapping("{hostId}/reviews")
@@ -123,8 +122,7 @@ public class HostController {
     public Collection<ReviewDto> getHostReviews(@PathVariable Long hostId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;
-        Collection<Review> hostReviews = reviewService.getHostReviews(hostId);
-        return hostReviews.stream().map(review -> new ReviewDto(review, loggedInId)).toList();
+        return reviewService.getHostReviews(hostId, loggedInId);
     }
 
     @DeleteMapping("accommodations/{accommodationId}")

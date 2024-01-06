@@ -159,14 +159,14 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
         reservationService.canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest);
         host.getReviews().add(review);
         update(host);
-        return review;
+        return new ReviewDto(review,guestId);
     }
 
     @Override

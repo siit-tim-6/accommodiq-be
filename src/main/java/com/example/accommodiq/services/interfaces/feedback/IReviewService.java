@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces.feedback;
 
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 
 import java.util.Collection;
@@ -22,7 +23,7 @@ public interface IReviewService {
 
     Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
 
-    Collection<Review> getHostReviews(Long hostId);
+    Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId);
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
 

@@ -3,6 +3,7 @@ package com.example.accommodiq.services.impl.feedback;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
@@ -95,8 +96,8 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Collection<Review> getHostReviews(Long hostId) {
-        return hostService.getHostReviews(hostId);
+    public Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId) {
+        return hostService.getHostReviews(hostId).stream().map(review -> new ReviewDto(review, loggedInId)).toList();
     }
 
     @Override

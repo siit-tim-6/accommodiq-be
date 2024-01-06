@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,11 +66,19 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}/status")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('HOST')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change review status")
     public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
         reviewService.setReviewStatus(reviewId, body);
         return new MessageDto("Review status updated successfully");
+    }
+
+    @PutMapping("/{reviewId}/report")
+    @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Report review")
+    public MessageDto reportReview(@Parameter(description = "Id of review to report")@PathVariable Long reviewId) {
+        reviewService.setReviewStatus(reviewId, new ReviewStatusDto(ReviewStatus.REPORTED));
+        return new MessageDto("Review reported successfully");
     }
 
 }
