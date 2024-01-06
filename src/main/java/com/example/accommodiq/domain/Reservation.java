@@ -37,7 +37,7 @@ public class Reservation {
         this.startDate = reservationRequestDto.getStartDate();
         this.endDate = reservationRequestDto.getEndDate();
         this.numberOfGuests = reservationRequestDto.getNumberOfGuests();
-        this.status = ReservationStatus.CREATED;
+        this.status = ReservationStatus.PENDING;
         this.user = user;
         this.accommodation = accommodation;
     }
