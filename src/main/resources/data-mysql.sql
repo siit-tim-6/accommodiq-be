@@ -79,11 +79,6 @@ VALUES (1, 1672617600, 2, 1672531200, 2, 1, 3),
        (2, 1672704000, 4, 1672617600, 1, 2, 3),
        (3, 1672790400, 1, 1672704000, 0, 3, 3);
 
-INSERT INTO `guest_reservations` (`guest_id`, `reservations_id`)
-VALUES (3, 1),
-       (3, 2),
-       (3, 3);
-
 DELETE
 FROM `reservation`;
 DELETE

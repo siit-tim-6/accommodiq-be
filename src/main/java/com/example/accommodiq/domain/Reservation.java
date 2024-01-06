@@ -16,29 +16,29 @@ public class Reservation {
     private ReservationStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Guest guest;
     @ManyToOne(fetch = FetchType.LAZY)
     private Accommodation accommodation;
 
     public Reservation() {
     }
 
-    public Reservation(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, User user, Accommodation accommodation) {
+    public Reservation(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, Guest guest, Accommodation accommodation) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfGuests = numberOfGuests;
         this.status = status;
-        this.user = user;
+        this.guest = guest;
         this.accommodation = accommodation;
     }
 
-    public Reservation(ReservationRequestDto reservationRequestDto, User user, Accommodation accommodation) {
+    public Reservation(ReservationRequestDto reservationRequestDto, Guest guest, Accommodation accommodation) {
         this.startDate = reservationRequestDto.getStartDate();
         this.endDate = reservationRequestDto.getEndDate();
         this.numberOfGuests = reservationRequestDto.getNumberOfGuests();
         this.status = ReservationStatus.PENDING;
-        this.user = user;
+        this.guest = guest;
         this.accommodation = accommodation;
     }
 
@@ -82,12 +82,12 @@ public class Reservation {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
+    public Guest getGuest() {
+        return guest;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
     public void setAccommodation(Accommodation accommodation) {

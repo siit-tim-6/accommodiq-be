@@ -32,7 +32,7 @@ public class ReservationDto {
         this.endDate = reservation.getEndDate();
         this.numberOfGuests = reservation.getNumberOfGuests();
         this.status = reservation.getStatus();
-        this.userId = reservation.getUser().getId();
+        this.userId = reservation.getGuest().getId();
         this.accommodationId = reservation.getAccommodation().getId();
     }
 

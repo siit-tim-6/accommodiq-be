@@ -27,13 +27,13 @@ public interface IReservationService {
 
     Collection<Reservation> findReservationsByAccommodationId(Long accommodationId);
 
-    Collection<Reservation> findReservationsByUserId(Long userId);
+    Collection<Reservation> findReservationsByGuestId(Long userId);
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
     void deleteByAccommodationId(Long accommodationId);
 
-    void deleteByUserId(Long userId);
+    void deleteByGuestId(Long userId);
 
     List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId);
 

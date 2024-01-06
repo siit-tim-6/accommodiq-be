@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Collection<Reservation> findByUserId(Long userId);
+    Collection<Reservation> findByGuestId(Long guestId);
 
     Collection<Reservation> findByAccommodationId(Long accommodationId);
 
@@ -19,9 +19,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     void deleteByAccommodationId(Long accommodationId);
 
     @Transactional
-    void deleteByUserId(Long userId);
+    void deleteByGuestId(Long guestId);
 
-    List<Reservation> findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long userId, Long endDate);
+    List<Reservation> findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long guestId, Long endDate);
 
     List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
