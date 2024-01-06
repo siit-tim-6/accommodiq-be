@@ -25,26 +25,30 @@ VALUES (3);
 INSERT INTO `availability` (`id`, `from_date`, `price`, `to_date`)
 VALUES (1, 1672531200, 100.00, 1672617600),
        (2, 1672617600, 150.00, 1672704000),
-       (3, 1672704000, 120.00, 1672790400);
+       (3, 1672704000, 120.00, 1672790400),
+       (4, 1704067200, 50.00, 1704585600),
+       (5, 1706745600, 100.00, 1707264000),
+       (6, 1709251200, 120.00, 1709769600);
 
 -- Insert sample data into `accommodation` table
-INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`, `location`,
-                             `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`)
-VALUES (1, 1, 1, 48, 'Cozy apartment near downtown', 'City Center', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1),
-       (2, 1, 0, 72, 'Spacious house with a garden', 'Suburbia', 8, 4, 1, 'Green Haven', 'House', 2),
-       (3, 0, 1, 24, 'Charming cottage by the lake', 'Lakeside', 2, 1, 0, 'Lake View Cottage', 'Cottage', 1);
-
--- Insert sample data into `accommodation_images` table -- consider removing this table
-INSERT INTO `accommodation_images` (`accommodation_id`)
-VALUES (1),
-       (2),
-       (3);
+INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`,
+                             `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`, `address`,
+                             `latitude`, `longitude`)
+VALUES (1, 1, 1, 48, 'Cozy apartment near downtown', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1,
+        'Svetozara Miletica 23, 21203 Novi Sad, Serbia', 45.2588948, 19.76116795),
+       (2, 1, 0, 72, 'Spacious house with a garden', 8, 4, 1, 'Green Haven', 'House', 2,
+        'Trg republike 13, 21101 Novi Sad, Serbia', 45.2578895, 19.850468576804),
+       (3, 0, 1, 24, 'Charming cottage by the lake', 2, 1, 0, 'Lake View Cottage', 'Cottage', 1,
+        'Gunduliceva 24, 21101 Novi Sad, Serbia', 45.263714, 19.8470915);
 
 -- Insert sample data into `accommodation_available` table
 INSERT INTO `accommodation_available` (`accommodation_id`, `available_id`)
 VALUES (1, 1),
        (2, 2),
-       (3, 3);
+       (3, 3),
+       (1, 4),
+       (2, 5),
+       (3, 6);
 
 -- Insert sample data into `review` table
 INSERT INTO `review` (`id`, `comment`, `date`, `rating`, `status`, `guest_id`)
