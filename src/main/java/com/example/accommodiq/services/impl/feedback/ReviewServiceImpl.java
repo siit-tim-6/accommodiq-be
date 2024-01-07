@@ -23,13 +23,11 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 public class ReviewServiceImpl implements IReviewService {
 
     final ReviewRepository allReviews;
-    final IHostService hostService;
     final IAccommodationService accommodationService;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository allReviews, IHostService hostService, IAccommodationService accommodationService) {
+    public ReviewServiceImpl(ReviewRepository allReviews, IAccommodationService accommodationService) {
         this.allReviews = allReviews;
-        this.hostService = hostService;
         this.accommodationService = accommodationService;
     }
 
@@ -48,11 +46,14 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review insert(Long hostId, Review review) {
-        Host host = hostService.findHost(hostId);
-        host.getReviews().add(review);
-        hostService.update(host);
-        return review;
+    public Review insert(Review review) {
+        try {
+            allReviews.save(review);
+            allReviews.flush();
+            return review;
+        } catch (ConstraintViolationException ex) {
+            throw generateNotFound("reviewInsertFailed");
+        }
     }
 
     @Override
@@ -90,11 +91,6 @@ public class ReviewServiceImpl implements IReviewService {
         allReviews.save(review);
         allReviews.flush();
         return new MessageDto("Review status updated successfully");
-    }
-
-    @Override
-    public Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId) {
-        return hostService.getHostReviews(hostId).stream().map(review -> new ReviewDto(review, loggedInId)).toList();
     }
 
     @Override

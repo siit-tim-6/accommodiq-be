@@ -14,7 +14,7 @@ public interface IReviewService {
 
     Review findReview(Long reviewId);
 
-    Review insert(Long hostId, Review review);
+    Review insert(Review review);
 
     Review update(Review review);
 
@@ -23,8 +23,6 @@ public interface IReviewService {
     void deleteAll();
 
     MessageDto setReviewStatus(Long reviewId, ReviewStatus reviewStatusDto);
-
-    Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId);
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
