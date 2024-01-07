@@ -21,6 +21,10 @@ VALUES (1),
 INSERT INTO `guest` (`id`)
 VALUES (3);
 
+-- Insert sample data into 'guest' table
+INSERT INTO `guest` (`id`)
+VALUES (3);
+
 -- Insert sample data into `availability` table
 INSERT INTO `availability` (`id`, `from_date`, `price`, `to_date`)
 VALUES (1, 1672531200, 100.00, 1672617600),
@@ -79,9 +83,10 @@ VALUES (1, 'Inappropriate content', 1672531200, 3, 1),
 
 -- Insert sample data into `reservation` table
 INSERT INTO `reservation` (`id`, `end_date`, `number_of_guests`, `start_date`, `status`, `accommodation_id`, `user_id`)
-VALUES (1, 1672617600, 2, 1672531200, 2, 1, 1),
-       (2, 1672704000, 4, 1672617600, 1, 2, 2),
-       (3, 1672790400, 1, 1672704000, 0, 3, 3);
+VALUES
+    (1, 1672617600, 2, 1672531200, 2, 1, 3),
+    (2, 1672704000, 4, 1672617600, 1, 2, 3),
+    (3, 1672790400, 1, 1672704000, 0, 3, 3);
 
 DELETE
 FROM `reservation`;

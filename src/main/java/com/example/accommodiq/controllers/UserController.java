@@ -172,4 +172,9 @@ public class UserController {
     public void reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
         reportService.reportUser(id, reportDto);
     }
+
+    @GetMapping("/{userId}/profile")
+    public AccountDetailsDto getAccountDetails(@PathVariable Long userId) {
+        return accountService.getAccountDetails(userId);
+    }
 }
