@@ -10,15 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-     Collection<Reservation> findByUserId(Long userId);
-     Collection<Reservation> findByAccommodationId(Long accommodationId);
-     @Transactional
-     void deleteByAccommodationId(Long accommodationId);
+    Collection<Reservation> findByUserId(Long userId);
 
-     @Transactional
-     void deleteByUserId(Long userId);
+    Collection<Reservation> findByAccommodationId(Long accommodationId);
+
+    @Transactional
+    void deleteByAccommodationId(Long accommodationId);
+
+    @Transactional
+    void deleteByUserId(Long userId);
+
+    List<Reservation> findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long userId, Long endDate);
+
+    List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId " +
             "AND r.startDate < :availabilityEnd AND r.endDate > :availabilityStart")

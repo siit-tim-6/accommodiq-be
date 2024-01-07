@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Accommodation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.PricingType;
 
@@ -16,7 +17,7 @@ public class AccommodationDetailsDto {
     private String title;
     private double rating;
     private int reviewCount;
-    private String location;
+    private Location location;
     private AccommodationDetailsHostDto host;
     private List<String> images;
     private int minGuests;
@@ -32,7 +33,7 @@ public class AccommodationDetailsDto {
         super();
     }
 
-    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, String location, AccommodationDetailsHostDto host, List<String> images,
+    public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, Location location, AccommodationDetailsHostDto host, List<String> images,
                                    int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type,
                                    PricingType pricingType, double minPrice) {
         this.id = id;
@@ -104,11 +105,11 @@ public class AccommodationDetailsDto {
         this.reviewCount = reviewCount;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

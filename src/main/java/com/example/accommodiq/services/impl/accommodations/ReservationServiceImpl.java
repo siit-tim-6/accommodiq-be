@@ -1,7 +1,6 @@
 package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
@@ -13,8 +12,6 @@ import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
-import com.example.accommodiq.services.interfaces.feedback.IReviewService;
-import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -26,6 +23,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -163,6 +165,16 @@ public class ReservationServiceImpl implements IReservationService {
     public void deleteByUserId(Long userId) {
         allReservations.deleteByUserId(userId);
         allReservations.flush();
+    }
+
+    @Override
+    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public List<Reservation> findHostReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
