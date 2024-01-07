@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 
 public class ReservationCardDto {
+    private long accommodationId;
     private String accommodationImage;
     private String accommodationTitle;
     private double accommodationRating;
@@ -20,8 +21,9 @@ public class ReservationCardDto {
         super();
     }
 
-    public ReservationCardDto(String accommodationImage, String accommodationTitle, double accommodationRating, int accommodationReviewCount,
+    public ReservationCardDto(long accommodationId, String accommodationImage, String accommodationTitle, double accommodationRating, int accommodationReviewCount,
                               Location accommodationLocation, int guests, long startDate, long endDate, ReservationStatus status, double totalPrice) {
+        this.accommodationId = accommodationId;
         this.accommodationImage = accommodationImage;
         this.accommodationTitle = accommodationTitle;
         this.accommodationRating = accommodationRating;
@@ -35,6 +37,7 @@ public class ReservationCardDto {
     }
 
     public ReservationCardDto(Reservation reservation) {
+        this.accommodationId = reservation.getAccommodation().getId();
         this.accommodationImage = (!reservation.getAccommodation().getImages().isEmpty()) ? reservation.getAccommodation().getImages().get(0) : "";
         this.accommodationTitle = reservation.getAccommodation().getTitle();
         this.accommodationRating = reservation.getAccommodation().getAverageRating();
@@ -45,6 +48,14 @@ public class ReservationCardDto {
         this.endDate = reservation.getEndDate();
         this.status = reservation.getStatus();
         this.totalPrice = reservation.getAccommodation().getTotalPrice(this.startDate, this.endDate, this.guests);
+    }
+
+    public long getAccommodationId() {
+        return accommodationId;
+    }
+
+    public void setAccommodationId(long accommodationId) {
+        this.accommodationId = accommodationId;
     }
 
     public String getAccommodationImage() {
