@@ -34,13 +34,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
 
-    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id = :accommodationId AND r.status <> :status AND r.endDate > :sevenDaysAgo")
-    Collection<Reservation> findReservationsByGuestAndAccommodationWithStatusAfterDate(
+    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id = :accommodationId AND r.status NOT IN :excludedStatuses AND r.endDate > :sevenDaysAgo AND r.endDate < :currentTimestamp ")
+    Collection<Reservation> findPastReservationsByGuestAndAccommodationExcludingStatuses(
             @Param("userId") Long userId,
             @Param("accommodationId") Long accommodationId,
-            @Param("status") ReservationStatus status,
-            @Param("sevenDaysAgo") Long sevenDaysAgo
-    );
+            @Param("excludedStatuses") Collection<ReservationStatus> excludedStatuses,
+            @Param("sevenDaysAgo") Long sevenDaysAgo,
+            @Param("currentTimestamp") Long currentTimestamp);
 
     Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long userId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
 }

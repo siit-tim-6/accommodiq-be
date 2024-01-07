@@ -305,12 +305,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
-        long currentTime = System.currentTimeMillis();
-        long sevenDaysAgo = (currentTime / 1000) - (7 * 24 * 60 * 60); // Convert to seconds
+        long currentTime = System.currentTimeMillis()/1000; //TODO: change everything to milliseconds in database
+        long sevenDaysAgo = currentTime - (7 * 24 * 60 * 60);
 
+        // Check if guest has stayed in this accommodation or the 7-day period post-reservation has expired
         Collection<Reservation> reservations = reservationRepository
-                .findReservationsByGuestAndAccommodationWithStatusAfterDate(
-                        guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);
+                .findPastReservationsByGuestAndAccommodationExcludingStatuses(
+                        guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), sevenDaysAgo, currentTime);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
