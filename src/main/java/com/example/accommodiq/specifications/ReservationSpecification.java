@@ -21,8 +21,8 @@ public class ReservationSpecification {
 
             if (startDate != null && endDate != null) {
                 predicates.add(criteriaBuilder.and(
-                        criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), startDate),
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), endDate)
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate),
+                        criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate)
                 ));
             }
 
