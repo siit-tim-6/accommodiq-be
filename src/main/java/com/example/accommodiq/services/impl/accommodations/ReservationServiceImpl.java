@@ -199,7 +199,7 @@ public class ReservationServiceImpl implements IReservationService {
         long currentTime = System.currentTimeMillis();
 
         Collection<Reservation> reservations = allReservations
-                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
+                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
