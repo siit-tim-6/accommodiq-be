@@ -53,9 +53,7 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}")
     @Operation(summary = "Get accommodation by id")
     public AccommodationDetailsDto getAccommodationDetails(@Parameter(description = "Id of accommodation to get data") @PathVariable Long accommodationId) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long loggedInId = !Objects.equals(email, "anonymousUser") ? ((Account) accountService.loadUserByUsername(email)).getId() : -1L;
-        return accommodationService.findById(accommodationId, loggedInId);
+        return accommodationService.findById(accommodationId);
     }
 
     @PutMapping()
@@ -104,10 +102,7 @@ public class AccommodationController {
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
     public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long guestId = ((Account) accountService.loadUserByUsername(email)).getId();
-        Review addedReview = accommodationService.addReview(accommodationId, guestId, reviewDto);
-        return new ReviewDto(addedReview, guestId);
+        return accommodationService.addReview(accommodationId, reviewDto);
     }
 
     @GetMapping("/pending")

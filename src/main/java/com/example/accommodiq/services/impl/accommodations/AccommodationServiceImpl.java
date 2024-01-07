@@ -2,14 +2,12 @@ package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.AccommodationStatus;
-import com.example.accommodiq.enums.PricingType;
-import com.example.accommodiq.enums.ReservationStatus;
-import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
@@ -19,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,12 +35,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
     IGuestService guestService;
+    IAccountService accountService;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
         this.guestService = guestService;
+        this.accountService = accountService;
     }
 
     @Override
@@ -118,7 +120,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     @Transactional
-    public AccommodationDetailsDto findById(Long accommodationId, Long loggedInId) {
+    public AccommodationDetailsDto findById(Long accommodationId) {
+        Long loggedInId = getLoggedInAccountId();
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
@@ -227,14 +230,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Review addReview(Long accommodationId, Long guestId, ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(Long accommodationId, ReviewRequestDto reviewDto) {
+        Long guestId = getGuestId();
         canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
         Accommodation accommodation = findAccommodation(accommodationId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest, ReviewStatus.PENDING);
         accommodation.getReviews().add(review);
         update(accommodation);
-        return review;
+        return new ReviewDto(review,guestId);
     }
 
     @Override
@@ -312,5 +316,27 @@ public class AccommodationServiceImpl implements IAccommodationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
         }
+    }
+
+    private Long getGuestId() {
+        Account account = getAccount();
+        if (account.getRole() != AccountRole.GUEST) throw new RuntimeException("User is not a guest");
+        return account.getId();
+    }
+
+    private Long getLoggedInAccountId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return -1L;
+        }
+
+        String email = authentication.getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        return account.getId();
+    }
+
+    private Account getAccount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return (Account) accountService.loadUserByUsername(email);
     }
 }
