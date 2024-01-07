@@ -51,6 +51,4 @@ public interface IAccommodationService {
     Collection<Accommodation> findAccommodationsByHostId(Long hostId);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
-
-    void deleteAllByHostId(Long accountId);
 }

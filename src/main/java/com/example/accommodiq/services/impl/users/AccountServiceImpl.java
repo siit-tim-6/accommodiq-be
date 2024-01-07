@@ -6,6 +6,7 @@ import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
+import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
@@ -40,7 +41,7 @@ public class AccountServiceImpl implements IAccountService {
 
     final IReservationService reservationService;
 
-    final IAccommodationService accommodationService;
+    final AccommodationRepository accommodationRepository;
     final IReportService reportService;
 
     final IReviewService reviewService;
@@ -48,12 +49,12 @@ public class AccountServiceImpl implements IAccountService {
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, IAccommodationService accommodationService, IReportService reportService, IReviewService reviewService) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, IReportService reportService, IReviewService reviewService) {
         this.allAccounts = allAccounts;
         this.emailService = emailService;
         this.notificationSettingService = notificationSettingService;
         this.reservationService = reservationService;
-        this.accommodationService = accommodationService;
+        this.accommodationRepository = accommodationRepository;
         this.reportService = reportService;
         this.reviewService = reviewService;
     }
@@ -127,7 +128,8 @@ public class AccountServiceImpl implements IAccountService {
             if (!reservations.isEmpty()) {
                 throw ErrorUtils.generateBadRequest("hostHasAcceptedReservations");
             }
-            accommodationService.deleteAllByHostId(accountId);
+            accommodationRepository.deleteAllByHostId(accountId);
+            accommodationRepository.flush();
         }
 
         if (found.getRole() == AccountRole.GUEST) {

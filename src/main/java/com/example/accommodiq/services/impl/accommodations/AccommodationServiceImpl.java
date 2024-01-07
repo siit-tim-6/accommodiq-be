@@ -281,12 +281,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return new AccommodationCardDto(accommodation);
     }
 
-    @Override
-    public void deleteAllByHostId(Long accountId) {
-        accommodationRepository.deleteAllByHostId(accountId);
-        accommodationRepository.flush();
-    }
-
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {
 
         Long count = reservationRepository.countOverlappingReservations(
