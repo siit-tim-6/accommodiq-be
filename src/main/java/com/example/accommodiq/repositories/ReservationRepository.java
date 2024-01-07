@@ -32,4 +32,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
 
+    Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long userId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
 }

@@ -21,6 +21,10 @@ VALUES (1),
 INSERT INTO `guest` (`id`)
 VALUES (3);
 
+-- Insert sample data into 'guest' table
+INSERT INTO `guest` (`id`)
+VALUES (3);
+
 -- Insert sample data into `availability` table
 INSERT INTO `availability` (`id`, `from_date`, `price`, `to_date`)
 VALUES (1, 1672531200, 100.00, 1672617600),

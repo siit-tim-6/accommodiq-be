@@ -21,17 +21,17 @@ public interface IHostService {
 
     void deleteAll();
 
-    Collection<AccommodationCardWithStatusDto> getHostAccommodations(Long hostId);
+    Collection<AccommodationCardWithStatusDto> getHostAccommodations();
 
     ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId);
 
     ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate);
 
-    Collection<Review> getHostReviews(Long hostId);
+    Collection<ReviewDto> getHostReviews(Long hostId);
 
-    AccommodationDetailsDto createAccommodation(Long hostId, AccommodationModifyDto accommodationDto);
+    AccommodationDetailsDto createAccommodation(AccommodationModifyDto accommodationDto);
 
-    Review addReview(Long hostId, ReviewRequestDto reviewDto);
+    ReviewDto addReview(Long hostId, ReviewRequestDto reviewDto);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
 }

@@ -31,6 +31,8 @@ public interface IReservationService {
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
+    void validateGuestReviewEligibility(Long guestId, Long hostId);
+
     void deleteByAccommodationId(Long accommodationId);
 
     void deleteByGuestId(Long userId);

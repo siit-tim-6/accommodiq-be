@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/reviews")
+@CrossOrigin
 public class ReviewController {
 
     final IReviewService reviewService;
@@ -36,7 +38,7 @@ public class ReviewController {
         existingReview.setComment(reviewDto.getComment());
         existingReview.setDate(reviewDto.getDate());
         existingReview.setStatus(reviewDto.getStatus());
-        existingReview.setGuest(userService.findUser(reviewDto.getGuestId()));
+        existingReview.setGuest(userService.findUser(reviewDto.getAuthorId()));
 
         Review updatedReview = reviewService.update(existingReview);
         return new ReviewDto(updatedReview);
@@ -66,7 +68,15 @@ public class ReviewController {
     @PutMapping("/{reviewId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change review status")
-    public Review acceptReview(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
-        return reviewService.setReviewStatus(reviewId, body);
+    public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        return reviewService.setReviewStatus(reviewId, body.getStatus());
     }
+
+    @PutMapping("/{reviewId}/report")
+    @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Report review")
+    public MessageDto reportReview(@Parameter(description = "Id of review to report")@PathVariable Long reviewId) {
+        return reviewService.setReviewStatus(reviewId, ReviewStatus.REPORTED);
+    }
+
 }

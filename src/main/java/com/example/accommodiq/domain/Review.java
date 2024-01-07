@@ -1,6 +1,7 @@
 package com.example.accommodiq.domain;
 
 import com.example.accommodiq.dtos.ReviewDto;
+import com.example.accommodiq.dtos.ReviewRequestDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import jakarta.persistence.*;
 
@@ -13,7 +14,7 @@ public class Review {
     public Long id;
     private int rating;
     private String comment;
-    private Long date = Instant.now().toEpochMilli();
+    private Long date;
     private ReviewStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     private User guest;
@@ -39,6 +40,14 @@ public class Review {
 
     public Review() {
         super();
+    }
+
+    public Review(ReviewRequestDto reviewDto, Guest guest) {
+        this.rating = reviewDto.getRating();
+        this.comment = reviewDto.getComment();
+        this.date = Instant.now().toEpochMilli();
+        this.status = ReviewStatus.ACCEPTED;
+        this.guest = guest;
     }
 
     public Long getId() {

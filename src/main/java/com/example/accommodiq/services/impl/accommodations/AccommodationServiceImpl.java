@@ -262,6 +262,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    public Collection<Accommodation> findAccommodationsByHostId(Long hostId) {
+        return accommodationRepository.findByHostId(hostId);
+    }
+
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
         return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
     }
