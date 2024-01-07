@@ -10,6 +10,7 @@ import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
@@ -33,15 +34,15 @@ public class ReservationServiceImpl implements IReservationService {
     ReservationRepository allReservations;
     final IAccommodationService accommodationService;
     final IUserService userService;
-    final IReviewService reviewService;
+    final ReviewRepository reviewRepository;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public ReservationServiceImpl(ReservationRepository allReservations, IAccommodationService accommodationService, IUserService userService, IReviewService reviewService) {
+    public ReservationServiceImpl(ReservationRepository allReservations, IAccommodationService accommodationService, IUserService userService, ReviewRepository reviewRepository) {
         this.allReservations = allReservations;
         this.accommodationService = accommodationService;
         this.userService = userService;
-        this.reviewService = reviewService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -177,7 +178,7 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public void validateGuestReviewEligibility(Long guestId, Long hostId) {
-        Set<Review> reviewsForHostByGuest = reviewService.findReviewsByGuestIdAndHostId(guestId, hostId);
+        Set<Review> reviewsForHostByGuest = reviewRepository.findReviewsByGuestIdAndHostId(guestId, hostId);
 
         List<Long> accommodationIds = accommodationService.findAccommodationsByHostId(hostId).stream()
                 .map(Accommodation::getId)

@@ -13,13 +13,13 @@ public class ReviewDto {
     private ReviewStatus status;
     private Long authorId;
     private String author;
-    private boolean canDelete;
+    private boolean deletable;
 
     public ReviewDto() {
         super();
     }
 
-    public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId, String firstName, String lastName, boolean canDelete) {
+    public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId, String firstName, String lastName, boolean deletable) {
         this.id = id;
         this.rating = rating;
         this.comment = comment;
@@ -27,7 +27,7 @@ public class ReviewDto {
         this.status = status;
         this.authorId = guestId;
         this.author = firstName + " " + lastName;
-        this.canDelete = canDelete;
+        this.deletable = deletable;
     }
 
     public ReviewDto(Review review) {
@@ -38,7 +38,7 @@ public class ReviewDto {
         this.status = review.getStatus();
         this.authorId = review.getGuest().getId();
         this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
-        this.canDelete = false;
+        this.deletable = false;
     }
 
     public ReviewDto(Review review, Long loggedUserId) {
@@ -49,7 +49,7 @@ public class ReviewDto {
         this.status = review.getStatus();
         this.authorId = review.getGuest().getId();
         this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
-        this.canDelete = loggedUserId.equals(review.getGuest().getId());
+        this.deletable = loggedUserId.equals(review.getGuest().getId());
     }
 
     public Long getId() {
@@ -112,11 +112,11 @@ public class ReviewDto {
         this.author = author;
     }
 
-    public boolean canDelete() {
-        return canDelete;
+    public boolean isDeletable() {
+        return deletable;
     }
 
-    public void setCanDelete(boolean canDelete) {
-        this.canDelete = canDelete;
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
     }
 }
