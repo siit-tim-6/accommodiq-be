@@ -176,7 +176,7 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public void canGuestCommentAndRateHost(Long guestId, Long hostId) {
+    public void validateGuestReviewEligibility(Long guestId, Long hostId) {
         Set<Review> reviewsForHostByGuest = reviewService.findReviewsByGuestIdAndHostId(guestId, hostId);
 
         List<Long> accommodationIds = accommodationService.findAccommodationsByHostId(hostId).stream()

@@ -30,7 +30,7 @@ public interface IReservationService {
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
-    void canGuestCommentAndRateHost(Long guestId, Long hostId);
+    void validateGuestReviewEligibility(Long guestId, Long hostId);
 
     void deleteByAccommodationId(Long accommodationId);
 

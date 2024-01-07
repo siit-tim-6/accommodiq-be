@@ -41,7 +41,7 @@ public class ReviewDto {
         this.canDelete = false;
     }
 
-    public ReviewDto(Review review, Long authorId) {
+    public ReviewDto(Review review, Long loggedUserId) {
         this.id = review.getId();
         this.rating = review.getRating();
         this.comment = review.getComment();
@@ -49,7 +49,7 @@ public class ReviewDto {
         this.status = review.getStatus();
         this.authorId = review.getGuest().getId();
         this.author = review.getGuest().getFirstName() + " " + review.getGuest().getLastName();
-        this.canDelete = authorId.equals(review.getGuest().getId());
+        this.canDelete = loggedUserId.equals(review.getGuest().getId());
     }
 
     public Long getId() {

@@ -3,10 +3,9 @@ package com.example.accommodiq.services.interfaces.feedback;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
-import com.example.accommodiq.dtos.ReviewStatusDto;
+import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public interface IReviewService {
@@ -23,7 +22,7 @@ public interface IReviewService {
 
     void deleteAll();
 
-    MessageDto setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto);
+    MessageDto setReviewStatus(Long reviewId, ReviewStatus reviewStatusDto);
 
     Collection<ReviewDto> getHostReviews(Long hostId, Long loggedInId);
 
