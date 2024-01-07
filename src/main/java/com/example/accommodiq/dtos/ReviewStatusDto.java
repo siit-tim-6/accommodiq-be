@@ -9,7 +9,9 @@ public class ReviewStatusDto {
         this.status = status;
     }
 
-    public ReviewStatusDto() {}
+    public ReviewStatusDto() {
+        super();
+    }
 
     public ReviewStatus getStatus() {
         return status;

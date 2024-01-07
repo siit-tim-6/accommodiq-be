@@ -16,6 +16,7 @@ public class ReviewDto {
     private boolean canDelete;
 
     public ReviewDto() {
+        super();
     }
 
     public ReviewDto(Long id, int rating, String comment, Long date, ReviewStatus status, Long guestId, String firstName, String lastName, boolean canDelete) {
