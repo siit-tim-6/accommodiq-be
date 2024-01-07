@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,8 +25,9 @@ public class GuestController {
     @GetMapping("/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Get all reservations of guest")
-    public Collection<ReservationCardDto> getReservations() {
-        return guestService.getReservations();
+    public Collection<ReservationCardDto> getReservations(@RequestParam(required = false) String title, @RequestParam(required = false) Long startDate,
+                                                          @RequestParam(required = false) Long endDate, @RequestParam(required = false) ReservationStatus status) {
+        return guestService.findByFilter(title, startDate, endDate, status);
     }
 
     @PostMapping("/{guestId}/reservations")

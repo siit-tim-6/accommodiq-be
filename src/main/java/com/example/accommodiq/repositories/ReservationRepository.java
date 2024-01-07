@@ -3,6 +3,7 @@ package com.example.accommodiq.repositories;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
     Collection<Reservation> findByGuestId(Long guestId);
 
     Collection<Reservation> findByAccommodationId(Long accommodationId);

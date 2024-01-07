@@ -6,11 +6,13 @@ import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
+import com.example.accommodiq.specifications.ReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,12 @@ public class GuestServiceImpl implements IGuestService {
     public Collection<ReservationCardDto> getReservations() {
         Long guestId = getGuestId();
         return reservationRepository.findByGuestId(guestId).stream().map(ReservationCardDto::new).toList();
+    }
+
+    @Override
+    public Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+        Long guestId = getGuestId();
+        return reservationRepository.findAll(ReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
 
     @Transactional

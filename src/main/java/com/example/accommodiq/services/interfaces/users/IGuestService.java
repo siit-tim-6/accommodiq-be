@@ -1,7 +1,9 @@
 package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Guest;
+import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.Collection;
 
@@ -9,6 +11,8 @@ public interface IGuestService {
     Guest findGuest(Long guestId);
 
     Collection<ReservationCardDto> getReservations();
+
+    Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
     ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 
