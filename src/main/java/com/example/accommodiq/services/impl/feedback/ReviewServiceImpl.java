@@ -113,10 +113,4 @@ public class ReviewServiceImpl implements IReviewService {
     public Collection<Review> findAllByGuestId(Long guestId) {
         return allReviews.findByGuestId(guestId);
     }
-
-    @Override
-    public Set<Review> findReviewsByGuestIdAndHostId(Long guestId, Long hostId) {
-        return allReviews.findReviewsByGuestIdAndHostId(guestId, hostId);
-    }
-
 }
