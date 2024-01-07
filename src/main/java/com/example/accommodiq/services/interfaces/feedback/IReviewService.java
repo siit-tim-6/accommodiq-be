@@ -29,6 +29,4 @@ public interface IReviewService {
     void deleteByGuestId(Long id);
 
     Collection<Review> findAllByGuestId(Long guestId);
-
-    Set<Review> findReviewsByGuestIdAndHostId(Long guestId, Long hostId);
 }
