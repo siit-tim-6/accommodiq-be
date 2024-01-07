@@ -15,10 +15,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
@@ -119,6 +116,11 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Collection<Review> findAllByGuestId(Long guestId) {
         return allReviews.findByGuestId(guestId);
+    }
+
+    @Override
+    public Set<Review> findReviewsByGuestIdAndHostId(Long guestId, Long hostId) {
+        return allReviews.findReviewsByGuestIdAndHostId(guestId, hostId);
     }
 
 }

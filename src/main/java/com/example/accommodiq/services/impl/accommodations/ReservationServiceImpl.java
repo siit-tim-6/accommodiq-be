@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
@@ -12,6 +13,7 @@ import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
+import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -21,10 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,23 +177,22 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public void canGuestCommentAndRateHost(Long guestId, Long hostId) {
-        Collection<Accommodation> hostAccommodations = accommodationService.findAccommodationsByHostId(hostId);
+        Set<Review> reviewsForHostByGuest = reviewService.findReviewsByGuestIdAndHostId(guestId, hostId);
 
-        List<Long> accommodationIds = hostAccommodations.stream()
+        List<Long> accommodationIds = accommodationService.findAccommodationsByHostId(hostId).stream()
                 .map(Accommodation::getId)
                 .collect(Collectors.toList());
 
         long currentTime = System.currentTimeMillis();
+
         Collection<Reservation> reservations = allReservations
                 .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
-
-        Collection<Review> reviews = reviewService.findAllByGuestId(guestId);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
         }
 
-        if (reservations.size() <= reviews.size()) {
+        if (reviewsForHostByGuest.size() >= reservations.size()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, as they have already left reviews for all their reservations.");
         }
     }

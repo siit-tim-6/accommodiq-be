@@ -7,6 +7,7 @@ import com.example.accommodiq.dtos.ReviewStatusDto;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface IReviewService {
 
@@ -31,4 +32,6 @@ public interface IReviewService {
     void deleteByGuestId(Long id);
 
     Collection<Review> findAllByGuestId(Long guestId);
+
+    Set<Review> findReviewsByGuestIdAndHostId(Long guestId, Long hostId);
 }
