@@ -1,9 +1,6 @@
 package com.example.accommodiq.services.impl.users;
 
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.User;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.AccountDetailsDto;
 import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
@@ -17,6 +14,7 @@ import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -123,16 +122,27 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Account delete(Long accountId) {
         Account found = findAccount(accountId); // this will throw AccountNotFoundException if Account is not found
-        reservationService.deleteByUserId(accountId);
         if (found.getRole() == AccountRole.HOST) {
+            List<Reservation> reservations = reservationService.findHostReservationsNotEndedYet(accountId);
+            if (!reservations.isEmpty()) {
+                throw ErrorUtils.generateBadRequest("hostHasAcceptedReservations");
+            }
             accommodationService.deleteAllByHostId(accountId);
         }
-        reportService.deleteByReportingUserId(accountId);
-        reportService.deleteByReportedUserId(accountId);
 
         if (found.getRole() == AccountRole.GUEST) {
             reviewService.deleteByGuestId(accountId);
+
+            List<Reservation> reservations = reservationService.findGuestAcceptedReservationsNotEndedYet(accountId);
+            if (!reservations.isEmpty()) {
+                throw ErrorUtils.generateBadRequest("guestHasAcceptedReservations");
+            }
+
+            reservationService.deleteByUserId(accountId);
         }
+
+        reportService.deleteByReportingUserId(accountId);
+        reportService.deleteByReportedUserId(accountId);
 
         allAccounts.delete(found);
         allAccounts.flush();
@@ -172,5 +182,11 @@ public class AccountServiceImpl implements IAccountService {
         } else {
             return user;
         }
+    }
+
+    @Override
+    public AccountDetailsDto getAccountDetails(Long accountId) {
+        Account account = findAccount(accountId);
+        return new AccountDetailsDto(account);
     }
 }

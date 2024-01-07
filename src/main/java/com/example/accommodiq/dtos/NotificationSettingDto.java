@@ -9,6 +9,7 @@ public class NotificationSettingDto {
     private boolean isOn;
 
     public NotificationSettingDto() {
+        super();
     }
 
     public NotificationSettingDto(NotificationSetting notificationSetting) {

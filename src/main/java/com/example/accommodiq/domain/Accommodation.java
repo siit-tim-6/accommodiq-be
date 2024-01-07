@@ -15,7 +15,8 @@ public class Accommodation {
     private Long id;
     private String title;
     private String description;
-    private String location;
+    @Embedded
+    private Location location;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> images = new ArrayList<>();
     private int minGuests;
@@ -34,7 +35,7 @@ public class Accommodation {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> benefits = new HashSet<>();
 
-    public Accommodation(Long id, String title, String description, String location, List<String> images, int minGuests, int maxGuests, String type, AccommodationStatus status, PricingType pricingType,
+    public Accommodation(Long id, String title, String description, Location location, List<String> images, int minGuests, int maxGuests, String type, AccommodationStatus status, PricingType pricingType,
                          boolean automaticAcceptance, int cancellationDeadline, Host host) {
         super();
         this.id = id;
@@ -108,11 +109,11 @@ public class Accommodation {
         this.description = description;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

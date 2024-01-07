@@ -31,7 +31,7 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 @Service
 public class AccommodationServiceImpl implements IAccommodationService {
-    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS = 1;
+    private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
     IGuestService guestService;
@@ -47,7 +47,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     public Accommodation insert(Host host, AccommodationModifyDto accommodationDto) {
         Accommodation accommodation = new Accommodation(accommodationDto);
         accommodation.setHost(host);
-        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_IN_DAYS);
+        accommodation.setCancellationDeadline(DEFAULT_CANCELLATION_DEADLINE_VALUE_DAYS);
         accommodation.setStatus(AccommodationStatus.PENDING);
         try {
             accommodationRepository.save(accommodation);
@@ -258,7 +258,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public Collection<Accommodation> findAccommodationsByHostId(Long hostId) {
-        return accommodationRepository.findAllByHostId(hostId);
+        return accommodationRepository.findByHostId(hostId);
     }
 
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
@@ -310,7 +310,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
         long currentTime = System.currentTimeMillis();
         long sevenDaysAgo = (currentTime / 1000) - (7 * 24 * 60 * 60); // Convert to seconds
 
-        Collection<Reservation> reservations1 = reservationRepository.findAll();
         Collection<Reservation> reservations = reservationRepository
                 .findReservationsByGuestAndAccommodationWithStatusAfterDate(
                         guestId, accommodationId, ReservationStatus.CANCELLED, sevenDaysAgo);

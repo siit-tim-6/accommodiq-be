@@ -3,6 +3,7 @@ package com.example.accommodiq.services.impl.feedback;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
@@ -14,10 +15,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
@@ -25,13 +23,11 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 public class ReviewServiceImpl implements IReviewService {
 
     final ReviewRepository allReviews;
-    final IHostService hostService;
     final IAccommodationService accommodationService;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository allReviews, IHostService hostService, IAccommodationService accommodationService) {
+    public ReviewServiceImpl(ReviewRepository allReviews, IAccommodationService accommodationService) {
         this.allReviews = allReviews;
-        this.hostService = hostService;
         this.accommodationService = accommodationService;
     }
 
@@ -50,11 +46,14 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review insert(Long hostId, Review review) {
-        Host host = hostService.findHost(hostId);
-        host.getReviews().add(review);
-        hostService.update(host);
-        return review;
+    public Review insert(Review review) {
+        try {
+            allReviews.save(review);
+            allReviews.flush();
+            return review;
+        } catch (ConstraintViolationException ex) {
+            throw generateNotFound("reviewInsertFailed");
+        }
     }
 
     @Override
@@ -86,17 +85,12 @@ public class ReviewServiceImpl implements IReviewService {
     }
 
     @Override
-    public Review setReviewStatus(Long reviewId, ReviewStatusDto reviewStatusDto) {
+    public MessageDto setReviewStatus(Long reviewId, ReviewStatus reviewStatus) {
         Review review = findReview(reviewId);
-        review.setStatus(reviewStatusDto.getStatus());
+        review.setStatus(reviewStatus);
         allReviews.save(review);
         allReviews.flush();
-        return review;
-    }
-
-    @Override
-    public Collection<Review> getHostReviews(Long hostId) {
-        return hostService.getHostReviews(hostId);
+        return new MessageDto("Review status updated successfully");
     }
 
     @Override
@@ -113,5 +107,10 @@ public class ReviewServiceImpl implements IReviewService {
         }
         allReviews.deleteByGuestId(id);
         allReviews.flush();
+    }
+
+    @Override
+    public Collection<Review> findAllByGuestId(Long guestId) {
+        return allReviews.findByGuestId(guestId);
     }
 }

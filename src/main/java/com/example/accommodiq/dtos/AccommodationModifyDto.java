@@ -2,6 +2,7 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
+import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.enums.PricingType;
 
 import java.util.HashSet;
@@ -12,7 +13,7 @@ public class AccommodationModifyDto {
     private Long id;
     private String title;
     private String description;
-    private String location;
+    private Location location;
     private int minGuests;
     private int maxGuests;
     private Set<AvailabilityDto> available;
@@ -60,11 +61,11 @@ public class AccommodationModifyDto {
         this.description = description;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

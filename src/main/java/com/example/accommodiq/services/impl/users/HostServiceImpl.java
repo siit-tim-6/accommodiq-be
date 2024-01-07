@@ -2,6 +2,7 @@ package com.example.accommodiq.services.impl.users;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.enums.ReviewStatus;
@@ -10,12 +11,16 @@ import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,19 +36,22 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
-    final private ReservationRepository reservationRepository;
+    final private IReservationService reservationService;
 
     final private IGuestService guestService;
 
     final AccommodationRepository allAccommodations;
 
+    final IAccountService accountService;
+
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, ReservationRepository reservationRepository) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, IReservationService reservationService, IAccountService accountService) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
         this.guestService = guestService;
-        this.reservationRepository = reservationRepository;
+        this.reservationService = reservationService;
+        this.accountService = accountService;
     }
 
     @Override
@@ -103,7 +111,8 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     @Transactional
-    public Collection<AccommodationCardWithStatusDto> getHostAccommodations(Long hostId) {
+    public Collection<AccommodationCardWithStatusDto> getHostAccommodations() {
+        Long hostId = getHostId();
         return allAccommodations.findByHostId(hostId).stream().map(AccommodationCardWithStatusDto::new).toList();
     }
 
@@ -137,16 +146,19 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Collection<Review> getHostReviews(Long hostId) {
+    public Collection<ReviewDto> getHostReviews(Long hostId) {
+        Long loggedInId = getLoggedInAccountId();
         Host host = findHost(hostId);
         return host.getReviews().stream()
                 .filter(review -> review.getStatus() != ReviewStatus.DECLINED)
+                .map(review -> new ReviewDto(review, loggedInId))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public AccommodationDetailsDto createAccommodation(Long hostId, AccommodationModifyDto accommodationDto) {
+    public AccommodationDetailsDto createAccommodation(AccommodationModifyDto accommodationDto) {
+        Long hostId = getHostId();
         Host host = findHost(hostId);
         accommodationDto.setId(null);
         Accommodation accommodation = accommodationService.insert(host, accommodationDto);
@@ -155,14 +167,15 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Review addReview(Long hostId, Long guestId, ReviewRequestDto reviewDto) {
-        canGuestCommentAndRateHost(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
+    public ReviewDto addReview(Long hostId, ReviewRequestDto reviewDto) {
+        Long guestId = getGuestId();
+        reservationService.validateGuestReviewEligibility(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
         Review review = new Review(reviewDto, guest, ReviewStatus.ACCEPTED);
         host.getReviews().add(review);
         update(host);
-        return review;
+        return new ReviewDto(review,guestId);
     }
 
     @Override
@@ -170,19 +183,31 @@ public class HostServiceImpl implements IHostService {
         return accommodationService.deleteAccommodation(accommodationId);
     }
 
-    private void canGuestCommentAndRateHost(Long guestId, Long hostId) {
-        Collection<Accommodation> hostAccommodations = accommodationService.findAccommodationsByHostId(hostId);
+    private Long getHostId() {
+        Account account = getAccount();
+        if (account.getRole() != AccountRole.HOST) throw new RuntimeException("User is not a host");
+        return account.getId();
+    }
 
-        List<Long> accommodationIds = hostAccommodations.stream()
-                .map(Accommodation::getId)
-                .collect(Collectors.toList());
+    private Long getGuestId() {
+        Account account = getAccount();
+        if (account.getRole() != AccountRole.GUEST) throw new RuntimeException("User is not a guest");
+        return account.getId();
+    }
 
-        long currentTime = System.currentTimeMillis()/1000; // current time in seconds
-        Collection<Reservation> reservations = reservationRepository
-                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
-
-        if (reservations.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
+    private Long getLoggedInAccountId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return -1L;
         }
+
+        String email = authentication.getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        return account.getId();
+    }
+
+    private Account getAccount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return (Account) accountService.loadUserByUsername(email);
     }
 }

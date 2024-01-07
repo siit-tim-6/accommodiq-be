@@ -2,12 +2,14 @@ package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReservationDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
@@ -19,11 +21,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -32,13 +36,15 @@ public class ReservationServiceImpl implements IReservationService {
     ReservationRepository allReservations;
     final IAccommodationService accommodationService;
     final IUserService userService;
+    final ReviewRepository reviewRepository;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public ReservationServiceImpl(ReservationRepository allReservations, IAccommodationService accommodationService, IUserService userService) {
+    public ReservationServiceImpl(ReservationRepository allReservations, IAccommodationService accommodationService, IUserService userService, ReviewRepository reviewRepository) {
         this.allReservations = allReservations;
         this.accommodationService = accommodationService;
         this.userService = userService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -161,6 +167,16 @@ public class ReservationServiceImpl implements IReservationService {
         allReservations.flush();
     }
 
+    @Override
+    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public List<Reservation> findHostReservationsNotEndedYet(Long userId) {
+        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    }
+
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);
@@ -170,5 +186,27 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setUser(null);
         reservation.setAccommodation(null);
         return reservation;
+    }
+
+    @Override
+    public void validateGuestReviewEligibility(Long guestId, Long hostId) {
+        Set<Review> reviewsForHostByGuest = reviewRepository.findReviewsByGuestIdAndHostId(guestId, hostId);
+
+        List<Long> accommodationIds = accommodationService.findAccommodationsByHostId(hostId).stream()
+                .map(Accommodation::getId)
+                .collect(Collectors.toList());
+
+        long currentTime = System.currentTimeMillis();
+
+        Collection<Reservation> reservations = allReservations
+                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
+        }
+
+        if (reviewsForHostByGuest.size() >= reservations.size()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, as they have already left reviews for all their reservations.");
+        }
     }
 }
