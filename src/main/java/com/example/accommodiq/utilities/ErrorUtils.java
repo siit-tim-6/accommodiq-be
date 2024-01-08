@@ -19,4 +19,9 @@ public class ErrorUtils {
         String value = bundle.getString(messageKey);
         return new ResponseStatusException(HttpStatus.NOT_FOUND, value);
     }
+
+    public static ResponseStatusException generateException(HttpStatus status, String messageKey) {
+        String value = bundle.getString(messageKey);
+        return new ResponseStatusException(status, value);
+    }
 }

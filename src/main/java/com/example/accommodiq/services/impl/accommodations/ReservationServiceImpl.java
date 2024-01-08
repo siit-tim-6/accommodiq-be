@@ -1,6 +1,7 @@
 package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
@@ -13,11 +14,14 @@ import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
+import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -109,6 +113,12 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public MessageDto delete(Long reservationId) {
         Reservation found = findReservation(reservationId);
+        long loggedInUserId = getLoggedInUserId();
+
+        if (loggedInUserId == -1L || found.getGuest().getId() != loggedInUserId) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "guestNotAuthorized");
+        }
+
         allReservations.delete(found);
         allReservations.flush();
         return new MessageDto("Reservation deleted successfully");
@@ -208,5 +218,14 @@ public class ReservationServiceImpl implements IReservationService {
         if (reviewsForHostByGuest.size() >= reservations.size()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, as they have already left reviews for all their reservations.");
         }
+    }
+
+    private Long getLoggedInUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return -1L;
+        }
+
+        return ((Account) authentication.getPrincipal()).getUser().getId();
     }
 }
