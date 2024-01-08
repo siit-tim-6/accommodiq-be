@@ -5,11 +5,14 @@ import com.example.accommodiq.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 
+
+@Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Collection<Reservation> findByUserId(Long userId);
 
@@ -31,5 +34,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
 
+    Collection<Reservation> findByUserIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
+            Long userId,
+            Long accommodationId,
+            Collection<ReservationStatus> excludedStatuses,
+            Long endDateAfter,
+            Long endDateBefore);
+
     Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long userId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
+
+    Collection<Reservation> findByUserIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(Long guestId, Long accommodationId, List<ReservationStatus> list, long currentTime);
 }

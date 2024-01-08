@@ -2,11 +2,14 @@ package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.AccommodationStatus;
-import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
+import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,11 +35,17 @@ public class AccommodationServiceImpl implements IAccommodationService {
     private final static int DEFAULT_CANCELLATION_DEADLINE_VALUE_DAYS = 1;
     AccommodationRepository accommodationRepository;
     ReservationRepository reservationRepository;
+    IGuestService guestService;
+    IAccountService accountService;
+    ReviewRepository reviewRepository;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService, ReviewRepository reviewRepository) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
+        this.guestService = guestService;
+        this.accountService = accountService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -113,13 +124,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     @Transactional
     public AccommodationDetailsDto findById(Long accommodationId) {
+        Long loggedInId = getLoggedInAccountId();
         Optional<Accommodation> accommodation = accommodationRepository.findById(accommodationId);
 
         if (accommodation.isEmpty()) {
             throw ErrorUtils.generateNotFound("accommodationNotFound");
         }
 
-        return new AccommodationDetailsDto(accommodation.get());
+        return new AccommodationDetailsDto(accommodation.get(), loggedInId);
     }
 
     @Override
@@ -221,25 +233,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public Accommodation addReview(Long accommodationId, ReviewRequestDto reviewDto) { // mocked
-        if (accommodationId == 4L) {
-            throw generateNotFound("accommodationNotFound");
-        }
-
-        return new Accommodation(1L,
-                "Cozy Cottage",
-                "A charming place to relax",
-                new Location("Green Valley", 22, 22),
-                null,
-                2,
-                4,
-                "Cottage",
-                AccommodationStatus.ACCEPTED,
-                PricingType.PER_GUEST,
-                true,
-                7,
-                null
-        );
+    public ReviewDto addReview(Long accommodationId, ReviewRequestDto reviewDto) {
+        Long guestId = getGuestId();
+        canGuestCommentAndRateAccommodation(guestId, accommodationId); // this will throw ResponseStatusException if guest cannot comment and rate accommodation
+        Accommodation accommodation = findAccommodation(accommodationId);
+        Guest guest = guestService.findGuest(guestId);
+        Review review = new Review(reviewDto, guest, ReviewStatus.PENDING);
+        accommodation.getReviews().add(review);
+        update(accommodation);
+        return new ReviewDto(review,guestId);
     }
 
     @Override
@@ -286,12 +288,6 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return new AccommodationCardDto(accommodation);
     }
 
-    @Override
-    public void deleteAllByHostId(Long accountId) {
-        accommodationRepository.deleteAllByHostId(accountId);
-        accommodationRepository.flush();
-    }
-
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {
 
         Long count = reservationRepository.countOverlappingReservations(
@@ -309,5 +305,51 @@ public class AccommodationServiceImpl implements IAccommodationService {
         long newEnd = newAvailability.getToDate();
 
         return newStart < existingEnd && newEnd > existingStart;
+    }
+
+    private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
+        long currentTime = System.currentTimeMillis()/1000; //TODO: change everything to milliseconds in database
+        long sevenDaysAgo = currentTime - (7 * 24 * 60 * 60);
+
+        // Check if guest has stayed in this accommodation or the 7-day period post-reservation has expired
+        Collection<Reservation> reservations = reservationRepository
+                .findByUserIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
+                        guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), sevenDaysAgo, currentTime);
+
+        if (reservations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
+        }
+
+        // Check if guest has already commented and rated this accommodation
+        Set<Review> reviewsForAccommodationByGuest = reviewRepository.findReviewsByGuestIdAndAccommodationId(guestId, accommodationId);
+        Collection<Reservation> reservationsForAccommodationByGuest = reservationRepository.findByUserIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), currentTime);
+
+        if(reviewsForAccommodationByGuest.size() >= reservationsForAccommodationByGuest.size()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Guest cannot comment and rate this accommodation, as they have already left reviews for all their reservations.");
+        }
+    }
+
+    private Long getGuestId() {
+        Account account = getAccount();
+        if (account.getRole() != AccountRole.GUEST) throw new RuntimeException("User is not a guest");
+        return account.getId();
+    }
+
+    private Long getLoggedInAccountId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return -1L;
+        }
+
+        String email = authentication.getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        return account.getId();
+    }
+
+    private Account getAccount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return (Account) accountService.loadUserByUsername(email);
     }
 }

@@ -24,8 +24,6 @@ public interface IReviewService {
 
     MessageDto setReviewStatus(Long reviewId, ReviewStatus reviewStatusDto);
 
-    Collection<Review> getAccommodationReviews(Long accommodationId);
-
     void deleteByGuestId(Long id);
 
     Collection<Review> findAllByGuestId(Long guestId);

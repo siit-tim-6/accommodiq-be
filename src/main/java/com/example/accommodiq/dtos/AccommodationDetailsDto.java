@@ -8,9 +8,11 @@ import java.util.List;
 import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.OptionalDouble;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AccommodationDetailsDto {
     private Long id;
@@ -23,7 +25,7 @@ public class AccommodationDetailsDto {
     private int minGuests;
     private int maxGuests;
     private String description;
-    private List<AccommodationDetailsReviewDto> reviews;
+    private List<ReviewDto> reviews;
     private Set<String> benefits;
     private String type;
     private PricingType pricingType;
@@ -34,7 +36,7 @@ public class AccommodationDetailsDto {
     }
 
     public AccommodationDetailsDto(Long id, String title, double rating, int reviewCount, Location location, AccommodationDetailsHostDto host, List<String> images,
-                                   int minGuests, int maxGuests, String description, ArrayList<AccommodationDetailsReviewDto> reviews, Set<String> benefits, String type,
+                                   int minGuests, int maxGuests, String description, ArrayList<ReviewDto> reviews, Set<String> benefits, String type,
                                    PricingType pricingType, double minPrice) {
         this.id = id;
         this.title = title;
@@ -54,19 +56,53 @@ public class AccommodationDetailsDto {
     }
 
     public AccommodationDetailsDto(Accommodation accommodation) {
-        OptionalDouble averageRating = accommodation.getReviews().stream().mapToDouble(Review::getRating).average();
+        OptionalDouble averageRating = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .mapToDouble(Review::getRating).average();
 
         this.id = accommodation.getId();
         this.title = accommodation.getTitle();
         this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
-        this.reviewCount = accommodation.getReviews().size();
+        this.reviewCount = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .toList().size();
         this.location = accommodation.getLocation();
         this.host = new AccommodationDetailsHostDto(accommodation.getHost());
         this.images = accommodation.getImages();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
         this.description = accommodation.getDescription();
-        this.reviews = accommodation.getReviews().stream().map(AccommodationDetailsReviewDto::new).toList();
+        this.reviews = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .map(ReviewDto::new)
+                .collect(Collectors.toList());
+        this.benefits = accommodation.getBenefits();
+        this.type = accommodation.getType();
+        this.pricingType = accommodation.getPricingType();
+        this.minPrice = accommodation.getMinPrice();
+    }
+
+    public AccommodationDetailsDto(Accommodation accommodation, Long loggedInId) {
+        OptionalDouble averageRating = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .mapToDouble(Review::getRating).average();
+
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.rating = averageRating.isPresent() ? averageRating.getAsDouble() : 0;
+        this.reviewCount = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .toList().size();
+        this.location = accommodation.getLocation();
+        this.host = new AccommodationDetailsHostDto(accommodation.getHost());
+        this.images = accommodation.getImages();
+        this.minGuests = accommodation.getMinGuests();
+        this.maxGuests = accommodation.getMaxGuests();
+        this.description = accommodation.getDescription();
+        this.reviews = accommodation.getReviews().stream()
+                .filter(this::isReviewAcceptedOrReported)
+                .map(review -> new ReviewDto(review, loggedInId))
+                .collect(Collectors.toList());
         this.benefits = accommodation.getBenefits();
         this.type = accommodation.getType();
         this.pricingType = accommodation.getPricingType();
@@ -153,11 +189,11 @@ public class AccommodationDetailsDto {
         this.description = description;
     }
 
-    public List<AccommodationDetailsReviewDto> getReviews() {
+    public List<ReviewDto> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<AccommodationDetailsReviewDto> reviews) {
+    public void setReviews(List<ReviewDto> reviews) {
         this.reviews = reviews;
     }
 
@@ -191,5 +227,9 @@ public class AccommodationDetailsDto {
 
     public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
+    }
+
+    private boolean isReviewAcceptedOrReported(Review review) {
+        return review.getStatus() == ReviewStatus.ACCEPTED || review.getStatus() == ReviewStatus.REPORTED;
     }
 }
