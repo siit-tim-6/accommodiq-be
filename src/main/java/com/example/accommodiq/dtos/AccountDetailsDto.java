@@ -1,6 +1,7 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.enums.AccountRole;
 
 public class AccountDetailsDto {
     private String email;
@@ -8,6 +9,7 @@ public class AccountDetailsDto {
     private String lastName;
     private String address;
     private String phoneNumber;
+    private AccountRole role;
 
     public AccountDetailsDto(Account account) {
         this.email = account.getEmail();
@@ -15,6 +17,7 @@ public class AccountDetailsDto {
         this.lastName = account.getUser().getLastName();
         this.address = account.getUser().getAddress();
         this.phoneNumber = account.getUser().getPhoneNumber();
+        this.role = account.getRole();
     }
 
     public AccountDetailsDto() {
@@ -59,6 +62,14 @@ public class AccountDetailsDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setRole(AccountRole role) {
+        this.role = role;
+    }
+
+    public AccountRole getRole() {
+        return role;
     }
 
     public void putDetailsIntoAccount(Account accountToManage) {

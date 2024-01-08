@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Transactional
@@ -25,4 +26,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByGuestId(Long guestId);
 
+    @Query(value = "SELECT * FROM review WHERE guest_id = :guestId AND id IN (SELECT reviews_id FROM host_reviews WHERE host_id = :hostId)", nativeQuery = true)
+    Set<Review> findReviewsByGuestIdAndHostId(@Param("guestId") Long guestId, @Param("hostId") Long hostId);
 }

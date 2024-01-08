@@ -1,18 +1,13 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
-import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -22,14 +17,10 @@ import java.util.Collection;
 @CrossOrigin
 public class HostController {
     final private IHostService hostService;
-    final private IReviewService reviewService;
-    final private IAccountService accountService;
 
     @Autowired
-    public HostController(IHostService hostService, IReviewService reviewService, IAccountService accountService) {
+    public HostController(IHostService hostService) {
         this.hostService = hostService;
-        this.reviewService = reviewService;
-        this.accountService = accountService;
     }
 
     @GetMapping
@@ -78,19 +69,14 @@ public class HostController {
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Create accommodation")
     public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationModifyDto accommodation) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
-        return hostService.createAccommodation(hostId, accommodation);
+        return hostService.createAccommodation(accommodation);
     }
 
     @GetMapping("/accommodations")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host accommodations")
     public Collection<AccommodationCardWithStatusDto> getHostAccommodations() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long hostId = ((Account) accountService.loadUserByUsername(email)).getId();
-
-        return hostService.getHostAccommodations(hostId);
+        return hostService.getHostAccommodations();
     }
 
     @GetMapping("/{hostId}/reservations")
@@ -110,15 +96,14 @@ public class HostController {
     @PostMapping("{hostId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public Review addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
-        Host host = hostService.findHost(hostId);
-        return hostService.addReview(host, reviewDto);
+    public ReviewDto addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
+        return hostService.addReview(hostId, reviewDto);
     }
 
     @GetMapping("{hostId}/reviews")
-    @Operation(summary = "Get host reviews")
-    public Collection<Review> getHostReviews(@PathVariable Long hostId) {
-        return reviewService.getHostReviews(hostId);
+    @Operation(summary = "Get host reviews that are not declined")
+    public Collection<ReviewDto> getHostReviews(@PathVariable Long hostId) {
+        return hostService.getHostReviews(hostId);
     }
 
     @DeleteMapping("accommodations/{accommodationId}")

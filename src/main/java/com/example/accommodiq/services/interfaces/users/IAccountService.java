@@ -25,4 +25,6 @@ public interface IAccountService extends UserDetailsService {
     void changeStatus(Long id, AccountStatus accountStatus);
 
     void changePassword(Account account, UpdatePasswordDto passwordDto);
+
+    AccountDetailsDto getAccountDetails(Long accountId);
 }

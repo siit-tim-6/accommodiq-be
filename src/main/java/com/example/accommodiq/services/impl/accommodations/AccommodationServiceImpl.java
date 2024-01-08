@@ -1,9 +1,6 @@
 package com.example.accommodiq.services.impl.accommodations;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Availability;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.PricingType;
@@ -232,7 +229,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return new Accommodation(1L,
                 "Cozy Cottage",
                 "A charming place to relax",
-                "Green Valley",
+                new Location("Green Valley", 22, 22),
                 null,
                 2,
                 4,
@@ -265,6 +262,10 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
+    public Collection<Accommodation> findAccommodationsByHostId(Long hostId) {
+        return accommodationRepository.findByHostId(hostId);
+    }
+
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
         return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
     }
