@@ -28,4 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query(value = "SELECT * FROM review WHERE guest_id = :guestId AND id IN (SELECT reviews_id FROM host_reviews WHERE host_id = :hostId)", nativeQuery = true)
     Set<Review> findReviewsByGuestIdAndHostId(@Param("guestId") Long guestId, @Param("hostId") Long hostId);
+
+    @Query(value = "SELECT * FROM review WHERE guest_id = :guestId AND id IN (SELECT reviews_id FROM accommodation_reviews WHERE accommodation_id = :accommodationId)", nativeQuery = true)
+    Set<Review> findReviewsByGuestIdAndAccommodationId(@Param("guestId") Long guestId,@Param("accommodationId") Long accommodationId);
 }

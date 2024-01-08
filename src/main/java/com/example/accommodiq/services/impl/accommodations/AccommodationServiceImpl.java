@@ -5,6 +5,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
@@ -36,13 +37,15 @@ public class AccommodationServiceImpl implements IAccommodationService {
     ReservationRepository reservationRepository;
     IGuestService guestService;
     IAccountService accountService;
+    ReviewRepository reviewRepository;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService, ReviewRepository reviewRepository) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
         this.guestService = guestService;
         this.accountService = accountService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -310,12 +313,21 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         // Check if guest has stayed in this accommodation or the 7-day period post-reservation has expired
         Collection<Reservation> reservations = reservationRepository
-                .findPastReservationsByGuestAndAccommodationExcludingStatuses(
+                .findByUserIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
                         guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), sevenDaysAgo, currentTime);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
+        }
+
+        // Check if guest has already commented and rated this accommodation
+        Set<Review> reviewsForAccommodationByGuest = reviewRepository.findReviewsByGuestIdAndAccommodationId(guestId, accommodationId);
+        Collection<Reservation> reservationsForAccommodationByGuest = reservationRepository.findByUserIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), currentTime);
+
+        if(reviewsForAccommodationByGuest.size() >= reservationsForAccommodationByGuest.size()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Guest cannot comment and rate this accommodation, as they have already left reviews for all their reservations.");
         }
     }
 

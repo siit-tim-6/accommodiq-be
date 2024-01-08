@@ -42,5 +42,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("sevenDaysAgo") Long sevenDaysAgo,
             @Param("currentTimestamp") Long currentTimestamp);
 
+    Collection<Reservation> findByUserIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
+            Long userId,
+            Long accommodationId,
+            Collection<ReservationStatus> excludedStatuses,
+            Long endDateAfter,
+            Long endDateBefore);
+
     Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long userId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
+
+    Collection<Reservation> findByUserIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(Long guestId, Long accommodationId, List<ReservationStatus> list, long currentTime);
 }

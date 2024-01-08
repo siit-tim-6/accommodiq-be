@@ -1,24 +1,18 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Availability;
-import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
-import com.example.accommodiq.services.interfaces.users.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -27,12 +21,9 @@ import java.util.Set;
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 
-    final private IAccountService accountService;
-
     @Autowired
-    public AccommodationController(IAccommodationService accommodationService, IAccountService accountService) {
+    public AccommodationController(IAccommodationService accommodationService) {
         this.accommodationService = accommodationService;
-        this.accountService = accountService;
     }
 
     @GetMapping()
