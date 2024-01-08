@@ -6,10 +6,13 @@ import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
+import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
+import com.example.accommodiq.specifications.ReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +29,14 @@ public class GuestServiceImpl implements IGuestService {
     final private GuestRepository guestRepository;
     final private AccommodationRepository accommodationRepository;
     final private IAccountService accountService;
+    final private ReservationRepository reservationRepository;
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService) {
+    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService, ReservationRepository reservationRepository) {
         this.guestRepository = guestRepository;
         this.accommodationRepository = accommodationRepository;
         this.accountService = accountService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -56,12 +61,15 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<ReservationListDto> getReservations(Long guestId) { // mocked
-        if (guestId == 4L) {
-            throw ErrorUtils.generateNotFound("guestNotFound");
-        }
+    public Collection<ReservationCardDto> getReservations() {
+        Long guestId = getGuestId();
+        return reservationRepository.findByGuestId(guestId).stream().map(ReservationCardDto::new).toList();
+    }
 
-        return new ArrayList<>();
+    @Override
+    public Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+        Long guestId = getGuestId();
+        return reservationRepository.findAll(ReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
 
     @Transactional

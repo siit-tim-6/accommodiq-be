@@ -11,7 +11,6 @@ import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
-import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -132,8 +131,8 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> findReservationsByUserId(Long userId) {
-        Collection<Reservation> found = allReservations.findByUserId(userId);
+    public Collection<Reservation> findReservationsByGuestId(Long guestId) {
+        Collection<Reservation> found = allReservations.findByGuestId(guestId);
         if (found.isEmpty()) {
             String value = bundle.getString("reservationNotFound");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
@@ -163,19 +162,19 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public void deleteByUserId(Long userId) {
-        allReservations.deleteByUserId(userId);
+    public void deleteByGuestId(Long guestId) {
+        allReservations.deleteByGuestId(guestId);
         allReservations.flush();
     }
 
     @Override
-    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId) {
-        return allReservations.findByStatusAndUserIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long guestId) {
+        return allReservations.findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
     }
 
     @Override
-    public List<Reservation> findHostReservationsNotEndedYet(Long userId) {
-        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, userId, Instant.now().toEpochMilli());
+    public List<Reservation> findHostReservationsNotEndedYet(Long guestId) {
+        return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
@@ -184,7 +183,7 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setStartDate(reservationDto.getStartDate());
         reservation.setEndDate(reservationDto.getEndDate());
         reservation.setNumberOfGuests(reservationDto.getNumberOfGuests());
-        reservation.setUser(null);
+        reservation.setGuest(null);
         reservation.setAccommodation(null);
         return reservation;
     }
@@ -200,7 +199,7 @@ public class ReservationServiceImpl implements IReservationService {
         long currentTime = System.currentTimeMillis();
 
         Collection<Reservation> reservations = allReservations
-                .findByUserIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
+                .findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");

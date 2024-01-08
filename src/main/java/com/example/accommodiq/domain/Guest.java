@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 public class Guest extends User {
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "guest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Reservation> reservations;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

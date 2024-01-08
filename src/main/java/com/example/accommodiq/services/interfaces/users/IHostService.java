@@ -1,7 +1,6 @@
 package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
 
 import java.util.ArrayList;

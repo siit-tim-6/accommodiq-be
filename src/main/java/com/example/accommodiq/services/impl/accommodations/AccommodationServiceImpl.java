@@ -7,7 +7,6 @@ import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
-import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
@@ -241,7 +240,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Review review = new Review(reviewDto, guest, ReviewStatus.PENDING);
         accommodation.getReviews().add(review);
         update(accommodation);
-        return new ReviewDto(review,guestId);
+        return new ReviewDto(review, guestId);
     }
 
     @Override
@@ -308,13 +307,13 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
-        long currentTime = System.currentTimeMillis()/1000; //TODO: change everything to milliseconds in database
+        long currentTime = System.currentTimeMillis() / 1000; //TODO: change everything to milliseconds in database
         long sevenDaysAgo = currentTime - (7 * 24 * 60 * 60);
 
         // Check if guest has stayed in this accommodation or the 7-day period post-reservation has expired
         Collection<Reservation> reservations = reservationRepository
-                .findByUserIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
-                        guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), sevenDaysAgo, currentTime);
+                .findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
+                        guestId, accommodationId, Arrays.asList(ReservationStatus.PENDING, ReservationStatus.CANCELLED), sevenDaysAgo, currentTime);
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
@@ -323,9 +322,9 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         // Check if guest has already commented and rated this accommodation
         Set<Review> reviewsForAccommodationByGuest = reviewRepository.findReviewsByGuestIdAndAccommodationId(guestId, accommodationId);
-        Collection<Reservation> reservationsForAccommodationByGuest = reservationRepository.findByUserIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(guestId, accommodationId, Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CANCELLED), currentTime);
+        Collection<Reservation> reservationsForAccommodationByGuest = reservationRepository.findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(guestId, accommodationId, Arrays.asList(ReservationStatus.PENDING, ReservationStatus.CANCELLED), currentTime);
 
-        if(reviewsForAccommodationByGuest.size() >= reservationsForAccommodationByGuest.size()) {
+        if (reviewsForAccommodationByGuest.size() >= reservationsForAccommodationByGuest.size()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Guest cannot comment and rate this accommodation, as they have already left reviews for all their reservations.");
         }

@@ -1,5 +1,5 @@
 package com.example.accommodiq.enums;
 
 public enum ReservationStatus {
-    CANCELLED, ACCEPTED, DECLINED, CREATED
+    CANCELLED, ACCEPTED, DECLINED, PENDING
 }
