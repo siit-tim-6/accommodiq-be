@@ -1,6 +1,5 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
@@ -93,7 +92,7 @@ public class AccommodationController {
     @PostMapping("{accommodationId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public Accommodation addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }
 

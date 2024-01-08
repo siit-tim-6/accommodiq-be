@@ -5,9 +5,11 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
+import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.repositories.AccommodationRepository;
@@ -27,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +39,9 @@ public class HostServiceImpl implements IHostService {
 
     final private HostRepository hostRepository;
 
-    final private IGuestService guestService;
-
     final private IReservationService reservationService;
+
+    final private IGuestService guestService;
 
     final AccommodationRepository allAccommodations;
 
@@ -179,8 +178,8 @@ public class HostServiceImpl implements IHostService {
         reservationService.validateGuestReviewEligibility(guestId, hostId); // this will throw ResponseStatusException if guest cannot comment and rate host
         Host host = findHost(hostId);
         Guest guest = guestService.findGuest(guestId);
-        Review review = new Review(reviewDto, guest);
-        Notification n = new Notification("You have a new rate!", NotificationType.HOST_RATING, host);
+        Review review = new Review(reviewDto, guest, ReviewStatus.ACCEPTED);
+        Notification n = new Notification("You've got a new rating!", NotificationType.HOST_RATING, host);
         notificationService.createAndSendNotification(n);
         host.getReviews().add(review);
         update(host);

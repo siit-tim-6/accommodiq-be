@@ -23,12 +23,10 @@ import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 public class ReviewServiceImpl implements IReviewService {
 
     final ReviewRepository allReviews;
-    final IAccommodationService accommodationService;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepository allReviews, IAccommodationService accommodationService) {
+    public ReviewServiceImpl(ReviewRepository allReviews) {
         this.allReviews = allReviews;
-        this.accommodationService = accommodationService;
     }
 
     @Override
@@ -91,11 +89,6 @@ public class ReviewServiceImpl implements IReviewService {
         allReviews.save(review);
         allReviews.flush();
         return new MessageDto("Review status updated successfully");
-    }
-
-    @Override
-    public Collection<Review> getAccommodationReviews(Long accommodationId) {
-        return accommodationService.getAccommodationReviews(accommodationId);
     }
 
     @Override
