@@ -1,4 +1,4 @@
-package com.example.accommodiq.sokets;
+package com.example.accommodiq.sockets;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -135,7 +134,7 @@ public class UserController {
     @Operation(summary = "Send new notification")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Notification.class))})})
     public Notification createNotification(@Parameter(description = "Id of user to send notification") @PathVariable Long userId, @RequestBody Notification notification) {
-        return null;
+        return notification;
     }
 
     @GetMapping("/notifications")
@@ -143,10 +142,8 @@ public class UserController {
     @Operation(summary = "Get all notifications for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationDto.class, type = "array"))})})
     public Collection<NotificationDto> getUsersNotifications() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
-        return notificationService.getAllByUserId(user.getId()).stream().map(NotificationDto::new).toList();
+        User user = getLoggedUser();
+        return notificationService.getAllByUserId(user.getId());
     }
 
     @GetMapping("/notification-settings")
@@ -154,10 +151,8 @@ public class UserController {
     @Operation(summary = "Get all notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
     public Collection<NotificationSettingDto> getUsersNotificationSettings() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
-        return notificationSettingService.getUserNotificationSettings(user.getId()).stream().map(NotificationSettingDto::new).toList();
+        User user = getLoggedUser();
+        return notificationSettingService.getUserNotificationSettings(user.getId());
     }
 
     @PutMapping("/notification-settings")
@@ -165,9 +160,7 @@ public class UserController {
     @Operation(summary = "Update notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
     public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
+        User user = getLoggedUser();
         return notificationSettingService.update(user.getId(), notificationSettings);
     }
 
@@ -175,9 +168,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Mark all notifications as seen")
     public void markAllNotificationsAsSeen() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
+        User user = getLoggedUser();
         notificationService.markAllAsSeen(user.getId());
     }
 
@@ -185,9 +176,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Mark notification as seen")
     public void markNotificationAsSeen(@PathVariable Long notificationId) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
+        User user = getLoggedUser();
         notificationService.markAsSeen(user.getId(), notificationId);
     }
 
@@ -205,4 +194,12 @@ public class UserController {
     public AccountDetailsDto getAccountDetails(@PathVariable Long userId) {
         return accountService.getAccountDetails(userId);
     }
+
+
+    private User getLoggedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = (Account) accountService.loadUserByUsername(email);
+        return account.getUser();
+    }
+
 }

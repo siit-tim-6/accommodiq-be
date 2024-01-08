@@ -1,7 +1,8 @@
 package com.example.accommodiq.services.impl.notifications;
 
 import com.example.accommodiq.domain.Notification;
-import com.example.accommodiq.domain.NotificationSetting;
+import com.example.accommodiq.dtos.NotificationDto;
+import com.example.accommodiq.dtos.NotificationSettingDto;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
@@ -55,19 +56,18 @@ public class NotificationServiceImpl implements INotificationService {
     }
 
     @Override
-    public Collection<Notification> getAllByUserId(Long userId) {
+    public Collection<NotificationDto> getAllByUserId(Long userId) {
         List<NotificationType> notificationTypes = notificationSettingService.getUserNotificationSettings(userId).stream()
-                .filter(NotificationSetting::isOn).map(NotificationSetting::getType).toList();
-        return allNotifications.findAllByUserIdAndTypeIsInOrderByTimeDesc(userId, notificationTypes);
+                .filter(NotificationSettingDto::isOn).map(NotificationSettingDto::getType).toList();
+        return allNotifications.findAllByUserIdAndTypeIsInOrderByTimeDesc(userId, notificationTypes).stream().map(NotificationDto::new).toList();
     }
 
     @Override
     public void createAndSendNotification(Notification notification) {
         allNotifications.save(notification);
         allNotifications.flush();
-        long id = notification.getUser().getId();
-        notification.setUser(null);
-        messagingTemplate.convertAndSend("/socket-publisher/" + id, notification);
+        NotificationDto notificationDto = new NotificationDto(notification);
+        messagingTemplate.convertAndSend("/socket-publisher/" + notificationDto.getId(), notificationDto);
     }
 
     @Override

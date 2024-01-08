@@ -41,13 +41,13 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
     }
 
     @Override
-    public List<NotificationSetting> getUserNotificationSettings(Long userId) {
-        return allNotificationSettings.findAllByUserId(userId);
+    public List<NotificationSettingDto> getUserNotificationSettings(Long userId) {
+        return allNotificationSettings.findAllByUserId(userId).stream().map(NotificationSettingDto::new).toList();
     }
 
     @Override
     public List<NotificationSettingDto> update(Long userId, List<NotificationSettingDto> notificationSettingsToUpdate) {
-        List<NotificationSetting> userNotificationSettings = getUserNotificationSettings(userId);
+        List<NotificationSetting> userNotificationSettings = allNotificationSettings.findAllByUserId(userId);
         for (NotificationSettingDto settingToUpdate : notificationSettingsToUpdate) {
             NotificationSetting setting = findNotificationSettingByType(userNotificationSettings, settingToUpdate.getType());
 
