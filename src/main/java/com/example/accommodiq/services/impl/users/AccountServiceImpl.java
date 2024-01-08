@@ -143,7 +143,7 @@ public class AccountServiceImpl implements IAccountService {
                 throw ErrorUtils.generateBadRequest("guestHasAcceptedReservations");
             }
 
-            reservationService.deleteByUserId(accountId);
+            reservationService.deleteByGuestId(accountId);
         }
 
         reportService.deleteByReportingUserId(accountId);
