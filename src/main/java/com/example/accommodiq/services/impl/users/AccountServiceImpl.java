@@ -82,6 +82,9 @@ public class AccountServiceImpl implements IAccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
         }
 
+        if (registerDto.getRole() == AccountRole.ADMIN)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot register as admin");
+
         Account account = new Account(registerDto);
         try {
             User user = account.getUser();
@@ -96,8 +99,8 @@ public class AccountServiceImpl implements IAccountService {
         } catch (ConstraintViolationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account cannot be inserted");
         }
+        notificationSettingService.setNotificationSettingsForUser(account.getUser(), account.getRole());
         emailService.sendVerificationEmail(account.getId(), account.getEmail());
-        notificationSettingService.setNotificationSettingsForUser(account.getUser().getId());
     }
 
     @Override

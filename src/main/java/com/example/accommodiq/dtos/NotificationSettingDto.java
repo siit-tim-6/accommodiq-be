@@ -4,26 +4,16 @@ import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.enums.NotificationType;
 
 public class NotificationSettingDto {
-    private Long id;
     private NotificationType type;
-    private boolean isOn;
+    private boolean on;
 
     public NotificationSettingDto() {
         super();
     }
 
     public NotificationSettingDto(NotificationSetting notificationSetting) {
-        this.id = notificationSetting.getId();
         this.type = notificationSetting.getType();
-        this.isOn = notificationSetting.isOn();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.on = notificationSetting.isOn();
     }
 
     public NotificationType getType() {
@@ -35,10 +25,10 @@ public class NotificationSettingDto {
     }
 
     public boolean isOn() {
-        return isOn;
+        return on;
     }
 
     public void setOn(boolean on) {
-        isOn = on;
+        this.on = on;
     }
 }

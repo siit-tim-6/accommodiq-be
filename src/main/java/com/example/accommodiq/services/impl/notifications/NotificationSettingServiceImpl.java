@@ -2,87 +2,69 @@ package com.example.accommodiq.services.impl.notifications;
 
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
+import com.example.accommodiq.dtos.NotificationSettingDto;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.repositories.NotificationSettingRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
-import com.example.accommodiq.services.interfaces.users.IUserService;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Optional;
-
-import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
+import java.util.List;
 
 @Service
 public class NotificationSettingServiceImpl implements INotificationSettingService {
 
     final NotificationSettingRepository allNotificationSettings;
 
-    final IUserService userService;
-
     @Autowired
-    public NotificationSettingServiceImpl(NotificationSettingRepository allNotificationSettings, IUserService userService) {
+    public NotificationSettingServiceImpl(NotificationSettingRepository allNotificationSettings) {
         this.allNotificationSettings = allNotificationSettings;
-        this.userService = userService;
-    }
-
-
-    @Override
-    public Collection<NotificationSetting> getAll() {
-        return allNotificationSettings.findAll();
     }
 
     @Override
-    public NotificationSetting findNotificationSetting(Long notificationSettingId) {
-        Optional<NotificationSetting> found = allNotificationSettings.findById(notificationSettingId);
-        if (found.isEmpty()) {
-            throw generateNotFound("reviewNotFound");
+    public void setNotificationSettingsForUser(User user, AccountRole role) {
+        if (role == AccountRole.ADMIN) {
+            return;
         }
-        return found.get();
-    }
-
-    @Override
-    public NotificationSetting insert(Long userId, NotificationSetting notificationSetting) {
-        User user = userService.findUser(userId);
-        user.getNotificationSettings().add(notificationSetting);
-        userService.update(user);
-        return notificationSetting;
-    }
-
-    @Override
-    public NotificationSetting update(NotificationSetting notificationSetting) {
-        try {
-            findNotificationSetting(notificationSetting.getId());
-            allNotificationSettings.save(notificationSetting);
-            allNotificationSettings.flush();
-            return notificationSetting;
-        } catch (ConstraintViolationException ex) {
-            throw generateNotFound("reviewUpdateFailed");
+        if (role == AccountRole.GUEST) {
+            NotificationSetting setting = new NotificationSetting(null, NotificationType.HOST_REPLY_TO_REQUEST, true, user);
+            allNotificationSettings.save(setting);
+        }
+        if (role == AccountRole.HOST) {
+            for (NotificationType type : NotificationType.values()) {
+                if (type == NotificationType.HOST_REPLY_TO_REQUEST) continue;
+                NotificationSetting setting = new NotificationSetting(null, type, true, user);
+                allNotificationSettings.save(setting);
+            }
         }
     }
 
     @Override
-    public NotificationSetting delete(Long reviewId) {
-        NotificationSetting notificationSetting = findNotificationSetting(reviewId);
-        allNotificationSettings.delete(notificationSetting);
-        allNotificationSettings.flush();
-        return notificationSetting;
+    public List<NotificationSettingDto> getUserNotificationSettings(Long userId) {
+        return allNotificationSettings.findAllByUserId(userId).stream().map(NotificationSettingDto::new).toList();
     }
 
     @Override
-    public void deleteAll() {
-        allNotificationSettings.deleteAll();
-        allNotificationSettings.flush();
-    }
+    public List<NotificationSettingDto> update(Long userId, List<NotificationSettingDto> notificationSettingsToUpdate) {
+        List<NotificationSetting> userNotificationSettings = allNotificationSettings.findAllByUserId(userId);
+        for (NotificationSettingDto settingToUpdate : notificationSettingsToUpdate) {
+            NotificationSetting setting = findNotificationSettingByType(userNotificationSettings, settingToUpdate.getType());
 
-    @Override
-    public void setNotificationSettingsForUser(Long userId) {
-        User user = userService.findUser(userId);
-        for (NotificationType type : NotificationType.values()) {
-            user.getNotificationSettings().add(new NotificationSetting((long) -1, type, true));
+            if (setting == null) continue;
+
+            setting.setOn(settingToUpdate.isOn());
+            allNotificationSettings.save(setting);
         }
-        userService.update(user);
+        return userNotificationSettings.stream().map(NotificationSettingDto::new).toList();
+    }
+
+    private NotificationSetting findNotificationSettingByType(List<NotificationSetting> notificationSettings, NotificationType type) {
+        for (NotificationSetting setting : notificationSettings) {
+            if (setting.getType().equals(type)) {
+                return setting;
+            }
+        }
+        return null;
     }
 }

@@ -1,21 +1,15 @@
 package com.example.accommodiq.services.interfaces.notifications;
 
-import com.example.accommodiq.domain.NotificationSetting;
+import com.example.accommodiq.domain.User;
+import com.example.accommodiq.dtos.NotificationSettingDto;
+import com.example.accommodiq.enums.AccountRole;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface INotificationSettingService {
-    Collection<NotificationSetting> getAll();
+    void setNotificationSettingsForUser(User user, AccountRole role);
 
-    NotificationSetting findNotificationSetting(Long notificationSettingId);
+    List<NotificationSettingDto> getUserNotificationSettings(Long userId);
 
-    NotificationSetting insert(Long userId, NotificationSetting review);
-
-    NotificationSetting update(NotificationSetting review);
-
-    NotificationSetting delete(Long reviewId);
-
-    void deleteAll();
-
-    void setNotificationSettingsForUser(Long userId);
+    List<NotificationSettingDto> update(Long userId, List<NotificationSettingDto> notificationSettings);
 }
