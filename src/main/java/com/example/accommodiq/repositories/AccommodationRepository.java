@@ -1,6 +1,7 @@
 package com.example.accommodiq.repositories;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.AccommodationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -15,4 +16,5 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     Collection<Accommodation> findAllByStatus(AccommodationStatus accommodationStatus);
     @Transactional
     void deleteAllByHostId(Long accountId);
+    Collection<Accommodation> findByReviews(Collection<Review> reviews);
 }

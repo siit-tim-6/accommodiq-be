@@ -121,4 +121,11 @@ public class AccommodationController {
     public AccommodationModifyDto getAdvancedDetails(@Parameter(description = "Id of accommodation to get advanced details") @PathVariable Long accommodationId) {
         return accommodationService.getAdvancedDetails(accommodationId);
     }
+
+    @GetMapping("/reviews/pending")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all pending reviews")
+    public Collection<PendingReviewDto> getPendingReviews() {
+        return accommodationService.getPendingReviews();
+    }
 }

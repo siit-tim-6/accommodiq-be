@@ -287,6 +287,19 @@ public class AccommodationServiceImpl implements IAccommodationService {
         return new AccommodationCardDto(accommodation);
     }
 
+    @Override
+    public Collection<PendingReviewDto> getPendingReviews() {
+        Collection<Review> reviews = reviewRepository.findByStatus(ReviewStatus.PENDING);
+        Collection<Accommodation> accommodationsWithPendingReviews = accommodationRepository.findByReviews(reviews);
+        Collection<PendingReviewDto> pendingReviews = new ArrayList<>();
+        for (Review review : reviews) {
+            Accommodation accommodation = accommodationsWithPendingReviews.stream().filter(a -> a.getReviews().contains(review)).findFirst().orElseThrow();
+            pendingReviews.add(new PendingReviewDto(review, accommodation));
+        }
+
+        return pendingReviews;
+    }
+
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {
 
         Long count = reservationRepository.countOverlappingReservations(
