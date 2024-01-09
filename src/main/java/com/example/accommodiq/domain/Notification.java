@@ -17,8 +17,8 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     private Long time;
+
     public Notification() {
-        
     }
 
     public Notification(String text, NotificationType type, User user) {
