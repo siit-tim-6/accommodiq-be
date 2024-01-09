@@ -26,6 +26,7 @@ public class ReportModificationDto {
     }
 
     public ReportModificationDto() {
+        super();
     }
 
     public Long getId() {

@@ -16,6 +16,7 @@ public class ReportDto {
     }
 
     public ReportDto() {
+        super();
     }
 
     public String getReason() {

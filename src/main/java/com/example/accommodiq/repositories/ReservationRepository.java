@@ -3,6 +3,7 @@ package com.example.accommodiq.repositories;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,14 +13,20 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-     Collection<Reservation> findByUserId(Long userId);
-     Collection<Reservation> findByAccommodationId(Long accommodationId);
-     @Transactional
-     void deleteByAccommodationId(Long accommodationId);
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
+    Collection<Reservation> findByGuestId(Long guestId);
 
-     @Transactional
-     void deleteByUserId(Long userId);
+    Collection<Reservation> findByAccommodationId(Long accommodationId);
+
+    @Transactional
+    void deleteByAccommodationId(Long accommodationId);
+
+    @Transactional
+    void deleteByGuestId(Long guestId);
+
+    List<Reservation> findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long guestId, Long endDate);
+
+    List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId " +
             "AND r.startDate < :availabilityEnd AND r.endDate > :availabilityStart")
@@ -27,19 +34,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
 
-    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id IN :accommodationIds AND r.status <> :status AND r.endDate < :currentTime")
-    Collection<Reservation> findByUserIdAndAccommodationIdInAndStatusNotAndEndDateBefore(
-            @Param("userId") Long userId,
-            @Param("accommodationIds") List<Long> accommodationIds,
-            @Param("status") ReservationStatus status,
-            @Param("currentTime") Long currentTime
-    );
+    Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
+            Long guestId,
+            Long accommodationId,
+            Collection<ReservationStatus> excludedStatuses,
+            Long endDateAfter,
+            Long endDateBefore);
 
-    @Query("SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.accommodation.id = :accommodationId AND r.status <> :status AND r.endDate > :sevenDaysAgo")
-    Collection<Reservation> findReservationsByGuestAndAccommodationWithStatusAfterDate(
-            @Param("userId") Long userId,
-            @Param("accommodationId") Long accommodationId,
-            @Param("status") ReservationStatus status,
-            @Param("sevenDaysAgo") Long sevenDaysAgo
-    );
+    Collection<Reservation> findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long guestId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
+
+    Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(Long guestId, Long accommodationId, List<ReservationStatus> list, long currentTime);
 }

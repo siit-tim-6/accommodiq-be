@@ -19,6 +19,7 @@ public class UserLoginDto {
     }
 
     public UserLoginDto() {
+        super();
     }
 
     public User getUser() {

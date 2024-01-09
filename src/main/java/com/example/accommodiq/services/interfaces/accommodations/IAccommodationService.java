@@ -20,7 +20,7 @@ public interface IAccommodationService {
 
     AccommodationCardWithStatusDto changeAccommodationStatus(Long accommodationId, AccommodationStatusDto statusDto);
 
-    AccommodationDetailsDto findById(Long accommodationId, Long loggedInId);
+    AccommodationDetailsDto findById(Long accommodationId);
 
     Accommodation findAccommodation(Long accommodationId);
 
@@ -36,7 +36,7 @@ public interface IAccommodationService {
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
-    Review addReview(Long accommodationId,Long guestId, ReviewRequestDto reviewDto);
+    ReviewDto addReview(Long accommodationId, ReviewRequestDto reviewDto);
 
     Collection<AccommodationCardWithStatusDto> getPendingAccommodations();
 
@@ -51,6 +51,4 @@ public interface IAccommodationService {
     Collection<Accommodation> findAccommodationsByHostId(Long hostId);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
-
-    void deleteAllByHostId(Long accountId);
 }

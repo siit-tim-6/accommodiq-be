@@ -8,6 +8,7 @@ import com.example.accommodiq.dtos.ReservationStatusDto;
 
 
 import java.util.Collection;
+import java.util.List;
 
 public interface IReservationService {
     Collection<Reservation> getAll();
@@ -26,13 +27,19 @@ public interface IReservationService {
 
     Collection<Reservation> findReservationsByAccommodationId(Long accommodationId);
 
-    Collection<Reservation> findReservationsByUserId(Long userId);
+    Collection<Reservation> findReservationsByGuestId(Long userId);
 
     Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
+    void validateGuestReviewEligibility(Long guestId, Long hostId);
+
     void deleteByAccommodationId(Long accommodationId);
 
-    void deleteByUserId(Long userId);
-
     boolean hasPastReservation(Long ownerId, Long guestId);
+
+    void deleteByGuestId(Long userId);
+
+    List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId);
+
+    List<Reservation> findHostReservationsNotEndedYet(Long userId);
 }

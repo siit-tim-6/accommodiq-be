@@ -1,14 +1,12 @@
 package com.example.accommodiq.services.impl.users;
 
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Host;
-import com.example.accommodiq.domain.User;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.AccountDetailsDto;
 import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
+import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
@@ -17,6 +15,7 @@ import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
+import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -41,7 +41,7 @@ public class AccountServiceImpl implements IAccountService {
 
     final IReservationService reservationService;
 
-    final IAccommodationService accommodationService;
+    final AccommodationRepository accommodationRepository;
     final IReportService reportService;
 
     final IReviewService reviewService;
@@ -49,12 +49,12 @@ public class AccountServiceImpl implements IAccountService {
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, IAccommodationService accommodationService, IReportService reportService, IReviewService reviewService) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, IReportService reportService, IReviewService reviewService) {
         this.allAccounts = allAccounts;
         this.emailService = emailService;
         this.notificationSettingService = notificationSettingService;
         this.reservationService = reservationService;
-        this.accommodationService = accommodationService;
+        this.accommodationRepository = accommodationRepository;
         this.reportService = reportService;
         this.reviewService = reviewService;
     }
@@ -123,16 +123,28 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Account delete(Long accountId) {
         Account found = findAccount(accountId); // this will throw AccountNotFoundException if Account is not found
-        reservationService.deleteByUserId(accountId);
         if (found.getRole() == AccountRole.HOST) {
-            accommodationService.deleteAllByHostId(accountId);
+            List<Reservation> reservations = reservationService.findHostReservationsNotEndedYet(accountId);
+            if (!reservations.isEmpty()) {
+                throw ErrorUtils.generateBadRequest("hostHasAcceptedReservations");
+            }
+            accommodationRepository.deleteAllByHostId(accountId);
+            accommodationRepository.flush();
         }
-        reportService.deleteByReportingUserId(accountId);
-        reportService.deleteByReportedUserId(accountId);
 
         if (found.getRole() == AccountRole.GUEST) {
             reviewService.deleteByGuestId(accountId);
+
+            List<Reservation> reservations = reservationService.findGuestAcceptedReservationsNotEndedYet(accountId);
+            if (!reservations.isEmpty()) {
+                throw ErrorUtils.generateBadRequest("guestHasAcceptedReservations");
+            }
+
+            reservationService.deleteByGuestId(accountId);
         }
+
+        reportService.deleteByReportingUserId(accountId);
+        reportService.deleteByReportedUserId(accountId);
 
         allAccounts.delete(found);
         allAccounts.flush();
@@ -172,5 +184,11 @@ public class AccountServiceImpl implements IAccountService {
         } else {
             return user;
         }
+    }
+
+    @Override
+    public AccountDetailsDto getAccountDetails(Long accountId) {
+        Account account = findAccount(accountId);
+        return new AccountDetailsDto(account);
     }
 }
