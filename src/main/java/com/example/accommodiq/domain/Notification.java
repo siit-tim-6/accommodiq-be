@@ -18,6 +18,7 @@ public class Notification {
     private User user;
     private Long time;
     public Notification() {
+        
     }
 
     public Notification(String text, NotificationType type, User user) {
