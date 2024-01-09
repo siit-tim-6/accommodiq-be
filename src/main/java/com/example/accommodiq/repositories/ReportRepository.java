@@ -12,5 +12,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Transactional
     void deleteByReportingUserId(Long id);
 
-    Collection<Report> findAllByReportedUserIdAndReportingUserId(Long reportedUserId, Long id);
+    Collection<Report> findAllByReportedUserIdAndReportingUserId(Long reportedUserId, Long reportingUserId);
 }

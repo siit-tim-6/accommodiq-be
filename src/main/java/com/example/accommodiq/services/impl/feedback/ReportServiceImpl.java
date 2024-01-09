@@ -149,17 +149,17 @@ public class ReportServiceImpl implements IReportService {
         allReports.flush();
     }
 
-    private void validateReportInput(Account reportedUser, Account reportingUser, ReportDto reportDto) {
-        if (Objects.equals(reportedUser.getId(), reportingUser.getId())) {
+    private void validateReportInput(Account reportedAccount, Account reportingAccount, ReportDto reportDto) {
+        if (Objects.equals(reportedAccount.getId(), reportingAccount.getId())) {
             throw generateBadRequest("reportYourself");
         }
-        if (reportedUser.getId() == null || reportingUser.getId() == null) {
+        if (reportedAccount.getId() == null || reportingAccount.getId() == null) {
             throw generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
             throw generateBadRequest("reportReasonNull");
         }
-        if (reportedUser.getRole() == reportingUser.getRole()) {
+        if (reportedAccount.getRole() == reportingAccount.getRole()) {
             throw generateBadRequest("reportSameRole");
         }
     }
