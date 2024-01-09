@@ -29,7 +29,7 @@ public class Report {
 
     public Report(User reportedUser, User reportingUser, ReportDto reportDto) {
         this.reason = reportDto.getReason();
-        this.timestamp = Instant.now().getEpochSecond();
+        this.timestamp = Instant.now().toEpochMilli();
         this.reportingUser = reportingUser;
         this.reportedUser = reportedUser;
     }
