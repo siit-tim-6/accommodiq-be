@@ -290,7 +290,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Collection<PendingReviewDto> getPendingReviews() {
         Collection<Review> reviews = reviewRepository.findByStatus(ReviewStatus.PENDING);
-        Collection<Accommodation> accommodationsWithPendingReviews = accommodationRepository.findByReviews(reviews);
+        Collection<Accommodation> accommodationsWithPendingReviews = accommodationRepository.findAccommodationsContainingReview(reviews.stream().map(Review::getId).toList());
         Collection<PendingReviewDto> pendingReviews = new ArrayList<>();
         for (Review review : reviews) {
             Accommodation accommodation = accommodationsWithPendingReviews.stream().filter(a -> a.getReviews().contains(review)).findFirst().orElseThrow();
