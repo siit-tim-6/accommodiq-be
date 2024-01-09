@@ -2,6 +2,7 @@ package com.example.accommodiq.services.impl.feedback;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReportDto;
@@ -119,11 +120,15 @@ public class ReportServiceImpl implements IReportService {
 
         validateReportInput(reportedUserAccount,reportingUserAccount, reportDto);
 
-        if (!hasPastReservationBetweenUsers(reportedUserAccount, reportingUserAccount)) {
+        Collection<Reservation> pastReservations = getPastReservationBetweenUsers(reportedUserAccount, reportingUserAccount);
+        if (pastReservations.isEmpty()) {
             throw new IllegalStateException("Cannot report user without a past reservation.");
         }
 
-
+        Collection<Report> reports = allReports.findAllByReportedUserIdAndReportingUserId(reportedUserId, reportingUserAccount.getId());
+        if(reports.size() >= pastReservations.size()) {
+            throw new IllegalStateException("Cannot report user more than once per reservation.");
+        }
 
         User reportedUser = reportedUserAccount.getUser();
         User reportingUser = reportingUserAccount.getUser();
@@ -168,14 +173,11 @@ public class ReportServiceImpl implements IReportService {
         return report;
     }
 
-    private boolean hasPastReservationBetweenUsers(Account firstAccount, Account secondAccount) {
-        boolean hasReservation;
+    private Collection<Reservation> getPastReservationBetweenUsers(Account firstAccount, Account secondAccount) {
         if (firstAccount.getRole() == AccountRole.HOST) {
-            hasReservation = reservationService.hasPastReservation(firstAccount.getId(), secondAccount.getId());
-        } else {
-            hasReservation = reservationService.hasPastReservation(secondAccount.getId(), firstAccount.getId());
+            return reservationService.getPastReservations(firstAccount.getId(), secondAccount.getId());
         }
-        return hasReservation;
+        return reservationService.getPastReservations(secondAccount.getId(), firstAccount.getId());
     }
 
     private Account getLoggedInAccount() {

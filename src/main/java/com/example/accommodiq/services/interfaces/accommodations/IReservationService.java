@@ -35,7 +35,7 @@ public interface IReservationService {
 
     void deleteByAccommodationId(Long accommodationId);
 
-    boolean hasPastReservation(Long ownerId, Long guestId);
+    Collection<Reservation> getPastReservations(Long ownerId, Long guestId);
 
     void deleteByGuestId(Long userId);
 
