@@ -13,10 +13,14 @@ public class NotificationSetting {
 
     private boolean isOn;
 
-    public NotificationSetting(Long id, NotificationType type, boolean isOn) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    public NotificationSetting(Long id, NotificationType type, boolean isOn, User user) {
         this.id = id;
         this.type = type;
         this.isOn = isOn;
+        this.user = user;
     }
 
     public NotificationSetting() {

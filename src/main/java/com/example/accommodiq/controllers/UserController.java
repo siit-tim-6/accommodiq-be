@@ -2,12 +2,13 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Notification;
-import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
+import com.example.accommodiq.services.interfaces.users.ILoggedUserService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -35,14 +37,18 @@ public class UserController {
     final IUserService userService;
     final IReportService reportService;
     final PasswordEncoder passwordEncoder;
+    final INotificationSettingService notificationSettingService;
+    final ILoggedUserService loggedInUserService;
 
     @Autowired
-    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService, PasswordEncoder passwordEncoder) {
+    public UserController(IAccountService accountService, INotificationService notificationService, IUserService userService, IReportService reportService, PasswordEncoder passwordEncoder, INotificationSettingService notificationSettingService, ILoggedUserService loggedInUserService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
         this.userService = userService;
         this.reportService = reportService;
         this.passwordEncoder = passwordEncoder;
+        this.notificationSettingService = notificationSettingService;
+        this.loggedInUserService = loggedInUserService;
     }
 
     @GetMapping
@@ -131,7 +137,7 @@ public class UserController {
     @Operation(summary = "Send new notification")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Notification.class))})})
     public Notification createNotification(@Parameter(description = "Id of user to send notification") @PathVariable Long userId, @RequestBody Notification notification) {
-        return notificationService.insert(userId, notification);
+        return notification;
     }
 
     @GetMapping("/notifications")
@@ -139,10 +145,8 @@ public class UserController {
     @Operation(summary = "Get all notifications for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationDto.class, type = "array"))})})
     public Collection<NotificationDto> getUsersNotifications() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
-        return user.getNotifications().stream().map(NotificationDto::new).toList();
+        User user = loggedInUserService.getLoggedUser();
+        return notificationService.getAllByUserId(user.getId());
     }
 
     @GetMapping("/notification-settings")
@@ -150,19 +154,35 @@ public class UserController {
     @Operation(summary = "Get all notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
     public Collection<NotificationSettingDto> getUsersNotificationSettings() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = (Account) accountService.loadUserByUsername(email);
-        User user = account.getUser();
-        return user.getNotificationSettings().stream().map(NotificationSettingDto::new).toList();
+        User user = loggedInUserService.getLoggedUser();
+        return notificationSettingService.getUserNotificationSettings(user.getId());
     }
 
     @PutMapping("/notification-settings")
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Update notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
-    public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody Collection<NotificationSetting> notificationSettings) {
-        return notificationSettings.stream().map(NotificationSettingDto::new).toList(); // mocked
+    public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
+        User user = loggedInUserService.getLoggedUser();
+        return notificationSettingService.update(user.getId(), notificationSettings);
     }
+
+    @PutMapping("/notifications/seen")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
+    @Operation(summary = "Mark all notifications as seen")
+    public void markAllNotificationsAsSeen() {
+        User user = loggedInUserService.getLoggedUser();
+        notificationService.markAllAsSeen(user.getId());
+    }
+
+    @PutMapping("/notifications/{notificationId}/seen")
+    @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
+    @Operation(summary = "Mark notification as seen")
+    public void markNotificationAsSeen(@PathVariable Long notificationId) {
+        User user = loggedInUserService.getLoggedUser();
+        notificationService.markAsSeen(user.getId(), notificationId);
+    }
+
 
     @PostMapping("/{id}/reports")
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
