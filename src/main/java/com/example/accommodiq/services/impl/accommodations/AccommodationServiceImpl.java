@@ -7,6 +7,7 @@ import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.AccommodationSpecification;
@@ -37,14 +38,16 @@ public class AccommodationServiceImpl implements IAccommodationService {
     IGuestService guestService;
     IAccountService accountService;
     ReviewRepository reviewRepository;
+    INotificationService notificationService;
 
     @Autowired
-    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService, ReviewRepository reviewRepository) {
+    public AccommodationServiceImpl(AccommodationRepository accommodationRepository, ReservationRepository reservationRepository, IGuestService guestService, IAccountService accountService, ReviewRepository reviewRepository, INotificationService notificationService) {
         this.accommodationRepository = accommodationRepository;
         this.reservationRepository = reservationRepository;
         this.guestService = guestService;
         this.accountService = accountService;
         this.reviewRepository = reviewRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -298,6 +301,21 @@ public class AccommodationServiceImpl implements IAccommodationService {
         }
 
         return pendingReviews;
+    }
+
+    @Override
+    public MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        ReviewStatus oldStatus = review.getStatus();
+        review.setStatus(body.getStatus());
+        reviewRepository.save(review);
+        reviewRepository.flush();
+        if (oldStatus == ReviewStatus.PENDING && body.getStatus() == ReviewStatus.ACCEPTED) {
+            Accommodation accommodation = accommodationRepository.findAccommodationByReviewsContaining(review);
+            Notification notification = new Notification("Your accommodation has a new review", NotificationType.ACCOMMODATION_RATING, accommodation.getHost());
+            notificationService.createAndSendNotification(notification);
+        }
+        return new MessageDto("Review status updated successfully");
     }
 
     private boolean hasActiveReservations(Accommodation accommodation, Availability availability) {

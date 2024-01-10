@@ -128,4 +128,11 @@ public class AccommodationController {
     public Collection<PendingReviewDto> getPendingReviews() {
         return accommodationService.getPendingReviews();
     }
+
+    @PutMapping("/reviews/{reviewId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Change review status")
+    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        return accommodationService.changeReviewStatus(reviewId, body);
+    }
 }

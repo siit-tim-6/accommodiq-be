@@ -1,6 +1,7 @@
 package com.example.accommodiq.repositories;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.enums.AccommodationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -20,4 +21,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
 
     @Query(value = "SELECT * FROM accommodation WHERE id IN (SELECT accommodation_id FROM accommodation_reviews WHERE reviews_id IN :reviewIds)", nativeQuery = true)
     Collection<Accommodation> findAccommodationsContainingReview(@Param("reviewIds") Collection<Long> reviewIds);
+
+    Accommodation findAccommodationByReviewsContaining(Review review);
 }

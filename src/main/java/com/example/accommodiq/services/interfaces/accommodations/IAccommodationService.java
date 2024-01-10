@@ -53,4 +53,6 @@ public interface IAccommodationService {
     AccommodationCardDto deleteAccommodation(Long accommodationId);
 
     Collection<PendingReviewDto> getPendingReviews();
+
+    MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body);
 }
