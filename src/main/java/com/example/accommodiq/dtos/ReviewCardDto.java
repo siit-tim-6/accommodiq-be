@@ -3,17 +3,17 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Review;
 
-public class PendingReviewDto {
+public class ReviewCardDto {
     private ReviewDto review;
     private Long accommodationId;
     private String image;
     private String title;
 
-    public PendingReviewDto() {
+    public ReviewCardDto() {
         super();
     }
 
-    public PendingReviewDto(Review review, Accommodation accommodation) {
+    public ReviewCardDto(Review review, Accommodation accommodation) {
         this.review = new ReviewDto(review);
         this.accommodationId = accommodation.getId();
         this.image = accommodation.getImages().get(0);

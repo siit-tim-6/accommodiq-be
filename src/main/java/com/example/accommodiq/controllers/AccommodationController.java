@@ -126,14 +126,14 @@ public class AccommodationController {
     @GetMapping("/reviews/pending")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all pending reviews")
-    public Collection<PendingReviewDto> getPendingReviews() {
+    public Collection<ReviewCardDto> getPendingReviews() {
         return accommodationService.getReviewsByStatus(ReviewStatus.PENDING);
     }
 
     @GetMapping("/reviews/reported")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all reported reviews")
-    public Collection<PendingReviewDto> getReportedReviews() {
+    public Collection<ReviewCardDto> getReportedReviews() {
         return accommodationService.getReviewsByStatus(ReviewStatus.REPORTED);
     }
 
