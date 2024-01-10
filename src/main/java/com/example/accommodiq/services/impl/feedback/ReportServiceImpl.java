@@ -1,13 +1,22 @@
 package com.example.accommodiq.services.impl.feedback;
 
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.domain.User;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.repositories.ReportRepository;
+import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
+import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,11 +32,17 @@ public class ReportServiceImpl implements IReportService {
     final ReportRepository allReports;
 
     final IUserService userService;
+    
+    final IReservationService reservationService;
+
+    final IAccountService accountService;
 
     @Autowired
-    public ReportServiceImpl(ReportRepository allReports, IUserService userService) {
+    public ReportServiceImpl(ReportRepository allReports, IUserService userService, IReservationService reservationService, IAccountService accountService) {
         this.allReports = allReports;
         this.userService = userService;
+        this.reservationService = reservationService;
+        this.accountService = accountService;
     }
 
     @Override
@@ -99,16 +114,27 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public void reportUser(Long reportedUserId, ReportDto reportDto) {
+    public MessageDto reportUser(Long reportedUserId, ReportDto reportDto) {
+        Account reportingUserAccount = getLoggedInAccount();
+        Account reportedUserAccount =  accountService.findAccount(reportedUserId);
 
-        validateReportInput(reportedUserId, reportDto);
+        validateReportInput(reportedUserAccount,reportingUserAccount, reportDto);
 
-        Report report = new Report();
-        report.setReportedUser(userService.findUser(reportedUserId));
-        report.setReason(reportDto.getReason());
-        report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
-        report.setTimestamp(reportDto.getTimestamp());
+        Collection<Reservation> pastReservations = getPastReservationBetweenUsers(reportedUserAccount, reportingUserAccount);
+        if (pastReservations.isEmpty()) {
+            throw new IllegalStateException("Cannot report user without a past reservation.");
+        }
+
+        Collection<Report> reports = allReports.findAllByReportedUserIdAndReportingUserId(reportedUserId, reportingUserAccount.getId());
+        if(reports.size() >= pastReservations.size()) {
+            throw new IllegalStateException("Cannot report user more than once per reservation.");
+        }
+
+        User reportedUser = reportedUserAccount.getUser();
+        User reportingUser = reportingUserAccount.getUser();
+        Report report = new Report(reportedUser, reportingUser, reportDto);
         insert(report);
+        return new MessageDto("Reported Successfully");
     }
 
     @Override
@@ -123,15 +149,18 @@ public class ReportServiceImpl implements IReportService {
         allReports.flush();
     }
 
-    private void validateReportInput(Long reportedUserId, ReportDto reportDto) {
-        if (Objects.equals(reportedUserId, reportDto.getReportingUserId())) {
+    private void validateReportInput(Account reportedAccount, Account reportingAccount, ReportDto reportDto) {
+        if (Objects.equals(reportedAccount.getId(), reportingAccount.getId())) {
             throw generateBadRequest("reportYourself");
         }
-        if (reportedUserId == null || reportDto.getReportingUserId() == null) {
+        if (reportedAccount.getId() == null || reportingAccount.getId() == null) {
             throw generateBadRequest("reportNull");
         }
         if (reportDto.getReason() == null || reportDto.getReason().isEmpty()) {
             throw generateBadRequest("reportReasonNull");
+        }
+        if (reportedAccount.getRole() == reportingAccount.getRole()) {
+            throw generateBadRequest("reportSameRole");
         }
     }
 
@@ -142,5 +171,17 @@ public class ReportServiceImpl implements IReportService {
         report.setReportingUser(userService.findUser(reportDto.getReportingUserId()));
         report.setTimestamp(reportDto.getTimestamp());
         return report;
+    }
+
+    private Collection<Reservation> getPastReservationBetweenUsers(Account firstAccount, Account secondAccount) {
+        if (firstAccount.getRole() == AccountRole.HOST) {
+            return reservationService.getPastReservations(firstAccount.getId(), secondAccount.getId());
+        }
+        return reservationService.getPastReservations(secondAccount.getId(), firstAccount.getId());
+    }
+
+    private Account getLoggedInAccount() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return (Account) accountService.loadUserByUsername(email);
     }
 }

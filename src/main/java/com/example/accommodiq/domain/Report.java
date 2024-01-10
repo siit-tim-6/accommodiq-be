@@ -1,6 +1,9 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.dtos.ReportDto;
 import jakarta.persistence.*;
+
+import java.time.Instant;
 
 @Entity
 public class Report {
@@ -20,6 +23,13 @@ public class Report {
         this.id = id;
         this.reason = reason;
         this.timestamp = timestamp;
+        this.reportingUser = reportingUser;
+        this.reportedUser = reportedUser;
+    }
+
+    public Report(User reportedUser, User reportingUser, ReportDto reportDto) {
+        this.reason = reportDto.getReason();
+        this.timestamp = Instant.now().toEpochMilli();
         this.reportingUser = reportingUser;
         this.reportedUser = reportedUser;
     }
