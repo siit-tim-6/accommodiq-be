@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -126,7 +127,14 @@ public class AccommodationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all pending reviews")
     public Collection<PendingReviewDto> getPendingReviews() {
-        return accommodationService.getPendingReviews();
+        return accommodationService.getReviewsByStatus(ReviewStatus.PENDING);
+    }
+
+    @GetMapping("/reviews/reported")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all reported reviews")
+    public Collection<PendingReviewDto> getReportedReviews() {
+        return accommodationService.getReviewsByStatus(ReviewStatus.REPORTED);
     }
 
     @PutMapping("/reviews/{reviewId}/status")
