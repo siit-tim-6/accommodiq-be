@@ -13,6 +13,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/reports")
+@CrossOrigin
 public class ReportController {
 
     final

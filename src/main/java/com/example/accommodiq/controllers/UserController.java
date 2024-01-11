@@ -189,8 +189,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Report user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportDto.class))})})
-    public void reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
-        reportService.reportUser(id, reportDto);
+    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
+        return reportService.reportUser(id, reportDto);
     }
 
     @GetMapping("/{userId}/profile")

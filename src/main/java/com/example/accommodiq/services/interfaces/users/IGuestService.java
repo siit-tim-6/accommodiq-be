@@ -11,7 +11,7 @@ public interface IGuestService {
 
     Collection<ReservationCardDto> getReservations();
 
-    Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
+    Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
     ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
 

@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +29,14 @@ public class HostController {
     @Operation(summary = "Get all hosts")
     public Collection<Host> getAllHosts() {
         return hostService.getAll();
+    }
+
+    @GetMapping("/reservations")
+    @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Get host reservations")
+    public Collection<HostReservationCardDto> getHostAccommodationReservations(@RequestParam(required = false) String title, @RequestParam(required = false) Long startDate,
+                                                                               @RequestParam(required = false) Long endDate, @RequestParam(required = false) ReservationStatus status) {
+        return hostService.getHostAccommodationReservationsByFilter(title, startDate, endDate, status);
     }
 
     @GetMapping("/{hostId}")
@@ -77,13 +86,6 @@ public class HostController {
     @Operation(summary = "Get host accommodations")
     public Collection<AccommodationCardWithStatusDto> getHostAccommodations() {
         return hostService.getHostAccommodations();
-    }
-
-    @GetMapping("/reservations")
-    @PreAuthorize("hasAuthority('HOST')")
-    @Operation(summary = "Get host reservations")
-    public Collection<ReservationCardDto> getHostAccommodationReservations() {
-        return hostService.getHostAccommodationReservations();
     }
 
     @GetMapping("{hostId}/financial-report")

@@ -221,6 +221,18 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
+    public Collection<Reservation> getPastReservations(Long ownerId, Long guestId) {
+        List<Long> accommodationIds = accommodationRepository.findByHostId(ownerId).stream().map(Accommodation::getId).toList();
+
+        return allReservations.findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(
+                guestId,
+                accommodationIds,
+                ReservationStatus.CANCELLED,
+                Instant.now().toEpochMilli()
+        );
+    }
+
+    @Override
     public List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long guestId) {
         return allReservations.findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
     }

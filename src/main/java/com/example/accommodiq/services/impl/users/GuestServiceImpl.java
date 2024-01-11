@@ -12,7 +12,7 @@ import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
-import com.example.accommodiq.specifications.ReservationSpecification;
+import com.example.accommodiq.specifications.GuestReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +68,9 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+    public Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long guestId = getGuestId();
-        return reservationRepository.findAll(ReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
+        return reservationRepository.findAll(GuestReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
 
     @Override

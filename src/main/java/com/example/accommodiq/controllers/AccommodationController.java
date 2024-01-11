@@ -123,18 +123,11 @@ public class AccommodationController {
         return accommodationService.getAdvancedDetails(accommodationId);
     }
 
-    @GetMapping("/reviews/pending")
+    @GetMapping("/reviews")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Get all pending reviews")
-    public Collection<ReviewCardDto> getPendingReviews() {
-        return accommodationService.getReviewsByStatus(ReviewStatus.PENDING);
-    }
-
-    @GetMapping("/reviews/reported")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Get all reported reviews")
-    public Collection<ReviewCardDto> getReportedReviews() {
-        return accommodationService.getReviewsByStatus(ReviewStatus.REPORTED);
+    @Operation(summary = "Get all reviews by status")
+    public Collection<ReviewCardDto> getReviewsByStatus(@RequestParam(name = "status") ReviewStatus status) {
+        return accommodationService.getReviewsByStatus(status);
     }
 
     @PutMapping("/reviews/{reviewId}/status")

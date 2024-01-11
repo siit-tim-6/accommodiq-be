@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ public interface IHostService {
 
     Collection<AccommodationCardWithStatusDto> getHostAccommodations();
 
-    Collection<ReservationCardDto> getHostAccommodationReservations();
+    Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
     ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate);
 

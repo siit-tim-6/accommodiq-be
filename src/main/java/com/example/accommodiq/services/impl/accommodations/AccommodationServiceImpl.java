@@ -293,15 +293,16 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Collection<ReviewCardDto> getReviewsByStatus(ReviewStatus status) {
         Collection<Review> reviews = reviewRepository.findByStatus(status);
-        Collection<Accommodation> accommodationsWithPendingReviews = accommodationRepository.findAccommodationsContainingReview(reviews.stream().map(Review::getId).toList());
-        Collection<ReviewCardDto> pendingReviews = new ArrayList<>();
-        for (Accommodation accommodation : accommodationsWithPendingReviews) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsContainingReviews(reviews.stream().map(Review::getId).toList());
+        Collection<ReviewCardDto> reviewCards = new ArrayList<>();
+
+        for (Accommodation accommodation : accommodations) {
             List<Review> accommodationReviews = accommodation.getReviews().stream().filter(reviews::contains).toList();
             for (Review review : accommodationReviews)
-                pendingReviews.add(new ReviewCardDto(review, accommodation));
+                reviewCards.add(new ReviewCardDto(review, accommodation));
         }
 
-        return pendingReviews;
+        return reviewCards;
     }
 
     @Override
@@ -339,8 +340,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     private void canGuestCommentAndRateAccommodation(Long guestId, Long accommodationId) {
-        long currentTime = System.currentTimeMillis() / 1000; //TODO: change everything to milliseconds in database
-        long sevenDaysAgo = currentTime - (7 * 24 * 60 * 60);
+        long currentTime = System.currentTimeMillis();
+        long sevenDaysAgo = currentTime - (7 * 24 * 60 * 60 * 1000);
 
         // Check if guest has stayed in this accommodation or the 7-day period post-reservation has expired
         Collection<Reservation> reservations = reservationRepository

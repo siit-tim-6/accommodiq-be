@@ -8,6 +8,7 @@ import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.AccountRepository;
+import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.email.IEmailService;
@@ -42,20 +43,20 @@ public class AccountServiceImpl implements IAccountService {
     final IReservationService reservationService;
 
     final AccommodationRepository accommodationRepository;
-    final IReportService reportService;
+    final ReportRepository reportRepository;
 
     final IReviewService reviewService;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, IReportService reportService, IReviewService reviewService) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, ReportRepository reportRepository, IReviewService reviewService) {
         this.allAccounts = allAccounts;
         this.emailService = emailService;
         this.notificationSettingService = notificationSettingService;
         this.reservationService = reservationService;
         this.accommodationRepository = accommodationRepository;
-        this.reportService = reportService;
+        this.reportRepository = reportRepository;
         this.reviewService = reviewService;
     }
 
@@ -146,8 +147,11 @@ public class AccountServiceImpl implements IAccountService {
             reservationService.deleteByGuestId(accountId);
         }
 
-        reportService.deleteByReportingUserId(accountId);
-        reportService.deleteByReportedUserId(accountId);
+        reportRepository.deleteByReportingUserId(accountId);
+        reportRepository.flush();
+
+        reportRepository.deleteByReportedUserId(accountId);
+        reportRepository.flush();
 
         allAccounts.delete(found);
         allAccounts.flush();
