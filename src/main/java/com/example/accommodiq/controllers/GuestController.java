@@ -58,4 +58,10 @@ public class GuestController {
         return guestService.removeFavorite(accommodationId);
     }
 
+    @GetMapping("/reservations/cancelable")
+    @PreAuthorize("hasAuthority('GUEST')")
+    @Operation(summary = "Get all cancelable reservations of guest")
+    public Collection<Long> getCancelableReservationIds() {
+        return guestService.getCancelableReservationIds();
+    }
 }

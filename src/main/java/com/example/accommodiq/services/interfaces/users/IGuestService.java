@@ -1,7 +1,6 @@
 package com.example.accommodiq.services.interfaces.users;
 
 import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
 
@@ -21,4 +20,6 @@ public interface IGuestService {
     AccommodationCardDto addFavorite(GuestFavoriteDto favoriteDto);
 
     MessageDto removeFavorite(Long accommodationId);
+
+    Collection<Long> getCancelableReservationIds();
 }
