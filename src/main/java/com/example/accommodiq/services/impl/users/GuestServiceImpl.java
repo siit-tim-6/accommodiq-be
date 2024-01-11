@@ -81,7 +81,7 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     private boolean isCancellable(Reservation reservation) {
-        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60L < Instant.now().toEpochMilli(); // change to milliseconds
+        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60 * 1000L < Instant.now().toEpochMilli();
     }
 
     @Transactional

@@ -157,7 +157,7 @@ public class ReservationServiceImpl implements IReservationService {
             cancelReservationsThatOverlapWithNewlyAccepted(reservation);
         }
 
-        // trySendNotification(reservation);
+        trySendNotification(reservation);
 
         return new ReservationCardDto(reservation);
     }
