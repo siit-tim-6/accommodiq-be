@@ -78,12 +78,4 @@ public class ReviewController {
     public MessageDto reportReview(@Parameter(description = "Id of review to report")@PathVariable Long reviewId) {
         return reviewService.setReviewStatus(reviewId, ReviewStatus.REPORTED);
     }
-
-    @GetMapping("/reviews/pending")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Get all pending reviews")
-    public Collection<ReviewDto> getPendingReviews() {
-        return reviewService.getPendingReviews();
-    }
-
 }

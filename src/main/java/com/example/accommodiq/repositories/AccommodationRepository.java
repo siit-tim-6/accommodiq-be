@@ -20,7 +20,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     void deleteAllByHostId(Long accountId);
 
     @Query(value = "SELECT * FROM accommodation WHERE id IN (SELECT accommodation_id FROM accommodation_reviews WHERE reviews_id IN :reviewIds)", nativeQuery = true)
-    Collection<Accommodation> findAccommodationsContainingReview(@Param("reviewIds") Collection<Long> reviewIds);
+    Collection<Accommodation> findAccommodationsContainingReviews(@Param("reviewIds") Collection<Long> reviewIds);
 
     Accommodation findAccommodationByReviewsContaining(Review review);
 }
