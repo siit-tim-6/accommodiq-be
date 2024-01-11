@@ -40,4 +40,6 @@ public interface IReservationService {
     List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId);
 
     List<Reservation> findHostReservationsNotEndedYet(Long userId);
+
+    Collection<ReservationCardDto> findHostReservations(Long hostId);
 }

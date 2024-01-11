@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -162,7 +163,7 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     private void cancelReservationsThatOverlapWithNewlyAccepted(Reservation reservation) {
-        Collection<Reservation> overlappingPendingReservations = allReservations.getReservationByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(
+        Collection<Reservation> overlappingPendingReservations = allReservations.findByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(
                 reservation.getAccommodation().getId(),
                 reservation.getStartDate(),
                 reservation.getEndDate(),
@@ -170,6 +171,11 @@ public class ReservationServiceImpl implements IReservationService {
                 reservation.getEndDate(),
                 ReservationStatus.PENDING);
 
+        overlappingPendingReservations = Stream.concat(overlappingPendingReservations.stream(),
+                allReservations.findByStartDateBeforeAndEndDateAfter(reservation.getStartDate(), reservation.getEndDate()).stream())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        overlappingPendingReservations.remove(reservation);
         for (Reservation overlappingPendingReservation : overlappingPendingReservations) {
             overlappingPendingReservation.setStatus(ReservationStatus.DECLINED);
 
@@ -222,6 +228,11 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public List<Reservation> findHostReservationsNotEndedYet(Long guestId) {
         return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public Collection<ReservationCardDto> findHostReservations(Long hostId) {
+        return allReservations.findByAccommodation_HostId(hostId).stream().map(ReservationCardDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
