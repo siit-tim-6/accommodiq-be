@@ -151,17 +151,17 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
+    public MessageDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
         Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
         if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
             reservation.setStatus(statusDto.getStatus());
             allReservations.save(reservation);
             allReservations.flush();
-            return reservation;
+            return new MessageDto("Reservation status changed successfully");
         } else {
             String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+            return new MessageDto(value);
         }
     }
 

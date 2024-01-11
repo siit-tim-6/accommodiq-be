@@ -29,7 +29,7 @@ public interface IReservationService {
 
     Collection<Reservation> findReservationsByGuestId(Long userId);
 
-    Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
+    MessageDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
     void validateGuestReviewEligibility(Long guestId, Long hostId);
 
