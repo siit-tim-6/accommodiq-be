@@ -17,6 +17,7 @@ import com.example.accommodiq.services.interfaces.accommodations.IReservationSer
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
+import com.example.accommodiq.specifications.HostReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +50,11 @@ public class HostServiceImpl implements IHostService {
 
     final private INotificationService notificationService;
 
+    final private ReservationRepository reservationRepository;
+
     @Autowired
-    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations, IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService) {
+    public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations,
+                           IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService, ReservationRepository reservationRepository) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
@@ -58,6 +62,7 @@ public class HostServiceImpl implements IHostService {
         this.reservationService = reservationService;
         this.accountService = accountService;
         this.notificationService = notificationService;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -123,17 +128,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) { // mocked
-        if (hostId == 4L) {
-            throw ErrorUtils.generateNotFound("hostNotFound");
-        }
-
-        ArrayList<HostReservationDto> reservations = new ArrayList<>();
-
-        reservations.add(new HostReservationDto(1L, "Cozy Cabin", "John Doe", new Date(), new Date()));
-        reservations.add(new HostReservationDto(2L, "Sunny Apartment", "Jane Smith", new Date(), new Date()));
-
-        return reservations;
+    public Collection<ReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+        Long hostId = getHostId();
+        return reservationRepository.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
 
     @Override
@@ -183,7 +180,7 @@ public class HostServiceImpl implements IHostService {
         notificationService.createAndSendNotification(n);
         host.getReviews().add(review);
         update(host);
-        return new ReviewDto(review,guestId);
+        return new ReviewDto(review, guestId);
     }
 
     @Override
