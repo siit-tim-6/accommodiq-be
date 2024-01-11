@@ -2,25 +2,21 @@ package com.example.accommodiq.services.impl.users;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.PricingType;
-import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
-import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
-import com.example.accommodiq.services.interfaces.notifications.INotificationService;
-import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,17 +120,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId) { // mocked
-        if (hostId == 4L) {
-            throw ErrorUtils.generateNotFound("hostNotFound");
-        }
-
-        ArrayList<HostReservationDto> reservations = new ArrayList<>();
-
-        reservations.add(new HostReservationDto(1L, "Cozy Cabin", "John Doe", new Date(), new Date()));
-        reservations.add(new HostReservationDto(2L, "Sunny Apartment", "Jane Smith", new Date(), new Date()));
-
-        return reservations;
+    public Collection<ReservationCardDto> getHostAccommodationReservations() {
+        Long hostId = getHostId();
+        return reservationService.findHostReservations(hostId);
     }
 
     @Override

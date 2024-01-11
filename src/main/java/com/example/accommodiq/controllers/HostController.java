@@ -79,11 +79,11 @@ public class HostController {
         return hostService.getHostAccommodations();
     }
 
-    @GetMapping("/{hostId}/reservations")
+    @GetMapping("/reservations")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host reservations")
-    public Collection<HostReservationDto> getHostAccommodationReservations(@PathVariable Long hostId) {
-        return hostService.getHostAccommodationReservations(hostId);
+    public Collection<ReservationCardDto> getHostAccommodationReservations() {
+        return hostService.getHostAccommodationReservations();
     }
 
     @GetMapping("{hostId}/financial-report")

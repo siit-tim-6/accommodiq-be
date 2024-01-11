@@ -22,7 +22,7 @@ public interface IHostService {
 
     Collection<AccommodationCardWithStatusDto> getHostAccommodations();
 
-    ArrayList<HostReservationDto> getHostAccommodationReservations(Long hostId);
+    Collection<ReservationCardDto> getHostAccommodationReservations();
 
     ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate);
 
