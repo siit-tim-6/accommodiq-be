@@ -128,9 +128,9 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public Collection<ReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+    public Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long hostId = getHostId();
-        return reservationRepository.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
+        return reservationRepository.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
     }
 
     @Override

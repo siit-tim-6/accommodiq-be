@@ -34,8 +34,8 @@ public class HostController {
     @GetMapping("/reservations")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host reservations")
-    public Collection<ReservationCardDto> getHostAccommodationReservations(@RequestParam(required = false) String title, @RequestParam(required = false) Long startDate,
-                                                                           @RequestParam(required = false) Long endDate, @RequestParam(required = false) ReservationStatus status) {
+    public Collection<HostReservationCardDto> getHostAccommodationReservations(@RequestParam(required = false) String title, @RequestParam(required = false) Long startDate,
+                                                                               @RequestParam(required = false) Long endDate, @RequestParam(required = false) ReservationStatus status) {
         return hostService.getHostAccommodationReservationsByFilter(title, startDate, endDate, status);
     }
 
