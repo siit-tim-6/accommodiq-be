@@ -21,5 +21,5 @@ public interface IGuestService {
 
     MessageDto removeFavorite(Long accommodationId);
 
-    Collection<Long> getCancelableReservationIds();
+    Collection<Long> getCancellableReservationIds();
 }
