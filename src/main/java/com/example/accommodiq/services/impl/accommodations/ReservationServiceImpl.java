@@ -145,22 +145,22 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public ReservationCardDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
-        validateUserChangingStatusEligibility(statusDto);
+    public ReservationCardDto changeReservationStatus(Long reservationId, ReservationStatus status) {
+        validateUserChangingStatusEligibility(status);
         Reservation reservation = findReservation(reservationId);
-        reservation.setStatus(statusDto.getStatus());
+        reservation.setStatus(status);
         allReservations.save(reservation);
         allReservations.flush();
         return new ReservationCardDto(reservation);
     }
 
-    private void validateUserChangingStatusEligibility(ReservationStatusDto statusDto) {
-        if (getLoggedInUserRole() == AccountRole.GUEST && statusDto.getStatus() != ReservationStatus.CANCELLED) {
+    private void validateUserChangingStatusEligibility(ReservationStatus status) {
+        if (getLoggedInUserRole() == AccountRole.GUEST && status != ReservationStatus.CANCELLED) {
             throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "guestCannotChangeReservationStatus");
         }
         if (getLoggedInUserRole() == AccountRole.HOST) {
             Collection<ReservationStatus> allowedStatuses = List.of(ReservationStatus.ACCEPTED, ReservationStatus.DECLINED);
-            if (!allowedStatuses.contains(statusDto.getStatus()))
+            if (!allowedStatuses.contains(status))
                 throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "hostCannotChangeReservationStatus");
         }
     }
