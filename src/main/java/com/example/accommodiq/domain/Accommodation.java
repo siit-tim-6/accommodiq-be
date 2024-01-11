@@ -215,7 +215,7 @@ public class Accommodation {
 
     public boolean isAvailable(Long from, Long to) {
         Long finalFrom = from;
-        Long oneDay = (long) (60 * 60 * 24);
+        Long oneDay = (long) (60 * 60 * 24 * 1000);
 
         if (this.available == null) {
             return false;
@@ -256,7 +256,7 @@ public class Accommodation {
             throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
-        long oneDay = 60 * 60 * 24;
+        long oneDay = 60 * 60 * 24 * 1000;
 
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
                 (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
