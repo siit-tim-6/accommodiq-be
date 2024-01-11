@@ -4,10 +4,8 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
-import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
@@ -151,17 +149,20 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public MessageDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
+    public ReservationCardDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
+        if (getLoggedInUserRole() == AccountRole.GUEST && statusDto.getStatus() != ReservationStatus.CANCELLED) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "guestCannotChangeReservationStatus");
+        }
         Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
         if (optionalReservation.isPresent()) {
             Reservation reservation = optionalReservation.get();
             reservation.setStatus(statusDto.getStatus());
             allReservations.save(reservation);
             allReservations.flush();
-            return new MessageDto("Reservation status changed successfully");
+            return new ReservationCardDto(reservation);
         } else {
             String value = bundle.getString("reservationNotFound");
-            return new MessageDto(value);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
         }
     }
 
@@ -227,5 +228,14 @@ public class ReservationServiceImpl implements IReservationService {
         }
 
         return ((Account) authentication.getPrincipal()).getUser().getId();
+    }
+
+    private AccountRole getLoggedInUserRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return null;
+        }
+
+        return ((Account) authentication.getPrincipal()).getRole();
     }
 }
