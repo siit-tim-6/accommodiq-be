@@ -23,13 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -150,19 +146,22 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public ReservationCardDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
+        validateUserChangingStatusEligibility(statusDto);
+        Reservation reservation = findReservation(reservationId);
+        reservation.setStatus(statusDto.getStatus());
+        allReservations.save(reservation);
+        allReservations.flush();
+        return new ReservationCardDto(reservation);
+    }
+
+    private void validateUserChangingStatusEligibility(ReservationStatusDto statusDto) {
         if (getLoggedInUserRole() == AccountRole.GUEST && statusDto.getStatus() != ReservationStatus.CANCELLED) {
             throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "guestCannotChangeReservationStatus");
         }
-        Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
-        if (optionalReservation.isPresent()) {
-            Reservation reservation = optionalReservation.get();
-            reservation.setStatus(statusDto.getStatus());
-            allReservations.save(reservation);
-            allReservations.flush();
-            return new ReservationCardDto(reservation);
-        } else {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        if (getLoggedInUserRole() == AccountRole.HOST) {
+            Collection<ReservationStatus> allowedStatuses = List.of(ReservationStatus.ACCEPTED, ReservationStatus.DECLINED);
+            if (!allowedStatuses.contains(statusDto.getStatus()))
+                throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "hostCannotChangeReservationStatus");
         }
     }
 
