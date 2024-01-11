@@ -44,4 +44,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Collection<Reservation> findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long guestId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
 
     Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(Long guestId, Long accommodationId, List<ReservationStatus> list, long currentTime);
+
+    Collection<Reservation> getReservationByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(Long accommodation_id, Long startDate, Long startDate2, Long endDate, Long endDate2, ReservationStatus status);
 }

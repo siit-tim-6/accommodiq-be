@@ -1,16 +1,15 @@
 package com.example.accommodiq.services.impl.accommodations;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.domain.Review;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,14 +34,16 @@ public class ReservationServiceImpl implements IReservationService {
     final AccommodationRepository accommodationRepository;
     final IUserService userService;
     final ReviewRepository reviewRepository;
+    final INotificationService notificationService;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public ReservationServiceImpl(ReservationRepository allReservations, AccommodationRepository accommodationRepository, IUserService userService, ReviewRepository reviewRepository) {
+    public ReservationServiceImpl(ReservationRepository allReservations, AccommodationRepository accommodationRepository, IUserService userService, ReviewRepository reviewRepository, INotificationService notificationService) {
         this.allReservations = allReservations;
         this.accommodationRepository = accommodationRepository;
         this.userService = userService;
         this.reviewRepository = reviewRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -151,7 +152,43 @@ public class ReservationServiceImpl implements IReservationService {
         reservation.setStatus(status);
         allReservations.save(reservation);
         allReservations.flush();
+        if (reservation.getStatus() == ReservationStatus.ACCEPTED) {
+            cancelReservationsThatOverlapWithNewlyAccepted(reservation);
+        }
+
+        // trySendNotification(reservation);
+
         return new ReservationCardDto(reservation);
+    }
+
+    private void cancelReservationsThatOverlapWithNewlyAccepted(Reservation reservation) {
+        Collection<Reservation> overlappingPendingReservations = allReservations.getReservationByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(
+                reservation.getAccommodation().getId(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                ReservationStatus.PENDING);
+
+        for (Reservation overlappingPendingReservation : overlappingPendingReservations) {
+            overlappingPendingReservation.setStatus(ReservationStatus.DECLINED);
+
+            trySendNotification(overlappingPendingReservation);
+
+            allReservations.save(overlappingPendingReservation);
+            allReservations.flush();
+        }
+    }
+
+    private void trySendNotification(Reservation reservation) {
+        if (reservation.getStatus() == ReservationStatus.ACCEPTED) {
+            Notification notification = new Notification("Your reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been accepted", NotificationType.HOST_REPLY_TO_REQUEST, reservation.getGuest());
+            notificationService.createAndSendNotification(notification);
+        }
+        if (reservation.getStatus() == ReservationStatus.DECLINED) {
+            Notification notification = new Notification("Your reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been declined", NotificationType.HOST_REPLY_TO_REQUEST, reservation.getGuest());
+            notificationService.createAndSendNotification(notification);
+        }
     }
 
     private void validateUserChangingStatusEligibility(ReservationStatus status) {
