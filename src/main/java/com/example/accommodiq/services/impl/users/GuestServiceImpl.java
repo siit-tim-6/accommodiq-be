@@ -76,12 +76,12 @@ public class GuestServiceImpl implements IGuestService {
     @Override
     public Collection<Long> getCancellableReservationIds() {
         Long guestId = getGuestId();
-        List<Reservation> reservations = reservationRepository.findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().getEpochSecond());
+        List<Reservation> reservations = reservationRepository.findByStatusAndGuestIdAndStartDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().getEpochSecond());
         return reservations.stream().filter(this::isCancellable).map(Reservation::getId).toList();
     }
 
     private boolean isCancellable(Reservation reservation) {
-        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60L < Instant.now().toEpochMilli(); // change to milliseconds
+        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60L >= Instant.now().toEpochMilli(); // change to milliseconds
     }
 
     @Transactional

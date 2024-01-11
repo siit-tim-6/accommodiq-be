@@ -60,7 +60,7 @@ public class GuestController {
 
     @GetMapping("/reservations/cancellable")
     @PreAuthorize("hasAuthority('GUEST')")
-    @Operation(summary = "Get all cancellable reservations of guest")
+    @Operation(summary = "Get all ids of reservations of guest")
     public Collection<Long> getCancellableReservationIds() {
         return guestService.getCancellableReservationIds();
     }
