@@ -19,8 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -70,6 +71,17 @@ public class GuestServiceImpl implements IGuestService {
     public Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long guestId = getGuestId();
         return reservationRepository.findAll(ReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
+    }
+
+    @Override
+    public Collection<Long> getCancelableReservationIds() {
+        Long guestId = getGuestId();
+        List<Reservation> reservations = reservationRepository.findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().getEpochSecond());
+        return reservations.stream().filter(this::isCancelable).map(Reservation::getId).toList();
+    }
+
+    private boolean isCancelable(Reservation reservation) {
+        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60L < Instant.now().toEpochMilli(); // change to milliseconds
     }
 
     @Transactional
