@@ -69,9 +69,9 @@ public class ReservationController {
     }
 
     @PutMapping("/{reservationId}/status")
-    @PreAuthorize("hasAuthority('HOST')")
+    @PreAuthorize("hasAuthority('HOST') || hasAuthority('GUEST')")
     @Operation(summary = "Change reservation status")
-    public Reservation acceptReservation(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
+    public MessageDto changeReservationStatus(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
         return reservationService.setReservationStatus(reservationId, body);
     }
 }
