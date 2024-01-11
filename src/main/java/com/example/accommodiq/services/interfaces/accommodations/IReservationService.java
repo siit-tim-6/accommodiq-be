@@ -1,10 +1,7 @@
 package com.example.accommodiq.services.interfaces.accommodations;
 
 import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
-import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.dtos.*;
 
 
 import java.util.Collection;
@@ -29,7 +26,7 @@ public interface IReservationService {
 
     Collection<Reservation> findReservationsByGuestId(Long userId);
 
-    MessageDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
+    ReservationCardDto setReservationStatus(Long reservationId, ReservationStatusDto statusDto);
 
     void validateGuestReviewEligibility(Long guestId, Long hostId);
 

@@ -2,10 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Reservation;
 
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
-import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,7 +68,7 @@ public class ReservationController {
     @PutMapping("/{reservationId}/status")
     @PreAuthorize("hasAuthority('HOST') || hasAuthority('GUEST')")
     @Operation(summary = "Change reservation status")
-    public MessageDto changeReservationStatus(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
+    public ReservationCardDto changeReservationStatus(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto body) {
         return reservationService.setReservationStatus(reservationId, body);
     }
 }
