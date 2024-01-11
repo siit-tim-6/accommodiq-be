@@ -6,7 +6,6 @@ import com.example.accommodiq.dtos.ReviewDto;
 import com.example.accommodiq.enums.ReviewStatus;
 
 import java.util.Collection;
-import java.util.Set;
 
 public interface IReviewService {
 
@@ -27,4 +26,6 @@ public interface IReviewService {
     void deleteByGuestId(Long id);
 
     Collection<Review> findAllByGuestId(Long guestId);
+
+    Collection<ReviewDto> getPendingReviews();
 }

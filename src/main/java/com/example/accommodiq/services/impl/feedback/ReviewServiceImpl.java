@@ -1,21 +1,18 @@
 package com.example.accommodiq.services.impl.feedback;
 
-import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReviewDto;
-import com.example.accommodiq.dtos.ReviewStatusDto;
 import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.repositories.ReviewRepository;
-import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
-import com.example.accommodiq.services.interfaces.users.IHostService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
-import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
@@ -105,5 +102,10 @@ public class ReviewServiceImpl implements IReviewService {
     @Override
     public Collection<Review> findAllByGuestId(Long guestId) {
         return allReviews.findByGuestId(guestId);
+    }
+
+    @Override
+    public Collection<ReviewDto> getPendingReviews() {
+        return allReviews.findByStatus(ReviewStatus.PENDING).stream().map(ReviewDto::new).toList();
     }
 }

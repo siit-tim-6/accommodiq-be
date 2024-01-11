@@ -67,7 +67,7 @@ public class NotificationServiceImpl implements INotificationService {
         allNotifications.save(notification);
         allNotifications.flush();
         NotificationDto notificationDto = new NotificationDto(notification);
-        messagingTemplate.convertAndSend("/socket-publisher/" + notificationDto.getId(), notificationDto);
+        messagingTemplate.convertAndSend("/socket-publisher/" + notification.getUser().getId(), notificationDto);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -120,5 +121,19 @@ public class AccommodationController {
     @Operation(summary = "Get accommodation advanced details")
     public AccommodationModifyDto getAdvancedDetails(@Parameter(description = "Id of accommodation to get advanced details") @PathVariable Long accommodationId) {
         return accommodationService.getAdvancedDetails(accommodationId);
+    }
+
+    @GetMapping("/reviews")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Get all reviews by status")
+    public Collection<ReviewCardDto> getReviewsByStatus(@RequestParam(name = "status") ReviewStatus status) {
+        return accommodationService.getReviewsByStatus(status);
+    }
+
+    @PutMapping("/reviews/{reviewId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Change review status")
+    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        return accommodationService.changeReviewStatus(reviewId, body);
     }
 }

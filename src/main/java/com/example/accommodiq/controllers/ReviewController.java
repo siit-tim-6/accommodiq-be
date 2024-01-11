@@ -78,5 +78,4 @@ public class ReviewController {
     public MessageDto reportReview(@Parameter(description = "Id of review to report")@PathVariable Long reviewId) {
         return reviewService.setReviewStatus(reviewId, ReviewStatus.REPORTED);
     }
-
 }

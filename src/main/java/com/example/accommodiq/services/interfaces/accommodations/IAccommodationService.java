@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.domain.Review;
 import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.ReviewStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
@@ -51,4 +52,8 @@ public interface IAccommodationService {
     Collection<Accommodation> findAccommodationsByHostId(Long hostId);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
+
+    Collection<ReviewCardDto> getReviewsByStatus(ReviewStatus status);
+
+    MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body);
 }
