@@ -293,15 +293,16 @@ public class AccommodationServiceImpl implements IAccommodationService {
     @Override
     public Collection<ReviewCardDto> getReviewsByStatus(ReviewStatus status) {
         Collection<Review> reviews = reviewRepository.findByStatus(status);
-        Collection<Accommodation> accommodationsWithPendingReviews = accommodationRepository.findAccommodationsContainingReviews(reviews.stream().map(Review::getId).toList());
-        Collection<ReviewCardDto> pendingReviews = new ArrayList<>();
-        for (Accommodation accommodation : accommodationsWithPendingReviews) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsContainingReviews(reviews.stream().map(Review::getId).toList());
+        Collection<ReviewCardDto> reviewCards = new ArrayList<>();
+
+        for (Accommodation accommodation : accommodations) {
             List<Review> accommodationReviews = accommodation.getReviews().stream().filter(reviews::contains).toList();
             for (Review review : accommodationReviews)
-                pendingReviews.add(new ReviewCardDto(review, accommodation));
+                reviewCards.add(new ReviewCardDto(review, accommodation));
         }
 
-        return pendingReviews;
+        return reviewCards;
     }
 
     @Override
