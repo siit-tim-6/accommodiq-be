@@ -170,7 +170,7 @@ public class AccountServiceImpl implements IAccountService {
         allAccounts.flush();
 
         if (accountStatus == AccountStatus.BLOCKED && account.getRole() == AccountRole.GUEST) {
-            //reservationService.cancelAllReservationsByGuestId(account.getUser().getId());
+            reservationService.cancelGuestReservations(account.getUser().getId());
         }
     }
 
