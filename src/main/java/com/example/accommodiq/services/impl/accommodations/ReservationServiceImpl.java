@@ -127,26 +127,6 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> findReservationsByAccommodationId(Long accommodationId) {
-        Collection<Reservation> found = allReservations.findByAccommodationId(accommodationId);
-        if (found.isEmpty()) {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
-        return found;
-    }
-
-    @Override
-    public Collection<Reservation> findReservationsByGuestId(Long guestId) {
-        Collection<Reservation> found = allReservations.findByGuestId(guestId);
-        if (found.isEmpty()) {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
-        return found;
-    }
-
-    @Override
     public ReservationCardDto changeReservationStatus(Long reservationId, ReservationStatus status) {
         validateUserChangingStatusEligibility(status);
         Reservation reservation = findReservation(reservationId);
@@ -205,12 +185,6 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public void deleteByAccommodationId(Long accommodationId) {
-        allReservations.deleteByAccommodationId(accommodationId);
-        allReservations.flush();
-    }
-
-    @Override
     public void deleteByGuestId(Long guestId) {
         allReservations.deleteByGuestId(guestId);
         allReservations.flush();
@@ -236,11 +210,6 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public List<Reservation> findHostReservationsNotEndedYet(Long guestId) {
         return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
-    }
-
-    @Override
-    public Collection<ReservationCardDto> findHostReservations(Long hostId) {
-        return allReservations.findByAccommodation_HostId(hostId).stream().map(ReservationCardDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

@@ -22,15 +22,9 @@ public interface IReservationService {
 
     void deleteAll();
 
-    Collection<Reservation> findReservationsByAccommodationId(Long accommodationId);
-
-    Collection<Reservation> findReservationsByGuestId(Long userId);
-
     ReservationCardDto changeReservationStatus(Long reservationId, ReservationStatus status);
 
     void validateGuestReviewEligibility(Long guestId, Long hostId);
-
-    void deleteByAccommodationId(Long accommodationId);
 
     Collection<Reservation> getPastReservations(Long ownerId, Long guestId);
 
@@ -39,8 +33,6 @@ public interface IReservationService {
     List<Reservation> findGuestAcceptedReservationsNotEndedYet(Long userId);
 
     List<Reservation> findHostReservationsNotEndedYet(Long userId);
-
-    Collection<ReservationCardDto> findHostReservations(Long hostId);
 
     Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status);
 }
