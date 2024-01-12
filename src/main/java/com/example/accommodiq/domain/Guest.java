@@ -1,5 +1,6 @@
 package com.example.accommodiq.domain;
 
+import com.example.accommodiq.enums.ReservationStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,5 +48,11 @@ public class Guest extends User {
         return reservations.stream().noneMatch((reservation -> reservation.getAccommodation().getId() == accommodationId
                 && (reservation.getStartDate() <= startDate && startDate <= reservation.getEndDate()
                 || reservation.getStartDate() <= endDate && endDate <= reservation.getEndDate())));
+    }
+
+    public int getPreviousCancellationNumber(long hostId) {
+        return ((int) reservations.stream()
+                .filter(reservation -> reservation.getStatus() == ReservationStatus.CANCELLED && reservation.getAccommodation().getHost().getId() == hostId)
+                .count());
     }
 }

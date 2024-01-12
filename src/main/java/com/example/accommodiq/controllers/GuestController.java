@@ -27,7 +27,7 @@ public class GuestController {
     @Operation(summary = "Get all reservations of guest")
     public Collection<ReservationCardDto> getReservations(@RequestParam(required = false) String title, @RequestParam(required = false) Long startDate,
                                                           @RequestParam(required = false) Long endDate, @RequestParam(required = false) ReservationStatus status) {
-        return guestService.findByFilter(title, startDate, endDate, status);
+        return guestService.findReservationsByFilter(title, startDate, endDate, status);
     }
 
     @PostMapping("/{guestId}/reservations")
@@ -58,4 +58,10 @@ public class GuestController {
         return guestService.removeFavorite(accommodationId);
     }
 
+    @GetMapping("/reservations/cancellable")
+    @PreAuthorize("hasAuthority('GUEST')")
+    @Operation(summary = "Get all ids of cancellable reservations of guest")
+    public Collection<Long> getCancellableReservationIds() {
+        return guestService.getCancellableReservationIds();
+    }
 }
