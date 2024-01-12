@@ -50,7 +50,7 @@ public class ReportServiceImpl implements IReportService {
     private ReportCardDto getReportCardDto(Report report) {
         Account reportedUserAccount = accountService.findAccount(report.getReportedUser().getId());
         Account reportingUserAccount = accountService.findAccount(report.getReportingUser().getId());
-        return new ReportCardDto(reportedUserAccount, reportingUserAccount, report.getReason());
+        return new ReportCardDto(reportedUserAccount, reportingUserAccount, report.getReason(), report.getId());
     }
 
     @Override

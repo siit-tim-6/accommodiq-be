@@ -3,29 +3,35 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.domain.Account;
 
 public class ReportCardDto {
-    ReportUserInfoDto reportingUser;
-    ReportUserInfoDto reportedUser;
+    Report_UserInfoDto reportingUser;
+    Report_UserInfoDto reportedUser;
     String reason;
+    Long id;
 
     public ReportCardDto() {
         super();
     }
 
-    public ReportCardDto(Account reportedUserAccount, Account reportingUserAccount, String reason) {
-        this.reportingUser = new ReportUserInfoDto(reportingUserAccount);
-        this.reportedUser = new ReportUserInfoDto(reportedUserAccount);
+    public ReportCardDto(Account reportedUserAccount, Account reportingUserAccount, String reason, Long id) {
+        this.reportingUser = new Report_UserInfoDto(reportingUserAccount);
+        this.reportedUser = new Report_UserInfoDto(reportedUserAccount);
         this.reason = reason;
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getReason() {
         return reason;
     }
 
-    public ReportUserInfoDto getReportingUser() {
+    public Report_UserInfoDto getReportingUser() {
         return reportingUser;
     }
 
-    public ReportUserInfoDto getReportedUser() {
+    public Report_UserInfoDto getReportedUser() {
         return reportedUser;
     }
 }
