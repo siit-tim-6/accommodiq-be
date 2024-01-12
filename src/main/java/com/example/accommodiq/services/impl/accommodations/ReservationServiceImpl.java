@@ -1,7 +1,10 @@
 package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.*;
-import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReservationCardDto;
+import com.example.accommodiq.dtos.ReservationDto;
+import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
@@ -25,7 +28,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -170,10 +172,6 @@ public class ReservationServiceImpl implements IReservationService {
                 reservation.getStartDate(),
                 reservation.getEndDate(),
                 ReservationStatus.PENDING);
-
-        overlappingPendingReservations = Stream.concat(overlappingPendingReservations.stream(),
-                allReservations.findByStartDateBeforeAndEndDateAfter(reservation.getStartDate(), reservation.getEndDate()).stream())
-                .collect(Collectors.toCollection(ArrayList::new));
 
         overlappingPendingReservations.remove(reservation);
         for (Reservation overlappingPendingReservation : overlappingPendingReservations) {
