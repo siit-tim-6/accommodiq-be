@@ -1,10 +1,8 @@
 package com.example.accommodiq.services.impl.feedback;
 
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Report;
-import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.domain.User;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.enums.AccountRole;
@@ -15,7 +13,6 @@ import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +43,14 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Collection<Report> getAll() {
-        return allReports.findAll();
+    public Collection<ReportCardDto> getAll() {
+        return allReports.findAll().stream().map(this::getReportCardDto).toList();
+    }
+
+    private ReportCardDto getReportCardDto(Report report) {
+        Account reportedUserAccount = accountService.findAccount(report.getReportedUser().getId());
+        Account reportingUserAccount = accountService.findAccount(report.getReportingUser().getId());
+        return new ReportCardDto(reportedUserAccount, reportingUserAccount, report.getReason());
     }
 
     @Override
