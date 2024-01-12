@@ -256,7 +256,7 @@ public class Accommodation {
             throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
-        long oneDay = 60 * 60 * 24;
+        long oneDay = 60 * 60 * 24 * 1000;
 
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
                 (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
