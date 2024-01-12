@@ -2,10 +2,7 @@ package com.example.accommodiq.services.impl.users;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
-import com.example.accommodiq.enums.AccountRole;
-import com.example.accommodiq.enums.NotificationType;
-import com.example.accommodiq.enums.PricingType;
-import com.example.accommodiq.enums.ReviewStatus;
+import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
