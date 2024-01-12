@@ -19,7 +19,7 @@ public interface IReportService {
 
     ReportModificationDto update(ReportModificationDto report);
 
-    Report delete(Long reportId);
+    MessageDto delete(Long reportId);
 
     void deleteAll();
 

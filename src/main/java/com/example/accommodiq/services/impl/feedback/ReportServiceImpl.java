@@ -103,11 +103,11 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Report delete(Long reportId) {
+    public MessageDto delete(Long reportId) {
         Report report = findReport(reportId);
         allReports.delete(report);
         allReports.flush();
-        return report;
+        return new MessageDto("Report deleted successfully");
     }
 
     @Override
