@@ -22,9 +22,11 @@ public interface IAccountService extends UserDetailsService {
 
     void deleteAll();
 
-    void changeStatus(Long id, AccountStatus accountStatus);
+    void changeStatusByUserId(Long id, AccountStatus accountStatus);
 
     void changePassword(Account account, UpdatePasswordDto passwordDto);
 
     AccountDetailsDto getAccountDetails(Long accountId);
+
+    Account findAccountByUserId(Long userId);
 }

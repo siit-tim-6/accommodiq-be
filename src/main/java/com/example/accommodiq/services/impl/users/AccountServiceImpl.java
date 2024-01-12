@@ -9,10 +9,8 @@ import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.AccountRepository;
 import com.example.accommodiq.repositories.ReportRepository;
-import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.email.IEmailService;
-import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
@@ -165,11 +163,15 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public void changeStatus(Long id, AccountStatus accountStatus) {
-        Account account = findAccount(id);
+    public void changeStatusByUserId(Long userId, AccountStatus accountStatus) {
+        Account account = findAccountByUserId(userId);
         account.setStatus(accountStatus);
         allAccounts.save(account);
         allAccounts.flush();
+
+        if (accountStatus == AccountStatus.BLOCKED && account.getRole() == AccountRole.GUEST) {
+            //reservationService.cancelAllReservationsByGuestId(account.getUser().getId());
+        }
     }
 
     @Override
@@ -197,5 +199,10 @@ public class AccountServiceImpl implements IAccountService {
     public AccountDetailsDto getAccountDetails(Long accountId) {
         Account account = findAccount(accountId);
         return new AccountDetailsDto(account);
+    }
+
+    @Override
+    public Account findAccountByUserId(Long userId) {
+        return allAccounts.findAccountByUserId(userId);
     }
 }
