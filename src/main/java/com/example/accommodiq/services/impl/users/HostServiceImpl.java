@@ -5,14 +5,12 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
-import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.services.interfaces.users.IHostService;
-import com.example.accommodiq.specifications.HostReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +43,9 @@ public class HostServiceImpl implements IHostService {
 
     final private INotificationService notificationService;
 
-    final private ReservationRepository reservationRepository;
-
     @Autowired
     public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations,
-                           IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService, ReservationRepository reservationRepository) {
+                           IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
@@ -57,7 +53,6 @@ public class HostServiceImpl implements IHostService {
         this.reservationService = reservationService;
         this.accountService = accountService;
         this.notificationService = notificationService;
-        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -125,7 +120,7 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long hostId = getHostId();
-        return reservationRepository.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
+        return reservationService.findHostReservationsByFilter(hostId, title, startDate, endDate, status);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package com.example.accommodiq.services.impl.accommodations;
 
 import com.example.accommodiq.domain.*;
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationCardDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
@@ -14,6 +11,7 @@ import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
+import com.example.accommodiq.specifications.HostReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -243,6 +241,11 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public Collection<ReservationCardDto> findHostReservations(Long hostId) {
         return allReservations.findByAccommodation_HostId(hostId).stream().map(ReservationCardDto::new).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status) {
+        return allReservations.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {

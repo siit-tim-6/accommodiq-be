@@ -1,10 +1,7 @@
 package com.example.accommodiq.services.interfaces.accommodations;
 
 import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationCardDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
+import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.Collection;
@@ -44,4 +41,6 @@ public interface IReservationService {
     List<Reservation> findHostReservationsNotEndedYet(Long userId);
 
     Collection<ReservationCardDto> findHostReservations(Long hostId);
+
+    Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status);
 }
