@@ -6,6 +6,7 @@ import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
@@ -150,6 +151,12 @@ public class ReportServiceImpl implements IReportService {
     public void deleteByReportingUserId(Long id) {
         allReports.deleteByReportingUserId(id);
         allReports.flush();
+    }
+
+    @Override
+    public MessageDto changeUserStatus(Long userId, AccountStatus status) {
+        accountService.changeStatusByUserId(userId, status);
+        return new MessageDto("User status changed successfully");
     }
 
     private void validateReportInput(Account reportedAccount, Account reportingAccount, ReportDto reportDto) {

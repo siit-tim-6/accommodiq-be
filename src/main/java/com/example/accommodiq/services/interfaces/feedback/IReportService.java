@@ -5,6 +5,7 @@ import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
+import com.example.accommodiq.enums.AccountStatus;
 
 import java.util.Collection;
 
@@ -28,5 +29,6 @@ public interface IReportService {
     void deleteByReportedUserId(Long id);
 
     void deleteByReportingUserId(Long id);
-    
+
+    MessageDto changeUserStatus(Long userId, AccountStatus status);
 }

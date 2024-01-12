@@ -1,6 +1,6 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.dtos.AccountStatusDto;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
@@ -59,5 +59,12 @@ public class ReportController {
     @Operation(summary = "Delete all reports")
     public void deleteAll() {
         service.deleteAll();
+    }
+
+    @PutMapping("/users/{userId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Change user status")
+    public MessageDto changeUserStatus(@Parameter(description = "Id of user to be changed") @PathVariable Long userId, @RequestBody AccountStatusDto accountStatusDto) {
+        return service.changeUserStatus(userId, accountStatusDto.getStatus());
     }
 }
