@@ -28,8 +28,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
-    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId " +
-            "AND r.startDate < :availabilityEnd AND r.endDate > :availabilityStart")
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId  AND r.status = com.example.accommodiq.enums.ReservationStatus.ACCEPTED " +
+            "AND (" +
+            "(r.startDate >= :availabilityStart AND r.startDate < :availabilityEnd)" +
+            " OR (r.endDate > :availabilityStart AND r.endDate <= :availabilityEnd)" +
+            "OR (r.startDate <= :availabilityStart AND r.endDate >= :availabilityEnd))")
     Long countOverlappingReservations(@Param("accommodationId") Long accommodationId,
                                       @Param("availabilityStart") Long availabilityStart,
                                       @Param("availabilityEnd") Long availabilityEnd);
