@@ -16,8 +16,6 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
     Collection<Reservation> findByGuestId(Long guestId);
 
-    Collection<Reservation> findByAccommodationId(Long accommodationId);
-
     @Transactional
     void deleteByAccommodationId(Long accommodationId);
 
@@ -25,6 +23,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     void deleteByGuestId(Long guestId);
 
     List<Reservation> findByStatusAndGuestIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long guestId, Long endDate);
+
+    List<Reservation> findByStatusAndGuestIdAndStartDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long guestId, Long startDate);
 
     List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
@@ -44,4 +44,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Collection<Reservation> findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(Long guestId, Collection<Long> accommodationIds, ReservationStatus status, Long endDate);
 
     Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateLessThan(Long guestId, Long accommodationId, List<ReservationStatus> list, long currentTime);
+
+    Collection<Reservation> findByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(Long accommodation_id, Long startDate, Long startDate2, Long endDate, Long endDate2, ReservationStatus status);
 }

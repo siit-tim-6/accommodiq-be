@@ -1,19 +1,17 @@
 package com.example.accommodiq.services.impl.accommodations;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Reservation;
-import com.example.accommodiq.domain.Review;
-import com.example.accommodiq.dtos.MessageDto;
-import com.example.accommodiq.dtos.ReservationDto;
-import com.example.accommodiq.dtos.ReservationRequestDto;
-import com.example.accommodiq.dtos.ReservationStatusDto;
+import com.example.accommodiq.domain.*;
+import com.example.accommodiq.dtos.*;
+import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
+import com.example.accommodiq.specifications.HostReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -25,13 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Service
 public class ReservationServiceImpl implements IReservationService {
@@ -41,14 +35,16 @@ public class ReservationServiceImpl implements IReservationService {
     final AccommodationRepository accommodationRepository;
     final IUserService userService;
     final ReviewRepository reviewRepository;
+    final INotificationService notificationService;
 
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
-    public ReservationServiceImpl(ReservationRepository allReservations, AccommodationRepository accommodationRepository, IUserService userService, ReviewRepository reviewRepository) {
+    public ReservationServiceImpl(ReservationRepository allReservations, AccommodationRepository accommodationRepository, IUserService userService, ReviewRepository reviewRepository, INotificationService notificationService) {
         this.allReservations = allReservations;
         this.accommodationRepository = accommodationRepository;
         this.userService = userService;
         this.reviewRepository = reviewRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -131,44 +127,61 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Collection<Reservation> findReservationsByAccommodationId(Long accommodationId) {
-        Collection<Reservation> found = allReservations.findByAccommodationId(accommodationId);
-        if (found.isEmpty()) {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
-        return found;
-    }
-
-    @Override
-    public Collection<Reservation> findReservationsByGuestId(Long guestId) {
-        Collection<Reservation> found = allReservations.findByGuestId(guestId);
-        if (found.isEmpty()) {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
-        return found;
-    }
-
-    @Override
-    public Reservation setReservationStatus(Long reservationId, ReservationStatusDto statusDto) {
-        Optional<Reservation> optionalReservation = allReservations.findById(reservationId);
-        if (optionalReservation.isPresent()) {
-            Reservation reservation = optionalReservation.get();
-            reservation.setStatus(statusDto.getStatus());
-            allReservations.save(reservation);
-            allReservations.flush();
-            return reservation;
-        } else {
-            String value = bundle.getString("reservationNotFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
-    }
-
-    @Override
-    public void deleteByAccommodationId(Long accommodationId) {
-        allReservations.deleteByAccommodationId(accommodationId);
+    public ReservationCardDto changeReservationStatus(Long reservationId, ReservationStatus status) {
+        validateUserChangingStatusEligibility(status);
+        Reservation reservation = findReservation(reservationId);
+        reservation.setStatus(status);
+        allReservations.save(reservation);
         allReservations.flush();
+        if (reservation.getStatus() == ReservationStatus.ACCEPTED) {
+            cancelReservationsThatOverlapWithNewlyAccepted(reservation);
+        }
+
+        trySendNotification(reservation);
+
+        return new ReservationCardDto(reservation);
+    }
+
+    private void cancelReservationsThatOverlapWithNewlyAccepted(Reservation reservation) {
+        Collection<Reservation> overlappingPendingReservations = allReservations.findByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(
+                reservation.getAccommodation().getId(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                reservation.getStartDate(),
+                reservation.getEndDate(),
+                ReservationStatus.PENDING);
+
+        overlappingPendingReservations.remove(reservation);
+        for (Reservation overlappingPendingReservation : overlappingPendingReservations) {
+            overlappingPendingReservation.setStatus(ReservationStatus.DECLINED);
+
+            trySendNotification(overlappingPendingReservation);
+
+            allReservations.save(overlappingPendingReservation);
+            allReservations.flush();
+        }
+    }
+
+    private void trySendNotification(Reservation reservation) {
+        if (reservation.getStatus() == ReservationStatus.ACCEPTED) {
+            Notification notification = new Notification("Your reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been accepted", NotificationType.HOST_REPLY_TO_REQUEST, reservation.getGuest());
+            notificationService.createAndSendNotification(notification);
+        }
+        if (reservation.getStatus() == ReservationStatus.DECLINED) {
+            Notification notification = new Notification("Your reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been declined", NotificationType.HOST_REPLY_TO_REQUEST, reservation.getGuest());
+            notificationService.createAndSendNotification(notification);
+        }
+    }
+
+    private void validateUserChangingStatusEligibility(ReservationStatus status) {
+        if (getLoggedInUserRole() == AccountRole.GUEST && status != ReservationStatus.CANCELLED) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "guestCannotChangeReservationStatus");
+        }
+        if (getLoggedInUserRole() == AccountRole.HOST) {
+            Collection<ReservationStatus> allowedStatuses = List.of(ReservationStatus.ACCEPTED, ReservationStatus.DECLINED);
+            if (!allowedStatuses.contains(status))
+                throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "hostCannotChangeReservationStatus");
+        }
     }
 
     @Override
@@ -197,6 +210,11 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public List<Reservation> findHostReservationsNotEndedYet(Long guestId) {
         return allReservations.findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().toEpochMilli());
+    }
+
+    @Override
+    public Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status) {
+        return allReservations.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
@@ -239,5 +257,14 @@ public class ReservationServiceImpl implements IReservationService {
         }
 
         return ((Account) authentication.getPrincipal()).getUser().getId();
+    }
+
+    private AccountRole getLoggedInUserRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return null;
+        }
+
+        return ((Account) authentication.getPrincipal()).getRole();
     }
 }

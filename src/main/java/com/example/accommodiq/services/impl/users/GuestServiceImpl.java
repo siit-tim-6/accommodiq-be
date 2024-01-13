@@ -12,15 +12,16 @@ import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
-import com.example.accommodiq.specifications.ReservationSpecification;
+import com.example.accommodiq.specifications.GuestReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -67,9 +68,20 @@ public class GuestServiceImpl implements IGuestService {
     }
 
     @Override
-    public Collection<ReservationCardDto> findByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+    public Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long guestId = getGuestId();
-        return reservationRepository.findAll(ReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
+        return reservationRepository.findAll(GuestReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
+    }
+
+    @Override
+    public Collection<Long> getCancellableReservationIds() {
+        Long guestId = getGuestId();
+        List<Reservation> reservations = reservationRepository.findByStatusAndGuestIdAndStartDateGreaterThanOrderByStartDateDesc(ReservationStatus.ACCEPTED, guestId, Instant.now().getEpochSecond());
+        return reservations.stream().filter(this::isCancellable).map(Reservation::getId).toList();
+    }
+
+    private boolean isCancellable(Reservation reservation) {
+        return reservation.getStartDate() - reservation.getAccommodation().getCancellationDeadline() * 24 * 60 * 60 * 1000L >= Instant.now().toEpochMilli();
     }
 
     @Transactional

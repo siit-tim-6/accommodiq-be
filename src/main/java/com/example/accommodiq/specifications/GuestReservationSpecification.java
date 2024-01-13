@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReservationSpecification {
+public class GuestReservationSpecification {
     public static Specification<Reservation> searchAndFilter(long guestId, String title, Long startDate, Long endDate, ReservationStatus status) {
         return ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
