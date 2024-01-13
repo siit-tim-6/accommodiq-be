@@ -215,7 +215,7 @@ public class Accommodation {
 
     public boolean isAvailable(Long from, Long to) {
         Long finalFrom = from;
-        Long oneDay = (long) (60 * 60 * 24);
+        Long oneDay = (long) (60 * 60 * 24 * 1000);
 
         if (this.available == null) {
             return false;
