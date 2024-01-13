@@ -223,7 +223,7 @@ public class ReservationServiceImpl implements IReservationService {
 
     @Override
     public void cancelGuestReservations(Long id) {
-        allReservations.findByGuestId(id).forEach(reservation -> {
+        allReservations.findByGuestId(id).stream().filter(reservation -> reservation.getStartDate() > Instant.now().toEpochMilli()).forEach(reservation -> {
             changeReservationStatus(reservation.getId(), ReservationStatus.CANCELLED);
             allReservations.save(reservation);
             allReservations.flush();
