@@ -156,6 +156,9 @@ public class ReportServiceImpl implements IReportService {
     @Override
     public MessageDto changeUserStatus(Long userId, AccountStatus status) {
         accountService.changeStatusByUserId(userId, status);
+        if (status == AccountStatus.BLOCKED) {
+            deleteByReportedUserId(userId);
+        }
         return new MessageDto("User status changed successfully");
     }
 
