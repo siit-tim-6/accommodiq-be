@@ -7,11 +7,11 @@ VALUES (4, 'address 1', 'Admin', 'Admin', '555-9101'),
 
 -- Insert sample data into `account` table
 INSERT INTO `account` (`id`, `email`, `password`, `role`, `status`, `user_id`, `activation_expires`)
-VALUES (4, 'admin', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 2, 1, 4, 1672531200000),
-       (1, 'john.doe@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 1, 1672531200000),
-       (2, 'jane.smith@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 2,
+VALUES (4, 'admin', '$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC', 2, 1, 4, 1672531200000),
+       (1, 'john.doe@example.com', '$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC', 1, 1, 1, 1672531200000),
+       (2, 'jane.smith@example.com', '$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC', 1, 1, 2,
         1672531200000),
-       (3, 'guest.bj@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 1, 3, 1672531200000);
+       (3, 'guest.bj@example.com', '$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC', 0, 1, 3, 1672531200000);
 
 -- Insert sample data into `host` table
 INSERT INTO `host` (`id`)
