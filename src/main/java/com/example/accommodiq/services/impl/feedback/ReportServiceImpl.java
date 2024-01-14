@@ -1,12 +1,14 @@
 package com.example.accommodiq.services.impl.feedback;
 
-import com.example.accommodiq.domain.*;
+import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.enums.AccountRole;
-import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
@@ -45,10 +47,10 @@ public class ReportServiceImpl implements IReportService {
 
     @Override
     public Collection<ReportCardDto> getAll() {
-        return allReports.findAll().stream().map(this::getReportCardDto).toList();
+        return allReports.findAll().stream().map(this::generateReportCardDto).toList();
     }
 
-    private ReportCardDto getReportCardDto(Report report) {
+    private ReportCardDto generateReportCardDto(Report report) {
         Account reportedUserAccount = accountService.findAccount(report.getReportedUser().getId());
         Account reportingUserAccount = accountService.findAccount(report.getReportingUser().getId());
         return new ReportCardDto(reportedUserAccount, reportingUserAccount, report.getReason(), report.getId());
@@ -139,27 +141,6 @@ public class ReportServiceImpl implements IReportService {
         Report report = new Report(reportedUser, reportingUser, reportDto);
         insert(report);
         return new MessageDto("Reported Successfully");
-    }
-
-    @Override
-    public void deleteByReportedUserId(Long id) {
-        allReports.deleteByReportedUserId(id);
-        allReports.flush();
-    }
-
-    @Override
-    public void deleteByReportingUserId(Long id) {
-        allReports.deleteByReportingUserId(id);
-        allReports.flush();
-    }
-
-    @Override
-    public MessageDto changeUserStatus(Long userId, AccountStatus status) {
-        accountService.changeStatusByUserId(userId, status);
-        if (status == AccountStatus.BLOCKED) {
-            deleteByReportedUserId(userId);
-        }
-        return new MessageDto("User status changed successfully");
     }
 
     private void validateReportInput(Account reportedAccount, Account reportingAccount, ReportDto reportDto) {
