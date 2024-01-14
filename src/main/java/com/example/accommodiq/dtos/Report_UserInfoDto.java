@@ -6,19 +6,6 @@ import com.example.accommodiq.enums.AccountRole;
 public class Report_UserInfoDto {
     private Long id;
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public AccountRole getRole() {
-        return role;
-    }
-
     private AccountRole role;
 
     public Report_UserInfoDto() {
@@ -31,5 +18,15 @@ public class Report_UserInfoDto {
         this.role = account.getRole();
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public AccountRole getRole() {
+        return role;
+    }
 }
