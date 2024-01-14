@@ -23,7 +23,7 @@ public class ReservationRepositoryTest {
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-overlapping-reservations.sql"})
     public void shouldNotFindOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
 
         assertEquals(0, count);
     }
@@ -31,7 +31,7 @@ public class ReservationRepositoryTest {
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/default-overlapping-reservations.sql"})
     public void shouldFindOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
 
         assertEquals(3L, count);
     }
@@ -39,7 +39,7 @@ public class ReservationRepositoryTest {
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/wrapping-reservation.sql"})
     public void shouldFindWrappingReservation() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
 
         assertEquals(1L, count);
     }
@@ -47,7 +47,7 @@ public class ReservationRepositoryTest {
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/default-overlapping-reservations.sql", "classpath:data/reservations/not-overlapping-reservations.sql", "classpath:data/reservations/wrapping-reservation.sql"})
     public void shouldFindAllOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
 
         assertEquals(4L, count);
     }
@@ -55,7 +55,7 @@ public class ReservationRepositoryTest {
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-accepted-reservations.sql"})
     public void shouldNotFindAcceptedReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
 
         assertEquals(0L, count);
     }
@@ -64,8 +64,16 @@ public class ReservationRepositoryTest {
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-accepted-reservations.sql"})
     public void shouldFindOneOverlappingReservation() {
         List<ReservationStatus> statuses = List.of(ReservationStatus.ACCEPTED, ReservationStatus.PENDING);
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, statuses);
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, statuses);
 
         assertEquals(1L, count);
+    }
+
+    @Test
+    @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/default-overlapping-reservations.sql"})
+    public void shouldFindNoneForWrongGuest() {
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(2L, 1L, 100L, 200L, acceptedStatusOnlyList);
+
+        assertEquals(0L, count);
     }
 }
