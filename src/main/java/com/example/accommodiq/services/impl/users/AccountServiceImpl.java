@@ -2,6 +2,7 @@ package com.example.accommodiq.services.impl.users;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.AccountDetailsDto;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.UpdatePasswordDto;
 import com.example.accommodiq.enums.AccountRole;
@@ -204,5 +205,15 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Account findAccountByUserId(Long userId) {
         return allAccounts.findAccountByUserId(userId);
+    }
+
+    @Override
+    public MessageDto changeUserStatus(Long userId, AccountStatus status) {
+        changeStatusByUserId(userId, status);
+        if (status == AccountStatus.BLOCKED) {
+            reportRepository.deleteByReportedUserId(userId);
+            reportRepository.flush();
+        }
+        return new MessageDto("User status changed successfully");
     }
 }
