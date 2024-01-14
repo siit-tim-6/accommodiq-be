@@ -28,15 +28,23 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     List<Reservation> findByStatusAndAccommodation_HostIdAndEndDateGreaterThanOrderByStartDateDesc(ReservationStatus status, Long hostId, Long endDate);
 
-    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.accommodation.id = :accommodationId  AND r.status in :statuses " +
+    @Query("SELECT COUNT(r) FROM Reservation r " +
+            "WHERE r.accommodation.id = :accommodationId " +
+            "AND r.status in :statuses " +
             "AND (" +
-            "(r.startDate >= :availabilityStart AND r.startDate < :availabilityEnd)" +
-            " OR (r.endDate > :availabilityStart AND r.endDate <= :availabilityEnd)" +
-            "OR (r.startDate <= :availabilityStart AND r.endDate >= :availabilityEnd))")
-    Long countOverlappingReservations(@Param("accommodationId") Long accommodationId,
-                                      @Param("availabilityStart") Long availabilityStart,
-                                      @Param("availabilityEnd") Long availabilityEnd,
-                                      @Param("statuses") List<ReservationStatus> status);
+            "  (r.startDate >= :availabilityStart AND r.startDate < :availabilityEnd) " +
+            "  OR (r.endDate > :availabilityStart AND r.endDate <= :availabilityEnd) " +
+            "  OR (r.startDate <= :availabilityStart AND r.endDate >= :availabilityEnd)" +
+            ") " +
+            "AND (:guestId IS NULL OR r.guest.id = :guestId)")
+    Long countOverlappingReservationsOrGuestOverlappingReservations(@Param("guestId") Long guestId,
+                                                                    @Param("accommodationId") Long accommodationId,
+                                                                    @Param("availabilityStart") Long availabilityStart,
+                                                                    @Param("availabilityEnd") Long availabilityEnd,
+                                                                    @Param("statuses") List<ReservationStatus> status);
+
+
+
 
     Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
             Long guestId,
