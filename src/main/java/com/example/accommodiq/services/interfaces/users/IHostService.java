@@ -25,7 +25,7 @@ public interface IHostService {
 
     Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
-    ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate);
+    ArrayList<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate);
 
     Collection<ReviewDto> getHostReviews(Long hostId);
 

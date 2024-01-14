@@ -88,11 +88,11 @@ public class HostController {
         return hostService.getHostAccommodations();
     }
 
-    @GetMapping("{hostId}/financial-report")
+    @GetMapping("/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host financial report")
-    public Collection<FinancialReportEntryDto> getFinancialReport(@PathVariable Long hostId, @RequestParam long fromDate, @RequestParam long toDate) {
-        return hostService.getFinancialReport(hostId, fromDate, toDate);
+    public Collection<FinancialReportEntryDto> getFinancialReport(@RequestParam long fromDate, @RequestParam long toDate) {
+        return hostService.getFinancialReport(fromDate, toDate);
     }
 
     @PostMapping("{hostId}/reviews")

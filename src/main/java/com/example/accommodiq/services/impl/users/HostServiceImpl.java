@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,20 +118,20 @@ public class HostServiceImpl implements IHostService {
     @Override
     public Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long hostId = getHostId();
-        return reservationService.findHostReservationsByFilter(hostId, title, startDate, endDate, status);
+        return reservationService.findHostReservationsByFilter(hostId, title, startDate, endDate, status).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
     }
 
     @Override
-    public ArrayList<FinancialReportEntryDto> getFinancialReport(Long hostId, long fromDate, long toDate) {
-        if (hostId == 4L) {
-            throw ErrorUtils.generateNotFound("hostNotFound");
-        }
-
+    public ArrayList<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate) {
+        Long hostId = getHostId();
+        Map<Long, List<Reservation>> hostPreviousReservations = reservationService
+                .findHostReservationsByFilter(hostId, null, fromDate, toDate, ReservationStatus.ACCEPTED)
+                .stream().collect(Collectors.groupingBy(Reservation::getId));
         ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
 
-        financialReportEntries.add(new FinancialReportEntryDto("Cozy Cabin", 1200.0, 5));
-        financialReportEntries.add(new FinancialReportEntryDto("Sunny Apartment", 1800.0, 8));
-        financialReportEntries.add(new FinancialReportEntryDto("Mountain Lodge", 2500.0, 10));
+        for (List<Reservation> reservations : hostPreviousReservations.values()) {
+            financialReportEntries.add(new FinancialReportEntryDto(reservations));
+        }
 
         return financialReportEntries;
     }
