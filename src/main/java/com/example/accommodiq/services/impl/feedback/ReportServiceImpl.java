@@ -5,6 +5,7 @@ import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.domain.User;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.enums.AccountRole;
@@ -15,7 +16,6 @@ import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -46,8 +46,14 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Collection<Report> getAll() {
-        return allReports.findAll();
+    public Collection<ReportCardDto> getAll() {
+        return allReports.findAll().stream().map(this::generateReportCardDto).toList();
+    }
+
+    private ReportCardDto generateReportCardDto(Report report) {
+        Account reportedUserAccount = accountService.findAccount(report.getReportedUser().getId());
+        Account reportingUserAccount = accountService.findAccount(report.getReportingUser().getId());
+        return new ReportCardDto(reportedUserAccount, reportingUserAccount, report.getReason(), report.getId());
     }
 
     @Override
@@ -100,11 +106,11 @@ public class ReportServiceImpl implements IReportService {
     }
 
     @Override
-    public Report delete(Long reportId) {
+    public MessageDto delete(Long reportId) {
         Report report = findReport(reportId);
         allReports.delete(report);
         allReports.flush();
-        return report;
+        return new MessageDto("Report deleted successfully");
     }
 
     @Override
@@ -135,18 +141,6 @@ public class ReportServiceImpl implements IReportService {
         Report report = new Report(reportedUser, reportingUser, reportDto);
         insert(report);
         return new MessageDto("Reported Successfully");
-    }
-
-    @Override
-    public void deleteByReportedUserId(Long id) {
-        allReports.deleteByReportedUserId(id);
-        allReports.flush();
-    }
-
-    @Override
-    public void deleteByReportingUserId(Long id) {
-        allReports.deleteByReportingUserId(id);
-        allReports.flush();
     }
 
     private void validateReportInput(Account reportedAccount, Account reportingAccount, ReportDto reportDto) {

@@ -35,4 +35,6 @@ public interface IReservationService {
     List<Reservation> findHostReservationsNotEndedYet(Long userId);
 
     Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status);
+
+    void cancelGuestReservations(Long id);
 }

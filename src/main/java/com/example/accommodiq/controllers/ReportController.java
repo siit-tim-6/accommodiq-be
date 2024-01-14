@@ -1,6 +1,7 @@
 package com.example.accommodiq.controllers;
 
-import com.example.accommodiq.domain.Report;
+import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 import com.example.accommodiq.services.interfaces.feedback.IReportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class ReportController {
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all reports")
-    public Collection<Report> getReports() {
+    public Collection<ReportCardDto> getReports() {
         return service.getAll();
     }
 
@@ -48,7 +49,7 @@ public class ReportController {
     @DeleteMapping("/{reportId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Delete report")
-    public Report deleteReport(@Parameter(description = "Id of report to be deleted") @PathVariable Long reportId) {
+    public MessageDto deleteReport(@Parameter(description = "Id of report to be deleted") @PathVariable Long reportId) {
         return service.delete(reportId);
     }
 
@@ -58,5 +59,4 @@ public class ReportController {
     public void deleteAll() {
         service.deleteAll();
     }
-
 }

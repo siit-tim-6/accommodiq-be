@@ -1,15 +1,15 @@
 package com.example.accommodiq.services.interfaces.feedback;
 
-import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Report;
 import com.example.accommodiq.dtos.MessageDto;
+import com.example.accommodiq.dtos.ReportCardDto;
 import com.example.accommodiq.dtos.ReportDto;
 import com.example.accommodiq.dtos.ReportModificationDto;
 
 import java.util.Collection;
 
 public interface IReportService {
-    Collection<Report> getAll();
+    Collection<ReportCardDto> getAll();
 
     Report findReport(Long reportId);
 
@@ -19,14 +19,9 @@ public interface IReportService {
 
     ReportModificationDto update(ReportModificationDto report);
 
-    Report delete(Long reportId);
+    MessageDto delete(Long reportId);
 
     void deleteAll();
 
     MessageDto reportUser(Long reportedUserId, ReportDto reportDto);
-
-    void deleteByReportedUserId(Long id);
-
-    void deleteByReportingUserId(Long id);
-    
 }

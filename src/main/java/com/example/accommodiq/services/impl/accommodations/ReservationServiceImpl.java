@@ -171,6 +171,10 @@ public class ReservationServiceImpl implements IReservationService {
             Notification notification = new Notification("Your reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been declined", NotificationType.HOST_REPLY_TO_REQUEST, reservation.getGuest());
             notificationService.createAndSendNotification(notification);
         }
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            Notification notification = new Notification("Reservation for accommodation " + reservation.getAccommodation().getTitle() + " has been cancelled", NotificationType.RESERVATION_CANCEL, reservation.getAccommodation().getHost());
+            notificationService.createAndSendNotification(notification);
+        }
     }
 
     private void validateUserChangingStatusEligibility(ReservationStatus status) {
@@ -215,6 +219,15 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status) {
         return allReservations.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
+    }
+
+    @Override
+    public void cancelGuestReservations(Long id) {
+        allReservations.findByGuestId(id).stream().filter(reservation -> reservation.getStartDate() > Instant.now().toEpochMilli()).forEach(reservation -> {
+            changeReservationStatus(reservation.getId(), ReservationStatus.CANCELLED);
+            allReservations.save(reservation);
+            allReservations.flush();
+        });
     }
 
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {

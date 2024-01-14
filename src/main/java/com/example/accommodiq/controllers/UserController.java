@@ -106,15 +106,6 @@ public class UserController {
         return account;
     }
 
-    @PutMapping(value = "/{id}/status")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Change user status")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserStatusDto.class))})})
-    public void changeStatus(@Parameter(description = "Id of user to change status") @PathVariable Long id, @RequestBody UserStatusDto statusDto) {
-        accountService.changeStatus(id, statusDto.getStatus());
-    }
-
     @PutMapping("/password")
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST') or hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
@@ -196,5 +187,12 @@ public class UserController {
     @GetMapping("/{userId}/profile")
     public AccountDetailsDto getAccountDetails(@PathVariable Long userId) {
         return accountService.getAccountDetails(userId);
+    }
+
+    @PutMapping("/{userId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Change user status")
+    public MessageDto changeUserStatus(@Parameter(description = "Id of user to be changed") @PathVariable Long userId, @RequestBody AccountStatusDto accountStatusDto) {
+        return accountService.changeUserStatus(userId, accountStatusDto.getStatus());
     }
 }
