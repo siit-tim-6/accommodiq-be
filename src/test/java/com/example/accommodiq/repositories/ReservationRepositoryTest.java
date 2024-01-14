@@ -1,12 +1,15 @@
 package com.example.accommodiq.repositories;
 
+import com.example.accommodiq.enums.ReservationStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.testng.Assert.assertEquals;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -14,43 +17,55 @@ public class ReservationRepositoryTest {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    private final List<ReservationStatus> acceptedStatusOnlyList = List.of(ReservationStatus.ACCEPTED);
+
+
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-overlapping-reservations.sql"})
     public void shouldNotFindOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
 
-        assertEquals(count, 0L);
+        assertEquals(0, count);
     }
 
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/default-overlapping-reservations.sql"})
     public void shouldFindOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
 
-        assertEquals(count, 3L);
+        assertEquals(3L, count);
     }
 
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/wrapping-reservation.sql"})
     public void shouldFindWrappingReservation() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
 
-        assertEquals(count, 1L);
+        assertEquals(1L, count);
     }
 
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/default-overlapping-reservations.sql", "classpath:data/reservations/not-overlapping-reservations.sql", "classpath:data/reservations/wrapping-reservation.sql"})
     public void shouldFindAllOverlappingReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
 
-        assertEquals(count, 4L);
+        assertEquals(4L, count);
     }
 
     @Test
     @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-accepted-reservations.sql"})
     public void shouldNotFindAcceptedReservations() {
-        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, acceptedStatusOnlyList);
 
-        assertEquals(count, 0L);
+        assertEquals(0L, count);
+    }
+
+    @Test
+    @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/not-accepted-reservations.sql"})
+    public void shouldFindOneOverlappingReservation() {
+        List<ReservationStatus> statuses = List.of(ReservationStatus.ACCEPTED, ReservationStatus.PENDING);
+        Long count = reservationRepository.countOverlappingReservations(1L, 100L, 200L, statuses);
+
+        assertEquals(1L, count);
     }
 }

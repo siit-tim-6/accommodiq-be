@@ -325,7 +325,8 @@ public class AccommodationServiceImpl implements IAccommodationService {
         Long count = reservationRepository.countOverlappingReservations(
                 accommodation.getId(),
                 availability.getFromDate(),
-                availability.getToDate()
+                availability.getToDate(),
+                List.of(ReservationStatus.ACCEPTED)
         );
         return count != null && count > 0;
     }
