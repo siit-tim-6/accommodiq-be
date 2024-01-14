@@ -23,6 +23,8 @@ public interface IHostService {
 
     Collection<AccommodationCardWithStatusDto> getHostAccommodations();
 
+    Collection<AccommodationTitleDto> getHostAccommodationTitles();
+
     Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
     ArrayList<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate);

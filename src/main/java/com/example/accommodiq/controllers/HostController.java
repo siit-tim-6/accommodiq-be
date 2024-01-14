@@ -88,6 +88,13 @@ public class HostController {
         return hostService.getHostAccommodations();
     }
 
+    @GetMapping("/accommodation-titles")
+    @PreAuthorize("hasAuthority('HOST')")
+    @Operation(summary = "Get host accommodation titles")
+    public Collection<AccommodationTitleDto> getHostAccommodationTitles() {
+        return hostService.getHostAccommodationTitles();
+    }
+
     @GetMapping("/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host financial report")

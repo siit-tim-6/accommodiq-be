@@ -116,6 +116,12 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
+    public Collection<AccommodationTitleDto> getHostAccommodationTitles() {
+        Long hostId = getHostId();
+        return allAccommodations.findByHostId(hostId).stream().map(AccommodationTitleDto::new).toList();
+    }
+
+    @Override
     public Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
         Long hostId = getHostId();
         return reservationService.findHostReservationsByFilter(hostId, title, startDate, endDate, status).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
