@@ -54,12 +54,12 @@ VALUES (1, 1),
 
 -- Insert sample data into `review` table
 INSERT INTO `review` (`id`, `comment`, `date`, `rating`, `status`, `guest_id`)
-VALUES (1, 'Great place!', 1672617600, 5, 1, 3),
-       (2, 'Comfortable stay', 1672704000, 4, 0, 3),
-       (3, 'Beautiful location', 1672790400, 5, 0, 3),
-       (4, 'Amazing place!', 1672617600, 5, 2, 3),
-       (5, 'Pleasant guy', 1672704000, 4, 1, 3),
-       (6, 'Very cool landowner', 1672790400, 5, 0, 3);
+VALUES (1, 'Great place!', 1672617600000, 5, 1, 3),
+       (2, 'Comfortable stay', 1672704000000, 4, 0, 3),
+       (3, 'Beautiful location', 1672790400000, 5, 0, 3),
+       (4, 'Amazing place!', 1672617600000, 5, 2, 3),
+       (5, 'Pleasant guy', 1672704000000, 4, 1, 3),
+       (6, 'Very cool landowner', 1672790400000, 5, 0, 3);
 
 -- Insert sample data into `accommodation_reviews` table
 INSERT INTO `accommodation_reviews` (`accommodation_id`, `reviews_id`)
