@@ -232,7 +232,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             long monthEnd = calendar.getTimeInMillis();
 
-            Collection<Reservation> reservations = reservationRepository.findByAccommodationHostIdAndStartDateBetweenAndStatus(hostId, monthStart, monthEnd, ReservationStatus.ACCEPTED);
+            Collection<Reservation> reservations = reservationRepository.findByAccommodationIdAndStartDateBetweenAndStatus(accommodationId, monthStart, monthEnd, ReservationStatus.ACCEPTED);
             monthlyRevenues.add(new FinancialReportMonthlyRevenueDto(getMonth(month), reservations));
         }
 
