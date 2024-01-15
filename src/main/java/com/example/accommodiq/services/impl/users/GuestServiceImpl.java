@@ -3,6 +3,7 @@ package com.example.accommodiq.services.impl.users;
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.AccountStatus;
 import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
@@ -15,6 +16,7 @@ import com.example.accommodiq.specifications.GuestReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +91,12 @@ public class GuestServiceImpl implements IGuestService {
     @Transactional
     @Override
     public ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto) {
+        Account userAccount = accountService.findAccountByUserId(guestId);
+
+        if (userAccount.getStatus() == AccountStatus.BLOCKED) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "accountBlocked");
+        }
+
         Guest guest = findGuest(guestId);
         Accommodation accommodation = findAccommodation(reservationDto.getAccommodationId());
 
