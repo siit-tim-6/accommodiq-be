@@ -1,6 +1,7 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.*;
+import com.example.accommodiq.dtos.AccommodationBookingDetailsDto;
 import com.example.accommodiq.dtos.AvailabilityDto;
 import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.enums.AccommodationStatus;
@@ -225,6 +226,15 @@ public class AccommodationServiceTest {
         verifyNoInteractions(accountService);
     }
 
+    @Test
+    @DisplayName("Should Not Add Accommodation Availability Due to Invalid Accommodation ID")
+    public void testRemoveAccommodationAvailabilityWithNullIds() {
+        assertThrows(ResponseStatusException.class, () -> {
+            accommodationService.removeAccommodationAvailability(null, null);
+        });
+    }
+
+
     public static Stream<Arguments> provideValidAvailabilityRemoveScenarios() {
         return Stream.of(
                 // After all existing availabilities
@@ -266,10 +276,65 @@ public class AccommodationServiceTest {
         verifyNoInteractions(accountService);
     }
 
+    @Test
+    @DisplayName("Should Update Accommodation Successfully")
+    public void testUpdateAccommodationBookingDetailsSuccess() {
+        // Arrange
+        AccommodationBookingDetailsDto bookingDetailsDto = new AccommodationBookingDetailsDto();
+        bookingDetailsDto.setCancellationDeadline(48);
+        bookingDetailsDto.setPricingType(PricingType.PER_GUEST);
 
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
 
+        // Act
+        ResponseEntity<AccommodationBookingDetailsDto> response = accommodationService.updateAccommodationBookingDetails(validAccommodation.getId(), bookingDetailsDto);
 
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(bookingDetailsDto.getCancellationDeadline(), response.getBody().getCancellationDeadline());
+        assertEquals(bookingDetailsDto.getPricingType(), response.getBody().getPricingType());
 
+        verify(accommodationRepository).save(accommodationArgumentCaptor.capture());
+        verify(accommodationRepository).flush();
+        assertSame(validAccommodation, accommodationArgumentCaptor.getValue());
+        verify(accommodationRepository, times(2)).findById(validAccommodation.getId());
+        verifyNoInteractions(guestService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
+        verifyNoMoreInteractions(accommodationRepository);
+    }
+
+    @Test
+    @DisplayName("Should Not Update Accommodation Due to Invalid Accommodation ID")
+    public void testUpdateAccommodationBookingDetailsNotFound() {
+        // Arrange
+        Long accommodationId = 99L; // Non-existing ID
+        AccommodationBookingDetailsDto bookingDetailsDto = new AccommodationBookingDetailsDto();
+        bookingDetailsDto.setCancellationDeadline(48);
+        bookingDetailsDto.setPricingType(PricingType.PER_GUEST);
+
+        // Mocking
+        when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.ofNullable(null));
+
+        // Act
+        assertThrows(ResponseStatusException.class, () -> {
+            accommodationService.updateAccommodationBookingDetails(accommodationId, bookingDetailsDto);
+        });
+
+        // Assert
+        verify(accommodationRepository).findById(accommodationId);
+        verifyNoMoreInteractions(accommodationRepository);
+        verifyNoInteractions(guestService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
+    }
+    
     private boolean containsAvailabilityWithSameProperties(List<Availability> availabilities, AvailabilityDto dto) {
         return availabilities.stream().anyMatch(a ->
                 Objects.equals(a.getFromDate(), dto.getFromDate()) &&
