@@ -76,4 +76,20 @@ public class ReservationRepositoryTest {
 
         assertEquals(0L, count);
     }
+
+    @Test
+    @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/edge-not-overlapping-reservations.sql"})
+    public void shouldFindNoneForEdgeNotOverlappingReservations() {
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, 1L, 100L, 200L, acceptedStatusOnlyList);
+
+        assertEquals(0L, count);
+    }
+
+    @Test
+    @Sql({"classpath:data/reservations/base.sql", "classpath:data/reservations/different-accommodations-overlapping-reservations.sql"})
+    public void shouldFindNoneForDifferentAccommodationsOverlappingReservations() {
+        Long count = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(3L, 1L, 100L, 200L, acceptedStatusOnlyList);
+
+        assertEquals(0L, count);
+    }
 }

@@ -2,9 +2,11 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.AvailabilityDto;
+import com.example.accommodiq.dtos.MessageDto;
 import com.example.accommodiq.enums.AccommodationStatus;
 import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.PricingType;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
 import com.example.accommodiq.repositories.ReviewRepository;
@@ -33,6 +35,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -114,18 +117,22 @@ public class AccommodationServiceTest {
     @MethodSource("provideValidAvailabilityScenarios")
     @DisplayName("Should Add Accommodation Availability Successfully")
     public void testAddAccommodationAvailabilitySuccess(AvailabilityDto availabilityDto) {
-        Long accommodationId = 1L;
+        int defaultAvailabilityCount = validAccommodation.getAvailable().size();
 
-        when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.ofNullable(validAccommodation));
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
 
-        ResponseEntity<List<Availability>> response = accommodationService.addAccommodationAvailability(accommodationId, availabilityDto);
+        // Act
+        ResponseEntity<List<Availability>> response = accommodationService.addAccommodationAvailability(validAccommodation.getId(), availabilityDto);
 
+        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(containsAvailabilityWithSameProperties(Objects.requireNonNull(response.getBody()), availabilityDto));
+        assertEquals(defaultAvailabilityCount + 1, response.getBody().size());
         verify(accommodationRepository).save(accommodationArgumentCaptor.capture());
         verify(accommodationRepository).flush();
         assertSame(validAccommodation, accommodationArgumentCaptor.getValue());
-        verify(accommodationRepository,times(2)).findById(accommodationId);
+        verify(accommodationRepository,times(2)).findById(validAccommodation.getId());
         verifyNoInteractions(guestService);
         verifyNoInteractions(reviewRepository);
         verifyNoInteractions(reservationRepository);
@@ -148,14 +155,18 @@ public class AccommodationServiceTest {
     @MethodSource("provideOverlappingAvailabilityScenarios")
     @DisplayName("Should Not Add Accommodation Availability Due to Overlapping")
     public void testAddAccommodationAvailabilityUnsuccessful(AvailabilityDto availabilityDto) {
-        Long accommodationId = 1L;
+        int defaultAvailabilityCount = validAccommodation.getAvailable().size();
 
-        when(accommodationRepository.findById(accommodationId)).thenReturn(Optional.ofNullable(validAccommodation));
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
 
-        ResponseEntity<List<Availability>> response = accommodationService.addAccommodationAvailability(accommodationId, availabilityDto);
+        // Act
+        ResponseEntity<List<Availability>> response = accommodationService.addAccommodationAvailability(validAccommodation.getId(), availabilityDto);
 
+        // Assert
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        verify(accommodationRepository).findById(accommodationId);
+        assertEquals(defaultAvailabilityCount, validAccommodation.getAvailable().size());
+        verify(accommodationRepository).findById(validAccommodation.getId());
         verifyNoMoreInteractions(accommodationRepository);
         verifyNoInteractions(guestService);
         verifyNoInteractions(reviewRepository);
@@ -163,7 +174,101 @@ public class AccommodationServiceTest {
         verifyNoInteractions(notificationService);
         verifyNoInteractions(accountService);
     }
-    
+
+    @Test
+    @DisplayName("Should Not Add Accommodation Availability Due to Invalid Accommodation ID")
+    public void testRemoveAccommodationAvailabilityNotFound() {
+        Long availabilityId = 99L; // Non-existing ID
+
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
+
+        // Act
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            accommodationService.removeAccommodationAvailability(validAccommodation.getId(), availabilityId);
+        });
+
+        // Assert
+        assertEquals("Availability not found", exception.getReason());
+        verify(accommodationRepository).findById(validAccommodation.getId());
+        verifyNoMoreInteractions(accommodationRepository);
+        verifyNoInteractions(guestService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
+    }
+
+    @Test
+    @DisplayName("Should Not Add Accommodation Availability Due to Active Reservations")
+    public void testRemoveAccommodationAvailabilityWithActiveReservations() {
+        Availability availability = new Availability(4L,1622991600000L + 100000, 1622991600000L + 100000 + 86400000, 130.0);
+        validAccommodation.getAvailable().add(availability);
+
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
+        when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, validAccommodation.getId(), availability.getFromDate(), availability.getToDate(), List.of(ReservationStatus.ACCEPTED))).thenReturn(1L);
+
+        // Act
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            accommodationService.removeAccommodationAvailability(validAccommodation.getId(), availability.getId());
+        });
+
+        // Assert
+        assertEquals("Cannot remove availability as there are active reservations in this period.", exception.getReason());
+        verify(accommodationRepository).findById(validAccommodation.getId());
+        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(null, validAccommodation.getId(), availability.getFromDate(), availability.getToDate(), List.of(ReservationStatus.ACCEPTED));
+        verifyNoMoreInteractions(accommodationRepository);
+        verifyNoInteractions(guestService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
+    }
+
+    public static Stream<Arguments> provideValidAvailabilityRemoveScenarios() {
+        return Stream.of(
+                // After all existing availabilities
+                Arguments.of(new Availability(4L,1622991600000L + 100000, 1622991600000L + 100000 + 86400000, 130.0)),
+                // Between availability1 and availability2
+                Arguments.of(new Availability(4L,1622646000000L + 100000, 1622732400000L, 140.0)),
+                // Before all existing availabilities
+                Arguments.of(new Availability(4L,1622559600000L - 86400000, 1622559600000L - 3600000, 110.0))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideValidAvailabilityRemoveScenarios")
+    @DisplayName("Should Remove Accommodation Availability Successfully")
+    public void testRemoveAccommodationAvailabilitySuccess(Availability availability) {
+        int defaultAvailabilityCount = validAccommodation.getAvailable().size();
+        validAccommodation.getAvailable().add(availability);
+
+        // Mocking
+        when(accommodationRepository.findById(validAccommodation.getId())).thenReturn(Optional.ofNullable(validAccommodation));
+        when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, validAccommodation.getId(), availability.getFromDate(), availability.getToDate(), List.of(ReservationStatus.ACCEPTED))).thenReturn(0L);
+
+        // Act
+        MessageDto response = accommodationService.removeAccommodationAvailability(validAccommodation.getId(), availability.getId());
+
+        // Assert
+        assertEquals("Availability removed", response.getMessage());
+        assertEquals(validAccommodation.getAvailable().size(), defaultAvailabilityCount);
+        assertTrue(validAccommodation.getAvailable().stream().noneMatch(a -> a.getId().equals(availability.getId())));
+        verify(accommodationRepository,times(2)).findById(validAccommodation.getId());
+        verify(accommodationRepository).save(accommodationArgumentCaptor.capture());
+        verify(accommodationRepository).flush();
+        assertSame(validAccommodation, accommodationArgumentCaptor.getValue());
+        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(null, validAccommodation.getId(), availability.getFromDate(), availability.getToDate(), List.of(ReservationStatus.ACCEPTED));
+        verifyNoInteractions(guestService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoMoreInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
+    }
+
+
+
+
 
     private boolean containsAvailabilityWithSameProperties(List<Availability> availabilities, AvailabilityDto dto) {
         return availabilities.stream().anyMatch(a ->
