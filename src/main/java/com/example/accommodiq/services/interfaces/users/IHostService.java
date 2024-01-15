@@ -6,6 +6,7 @@ import com.example.accommodiq.enums.ReservationStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface IHostService {
 
@@ -27,7 +28,7 @@ public interface IHostService {
 
     Collection<HostReservationCardDto> getHostAccommodationReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
-    ArrayList<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate);
+    List<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate);
 
     Collection<ReviewDto> getHostReviews(Long hostId);
 

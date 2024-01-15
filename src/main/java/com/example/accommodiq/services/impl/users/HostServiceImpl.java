@@ -128,18 +128,13 @@ public class HostServiceImpl implements IHostService {
     }
 
     @Override
-    public ArrayList<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate) {
+    public List<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate) {
         Long hostId = getHostId();
         Map<Long, List<Reservation>> hostPreviousReservations = reservationService
                 .findHostReservationsByFilter(hostId, null, fromDate, toDate, ReservationStatus.ACCEPTED)
                 .stream().collect(Collectors.groupingBy(Reservation::getId));
-        ArrayList<FinancialReportEntryDto> financialReportEntries = new ArrayList<>();
 
-        for (List<Reservation> reservations : hostPreviousReservations.values()) {
-            financialReportEntries.add(new FinancialReportEntryDto(reservations));
-        }
-
-        return financialReportEntries;
+        return hostPreviousReservations.values().stream().map(FinancialReportEntryDto::new).toList();
     }
 
     @Override
