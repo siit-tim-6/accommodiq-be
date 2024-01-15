@@ -207,18 +207,36 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     @Override
-    public AccommodationReportDto getAccommodationReport(Long accommodationId) {
-        ArrayList<AccommodationReportRevenueDto> revenues = new ArrayList<>() {
-            {
-                add(new AccommodationReportRevenueDto("January", 8000));
+    public List<FinancialReportMonthlyRevenueDto> getAccommodationReport(Long accommodationId, int year) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        Long hostId = getHostId();
+
+        if (!Objects.equals(accommodation.getHost().getId(), hostId)) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "hostNotOwner");
+        }
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        calendar.clear();
+        calendar.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+
+        List<FinancialReportMonthlyRevenueDto> monthlyRevenues = new ArrayList<>();
+        for (int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++) {
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            long monthStart = calendar.getTimeInMillis();
+
+            if (monthStart >= Instant.now().toEpochMilli()) {
+                return monthlyRevenues;
             }
 
-            {
-                add(new AccommodationReportRevenueDto("February", 8000));
-            }
-        };
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            long monthEnd = calendar.getTimeInMillis();
 
-        return new AccommodationReportDto(30, revenues);
+            Collection<Reservation> reservations = reservationRepository.findByAccommodationHostIdAndStartDateBetweenAndStatus(hostId, monthStart, monthEnd, ReservationStatus.ACCEPTED);
+            monthlyRevenues.add(new FinancialReportMonthlyRevenueDto(getMonth(month), reservations));
+        }
+
+        return monthlyRevenues;
     }
 
     @Override
@@ -383,5 +401,16 @@ public class AccommodationServiceImpl implements IAccommodationService {
     private Account getAccount() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return (Account) accountService.loadUserByUsername(email);
+    }
+
+    private Long getHostId() {
+        Account account = getAccount();
+        if (account.getRole() != AccountRole.HOST) throw new RuntimeException("User is not a host");
+        return account.getId();
+    }
+
+    private String getMonth(int month) {
+        String[] monthStrings = {"January", "February", "March", "April", "May", "Jun", "July", "August", "September", "October", "November", "December"};
+        return monthStrings[month];
     }
 }

@@ -86,8 +86,8 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get accommodation financial report")
-    public AccommodationReportDto getAccommodationReport(@Parameter(description = "Id of accommodation to get financial report") @PathVariable Long accommodationId) {
-        return accommodationService.getAccommodationReport(accommodationId);
+    public List<FinancialReportMonthlyRevenueDto> getAccommodationReport(@Parameter(description = "Id of accommodation to get financial report") @PathVariable Long accommodationId, @RequestParam int year) {
+        return accommodationService.getAccommodationReport(accommodationId, year);
     }
 
     @PostMapping("{accommodationId}/reviews")

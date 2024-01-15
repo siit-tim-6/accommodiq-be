@@ -33,7 +33,7 @@ public interface IAccommodationService {
 
     MessageDto removeAccommodationAvailability(Long accommodationId, Long availabilityId);
 
-    AccommodationReportDto getAccommodationReport(Long accommodationId);
+    List<FinancialReportMonthlyRevenueDto> getAccommodationReport(Long accommodationId, int year);
 
     Collection<Review> getAccommodationReviews(Long accommodationId);
 
