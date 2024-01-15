@@ -12,7 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class ReservationRepositoryTest {
     @Autowired
     private ReservationRepository reservationRepository;
