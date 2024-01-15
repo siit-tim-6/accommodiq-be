@@ -44,12 +44,6 @@ public class Guest extends User {
         this.favorite = favorite;
     }
 
-    public boolean canCreateReservation(long startDate, long endDate, long accommodationId) {
-        return reservations.stream().noneMatch((reservation -> reservation.getAccommodation().getId() == accommodationId
-                && (reservation.getStartDate() <= startDate && startDate <= reservation.getEndDate()
-                || reservation.getStartDate() <= endDate && endDate <= reservation.getEndDate())));
-    }
-
     public int getPreviousCancellationNumber(long hostId) {
         return ((int) reservations.stream()
                 .filter(reservation -> reservation.getStatus() == ReservationStatus.CANCELLED && reservation.getAccommodation().getHost().getId() == hostId)
