@@ -14,16 +14,16 @@ public class Reservation {
     private Long endDate;
     private int numberOfGuests;
     private ReservationStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Guest guest;
     @ManyToOne(fetch = FetchType.LAZY)
     private Accommodation accommodation;
+    private double totalPrice;
 
     public Reservation() {
     }
 
-    public Reservation(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, Guest guest, Accommodation accommodation) {
+    public Reservation(Long id, Long startDate, Long endDate, int numberOfGuests, ReservationStatus status, Guest guest, Accommodation accommodation, double totalPrice) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -31,6 +31,7 @@ public class Reservation {
         this.status = status;
         this.guest = guest;
         this.accommodation = accommodation;
+        this.totalPrice = totalPrice;
     }
 
     public Reservation(ReservationRequestDto reservationRequestDto, Guest guest, Accommodation accommodation) {
@@ -40,6 +41,7 @@ public class Reservation {
         this.status = ReservationStatus.PENDING;
         this.guest = guest;
         this.accommodation = accommodation;
+        this.totalPrice = accommodation.getTotalPrice(this.startDate, this.endDate, this.numberOfGuests);
     }
 
     public Long getId() {
@@ -96,5 +98,13 @@ public class Reservation {
 
     public Accommodation getAccommodation() {
         return accommodation;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

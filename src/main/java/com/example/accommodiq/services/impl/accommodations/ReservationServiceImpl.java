@@ -217,8 +217,8 @@ public class ReservationServiceImpl implements IReservationService {
     }
 
     @Override
-    public Collection<HostReservationCardDto> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status) {
-        return allReservations.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status)).stream().map(reservation -> new HostReservationCardDto(reservation, hostId)).toList();
+    public Collection<Reservation> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status) {
+        return allReservations.findAll(HostReservationSpecification.searchAndFilter(hostId, title, startDate, endDate, status));
     }
 
     @Override

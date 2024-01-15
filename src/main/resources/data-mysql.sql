@@ -8,10 +8,12 @@ VALUES (4, 'address 1', 'Admin', 'Admin', '555-9101'),
 -- Insert sample data into `account` table
 INSERT INTO `account` (`id`, `email`, `password`, `role`, `status`, `user_id`, `activation_expires`)
 VALUES (4, 'admin', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 2, 1, 4, 1672531200000),
-       (1, 'john.doe@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 1, 1672531200000),
+       (1, 'john.doe@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 1,
+        1672531200000),
        (2, 'jane.smith@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 1, 1, 2,
         1672531200000),
-       (3, 'guest.bj@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 1, 3, 1672531200000);
+       (3, 'guest.bj@example.com', "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", 0, 1, 3,
+        1672531200000);
 
 -- Insert sample data into `host` table
 INSERT INTO `host` (`id`)
@@ -52,12 +54,12 @@ VALUES (1, 1),
 
 -- Insert sample data into `review` table
 INSERT INTO `review` (`id`, `comment`, `date`, `rating`, `status`, `guest_id`)
-VALUES (1, 'Great place!', 1672617600, 5, 1, 3),
-       (2, 'Comfortable stay', 1672704000, 4, 0, 3),
-       (3, 'Beautiful location', 1672790400, 5, 0, 3),
-       (4, 'Amazing place!', 1672617600, 5, 2, 3),
-       (5, 'Pleasant guy', 1672704000, 4, 1, 3),
-       (6, 'Very cool landowner', 1672790400, 5, 0, 3);
+VALUES (1, 'Great place!', 1672617600000, 5, 1, 3),
+       (2, 'Comfortable stay', 1672704000000, 4, 0, 3),
+       (3, 'Beautiful location', 1672790400000, 5, 0, 3),
+       (4, 'Amazing place!', 1672617600000, 5, 2, 3),
+       (5, 'Pleasant guy', 1672704000000, 4, 1, 3),
+       (6, 'Very cool landowner', 1672790400000, 5, 0, 3);
 
 -- Insert sample data into `accommodation_reviews` table
 INSERT INTO `accommodation_reviews` (`accommodation_id`, `reviews_id`)
@@ -78,29 +80,28 @@ VALUES (1, 'Inappropriate content', 1672531200000, 3, 1),
        (3, 'Noise complaint', 1672704000000, 1, 3);
 
 -- Insert sample data into `reservation` table
-INSERT INTO `reservation` (`id`, `end_date`, `number_of_guests`, `start_date`, `status`, `accommodation_id`, `guest_id`)
-VALUES (1, 1672617600000, 2, 1672531200000, 2, 1, 3),
-       (2, 1672704000000, 4, 1672617600000, 1, 2, 3),
-       (3, 1672790400000, 1, 1672704000000, 0, 3, 3);
+INSERT INTO `reservation` (`id`, `end_date`, `number_of_guests`, `start_date`, `status`, `accommodation_id`, `guest_id`,
+                           `total_price`)
+VALUES (1, 1672617600000, 2, 1672531200000, 2, 1, 3, 200),
+       (2, 1672704000000, 4, 1672617600000, 1, 2, 3, 800),
+       (3, 1672790400000, 1, 1672704000000, 0, 3, 3, 240);
 
 INSERT INTO `notification_setting` (`id`, `is_on`, `type`, `user_id`)
-VALUES
-    (1, true, 0, 1),
-    (2, true, 1, 1),
-    (3, true, 2, 1),
-    (4, true, 3, 1),
-    (5, true, 0, 2),
-    (6, true, 1, 2),
-    (7, true, 2, 2),
-    (8, true, 3, 2),
-    (9, true, 4, 3);
+VALUES (1, true, 0, 1),
+       (2, true, 1, 1),
+       (3, true, 2, 1),
+       (4, true, 3, 1),
+       (5, true, 0, 2),
+       (6, true, 1, 2),
+       (7, true, 2, 2),
+       (8, true, 3, 2),
+       (9, true, 4, 3);
 
 INSERT INTO `notification` (`id`, `text`, `time`, `seen`, `type`, `user_id`)
-VALUES
-   (1, 'New Reservation request', 1704150472000, false, 0, 1),
-   (2, 'Reservation have been canceled', 1704150472000, false, 1, 1),
-   (3, 'Guest rated you', 1704150472000, false, 2, 1),
-   (4, 'Guest rated your accommodation', 1704150472000, false, 3, 1);
+VALUES (1, 'New Reservation request', 1704150472000, false, 0, 1),
+       (2, 'Reservation have been canceled', 1704150472000, false, 1, 1),
+       (3, 'Guest rated you', 1704150472000, false, 2, 1),
+       (4, 'Guest rated your accommodation', 1704150472000, false, 3, 1);
 
 -- DELETE
 -- FROM `reservation`;
