@@ -69,8 +69,6 @@ public class AccommodationServiceTest {
     @Mock
     private Authentication authentication;
     @Captor
-    private ArgumentCaptor<Reservation> reservationArgumentCaptor;
-    @Captor
     private ArgumentCaptor<Accommodation> accommodationArgumentCaptor;
 
     @BeforeEach
