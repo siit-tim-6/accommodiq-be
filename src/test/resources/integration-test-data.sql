@@ -34,7 +34,7 @@ VALUES (1, 1672531200000, 100.00, 1672617600000),
 INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`,
                              `max_guests`, `min_guests`, `pricing_type`, `title`, `type`, `host_id`, `address`,
                              `latitude`, `longitude`)
-VALUES (1, 1, 1, 2, 'Cozy apartment near downtown', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1,
+VALUES (1, 1, 1, 2, 'Cozy apartment near downtown TEST', 4, 2, 0, 'Downtown Retreat', 'Apartment', 1,
         'Svetozara Miletica 23, 21203 Novi Sad, Serbia', 45.2588948, 19.76116795),
        (2, 1, 0, 3, 'Spacious house with a garden', 8, 4, 1, 'Green Haven', 'House', 2,
         'Trg republike 13, 21101 Novi Sad, Serbia', 45.2578895, 19.850468576804),
@@ -79,7 +79,7 @@ VALUES (1, 'Inappropriate content', 1672531200000, 3, 1),
 
 -- Insert sample data into `reservation` table
 INSERT INTO `reservation` (`id`, `end_date`, `number_of_guests`, `start_date`, `status`, `accommodation_id`, `guest_id`)
-VALUES (1, 1672617600000, 2, 1672531200000, 2, 1, 3),
+VALUES (1, 1672617600000, 2, 1672531200000, 1, 1, 3),
        (2, 1672704000000, 4, 1672617600000, 1, 2, 3),
        (3, 1672790400000, 1, 1672704000000, 0, 3, 3);
 

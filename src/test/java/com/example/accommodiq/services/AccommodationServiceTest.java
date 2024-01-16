@@ -279,7 +279,7 @@ public class AccommodationServiceTest {
     public void testUpdateAccommodationBookingDetailsSuccess() {
         // Arrange
         AccommodationBookingDetailsDto bookingDetailsDto = new AccommodationBookingDetailsDto();
-        bookingDetailsDto.setCancellationDeadline(48);
+        bookingDetailsDto.setCancellationDeadline(2);
         bookingDetailsDto.setPricingType(PricingType.PER_GUEST);
 
         // Mocking
@@ -312,7 +312,7 @@ public class AccommodationServiceTest {
         // Arrange
         Long accommodationId = 99L; // Non-existing ID
         AccommodationBookingDetailsDto bookingDetailsDto = new AccommodationBookingDetailsDto();
-        bookingDetailsDto.setCancellationDeadline(48);
+        bookingDetailsDto.setCancellationDeadline(2);
         bookingDetailsDto.setPricingType(PricingType.PER_GUEST);
 
         // Mocking
