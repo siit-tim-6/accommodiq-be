@@ -3,8 +3,8 @@ package com.example.accommodiq.services.interfaces.users;
 import com.example.accommodiq.domain.Host;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
+import com.example.accommodiq.enums.ReviewStatus;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,4 +37,6 @@ public interface IHostService {
     ReviewDto addReview(Long hostId, ReviewRequestDto reviewDto);
 
     AccommodationCardDto deleteAccommodation(Long accommodationId);
+
+    Collection<HostReviewCardDto> getHostReviewsByStatus(ReviewStatus status);
 }
