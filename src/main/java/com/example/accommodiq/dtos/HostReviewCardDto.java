@@ -1,5 +1,8 @@
 package com.example.accommodiq.dtos;
 
+import com.example.accommodiq.domain.Host;
+import com.example.accommodiq.domain.Review;
+
 public class HostReviewCardDto {
     private ReviewDto review;
     private Long hostId;
@@ -9,10 +12,10 @@ public class HostReviewCardDto {
         super();
     }
 
-public HostReviewCardDto(ReviewDto review, Long hostId, String name) {
-        this.review = review;
-        this.hostId = hostId;
-        this.name = name;
+public HostReviewCardDto(Review review, Host host) {
+        this.review = new ReviewDto(review);
+        this.hostId = host.getId();
+        this.name = host.getFirstName() + " " + host.getLastName();
     }
 
     public ReviewDto getReview() {

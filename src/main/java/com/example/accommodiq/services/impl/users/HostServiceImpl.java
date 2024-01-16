@@ -183,8 +183,16 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public Collection<HostReviewCardDto> getHostReviewsByStatus(ReviewStatus status) {
-        reviewRepository.findByStatus(status);
-        return null;
+        List<Review> reviews = reviewRepository.findByStatus(status);
+        Collection<Host> hosts = hostRepository.findHostsContainingReviews(reviews.stream().map(Review::getId).toList());
+        Collection<HostReviewCardDto> reviewCards = new ArrayList<>();
+        for (Host host : hosts) {
+            List<Review> hostReviews = host.getReviews().stream().filter(reviews::contains).toList();
+            for (Review review : hostReviews)
+                reviewCards.add(new HostReviewCardDto(review, host));
+        }
+
+        return reviewCards;
     }
 
     private Long getHostId() {
