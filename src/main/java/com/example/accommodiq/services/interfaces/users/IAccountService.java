@@ -19,7 +19,7 @@ public interface IAccountService extends UserDetailsService {
 
     AccountDetailsDto update(Account account);
 
-    Account delete(Long accountId);
+    void delete(Long accountId);
 
     void deleteAll();
 

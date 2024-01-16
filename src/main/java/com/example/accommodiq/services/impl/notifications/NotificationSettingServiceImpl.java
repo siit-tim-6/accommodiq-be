@@ -9,6 +9,7 @@ import com.example.accommodiq.repositories.NotificationSettingRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -57,6 +58,12 @@ public class NotificationSettingServiceImpl implements INotificationSettingServi
             allNotificationSettings.save(setting);
         }
         return userNotificationSettings.stream().map(NotificationSettingDto::new).toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long id) {
+        allNotificationSettings.deleteByUserId(id);
     }
 
     private NotificationSetting findNotificationSettingByType(List<NotificationSetting> notificationSettings, NotificationType type) {

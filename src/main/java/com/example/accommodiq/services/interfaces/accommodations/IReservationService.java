@@ -3,6 +3,7 @@ package com.example.accommodiq.services.interfaces.accommodations;
 import com.example.accommodiq.domain.Reservation;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.ReservationStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,4 +38,7 @@ public interface IReservationService {
     Collection<Reservation> findHostReservationsByFilter(Long hostId, String title, Long startDate, Long endDate, ReservationStatus status);
 
     void cancelGuestReservations(Long id);
+
+    @Transactional
+    void deleteByAccommodationHostId(Long id);
 }

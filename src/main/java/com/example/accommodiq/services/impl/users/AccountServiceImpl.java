@@ -13,6 +13,7 @@ import com.example.accommodiq.repositories.ReportRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.email.IEmailService;
 import com.example.accommodiq.services.interfaces.feedback.IReviewService;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.utilities.ErrorUtils;
@@ -46,10 +47,12 @@ public class AccountServiceImpl implements IAccountService {
 
     final IReviewService reviewService;
 
+    final INotificationService notificationService;
+
     ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, ReportRepository reportRepository, IReviewService reviewService) {
+    public AccountServiceImpl(AccountRepository allAccounts, IEmailService emailService, INotificationSettingService notificationSettingService, IReservationService reservationService, AccommodationRepository accommodationRepository, ReportRepository reportRepository, IReviewService reviewService, INotificationService notificationService) {
         this.allAccounts = allAccounts;
         this.emailService = emailService;
         this.notificationSettingService = notificationSettingService;
@@ -57,6 +60,7 @@ public class AccountServiceImpl implements IAccountService {
         this.accommodationRepository = accommodationRepository;
         this.reportRepository = reportRepository;
         this.reviewService = reviewService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -124,13 +128,14 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public Account delete(Long accountId) {
+    public void delete(Long accountId) {
         Account found = findAccount(accountId); // this will throw AccountNotFoundException if Account is not found
         if (found.getRole() == AccountRole.HOST) {
             List<Reservation> reservations = reservationService.findHostReservationsNotEndedYet(accountId);
             if (!reservations.isEmpty()) {
                 throw ErrorUtils.generateBadRequest("hostHasAcceptedReservations");
             }
+            reservationService.deleteByAccommodationHostId(found.getUser().getId());
             accommodationRepository.deleteAllByHostId(accountId);
             accommodationRepository.flush();
         }
@@ -152,9 +157,10 @@ public class AccountServiceImpl implements IAccountService {
         reportRepository.deleteByReportedUserId(accountId);
         reportRepository.flush();
 
+        notificationService.deleteByUserId(found.getUser().getId());
+
         allAccounts.delete(found);
         allAccounts.flush();
-        return found;
     }
 
     @Override
