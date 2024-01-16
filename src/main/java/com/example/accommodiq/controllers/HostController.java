@@ -128,4 +128,11 @@ public class HostController {
     public Collection<HostReviewCardDto> getHostReviewsByStatus(@RequestParam() ReviewStatus status) {
         return hostService.getHostReviewsByStatus(status);
     }
+
+    @PutMapping("/reviews/{reviewId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Change host review status")
+    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+        return hostService.changeReviewStatus(reviewId, body);
+    }
 }

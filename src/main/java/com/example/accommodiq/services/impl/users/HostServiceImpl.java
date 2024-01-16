@@ -195,6 +195,15 @@ public class HostServiceImpl implements IHostService {
         return reviewCards;
     }
 
+    @Override
+    public MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> ErrorUtils.generateNotFound("reviewNotFound"));
+        review.setStatus(body.getStatus());
+        reviewRepository.save(review);
+        reviewRepository.flush();
+        return new MessageDto("Review status changed");
+    }
+
     private Long getHostId() {
         Account account = getAccount();
         if (account.getRole() != AccountRole.HOST) throw new RuntimeException("User is not a host");

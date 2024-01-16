@@ -39,4 +39,6 @@ public interface IHostService {
     AccommodationCardDto deleteAccommodation(Long accommodationId);
 
     Collection<HostReviewCardDto> getHostReviewsByStatus(ReviewStatus status);
+
+    MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body);
 }
