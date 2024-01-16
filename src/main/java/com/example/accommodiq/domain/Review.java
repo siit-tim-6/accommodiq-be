@@ -10,7 +10,7 @@ import java.time.Instant;
 @Entity
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     private int rating;
     private String comment;
