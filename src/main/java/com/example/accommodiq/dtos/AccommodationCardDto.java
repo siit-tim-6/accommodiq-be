@@ -4,6 +4,9 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.enums.PricingType;
 
+import java.util.List;
+import java.util.Set;
+
 public class AccommodationCardDto {
     private Long id;
     private String title;
@@ -16,13 +19,15 @@ public class AccommodationCardDto {
     private int maxGuests;
     private double totalPrice;
     private PricingType pricingType;
+    private String type;
+    private Set<String> benefits;
 
     public AccommodationCardDto() {
         super();
     }
 
-    public AccommodationCardDto(Long id, String title, String image, Double rating,
-                                int reviewCount, Location location, double minPrice, int minGuests, int maxGuests, PricingType pricingType) {
+    public AccommodationCardDto(Long id, String title, String image, Double rating, int reviewCount, Location location,
+                                double minPrice, int minGuests, int maxGuests, PricingType pricingType, String type, Set<String> benefits) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -34,6 +39,8 @@ public class AccommodationCardDto {
         this.maxGuests = maxGuests;
         this.totalPrice = 0;
         this.pricingType = pricingType;
+        this.type = type;
+        this.benefits = benefits;
     }
 
     public AccommodationCardDto(Accommodation accommodation, Long fromDate, Long toDate, Integer guests) {
@@ -48,6 +55,8 @@ public class AccommodationCardDto {
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = accommodation.getTotalPrice(fromDate, toDate, guests);
         this.pricingType = accommodation.getPricingType();
+        this.type = accommodation.getType();
+        this.benefits = accommodation.getBenefits();
     }
 
     public AccommodationCardDto(Accommodation accommodation) {
@@ -62,6 +71,8 @@ public class AccommodationCardDto {
         this.maxGuests = accommodation.getMaxGuests();
         this.totalPrice = 0;
         this.pricingType = accommodation.getPricingType();
+        this.type = accommodation.getType();
+        this.benefits = accommodation.getBenefits();
     }
 
     public Long getId() {
@@ -150,5 +161,21 @@ public class AccommodationCardDto {
 
     public void setPricingType(PricingType pricingType) {
         this.pricingType = pricingType;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Set<String> getBenefits() {
+        return benefits;
+    }
+
+    public void setBenefits(Set<String> benefits) {
+        this.benefits = benefits;
     }
 }
