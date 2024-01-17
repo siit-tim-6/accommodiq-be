@@ -5,6 +5,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.*;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.HostRepository;
+import com.example.accommodiq.repositories.ReviewRepository;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
@@ -41,9 +42,11 @@ public class HostServiceImpl implements IHostService {
 
     final private INotificationService notificationService;
 
+    final private ReviewRepository reviewRepository;
+
     @Autowired
     public HostServiceImpl(IAccommodationService accommodationService, HostRepository hostRepository, AccommodationRepository allAccommodations,
-                           IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService) {
+                           IGuestService guestService, IReservationService reservationService, IAccountService accountService, INotificationService notificationService, ReviewRepository reviewRepository) {
         this.accommodationService = accommodationService;
         this.hostRepository = hostRepository;
         this.allAccommodations = allAccommodations;
@@ -51,6 +54,7 @@ public class HostServiceImpl implements IHostService {
         this.reservationService = reservationService;
         this.accountService = accountService;
         this.notificationService = notificationService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -175,6 +179,29 @@ public class HostServiceImpl implements IHostService {
     @Override
     public AccommodationCardDto deleteAccommodation(Long accommodationId) {
         return accommodationService.deleteAccommodation(accommodationId);
+    }
+
+    @Override
+    public Collection<HostReviewCardDto> getHostReviewsByStatus(ReviewStatus status) {
+        List<Review> reviews = reviewRepository.findByStatus(status);
+        Collection<Host> hosts = hostRepository.findHostsContainingReviews(reviews.stream().map(Review::getId).toList());
+        Collection<HostReviewCardDto> reviewCards = new ArrayList<>();
+        for (Host host : hosts) {
+            List<Review> hostReviews = host.getReviews().stream().filter(reviews::contains).toList();
+            for (Review review : hostReviews)
+                reviewCards.add(new HostReviewCardDto(review, host));
+        }
+
+        return reviewCards;
+    }
+
+    @Override
+    public MessageDto changeReviewStatus(Long reviewId, ReviewStatusDto body) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> ErrorUtils.generateNotFound("reviewNotFound"));
+        review.setStatus(body.getStatus());
+        reviewRepository.save(review);
+        reviewRepository.flush();
+        return new MessageDto("Review status changed");
     }
 
     private Long getHostId() {
