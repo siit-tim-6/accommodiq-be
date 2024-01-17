@@ -30,11 +30,11 @@ public class GuestController {
         return guestService.findReservationsByFilter(title, startDate, endDate, status);
     }
 
-    @PostMapping("/{guestId}/reservations")
+    @PostMapping("/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add reservation to guest")
-    public ReservationRequestDto addReservation(@Parameter(description = "Id of guest to add reservation") @PathVariable Long guestId, @RequestBody ReservationRequestDto reservationDto) {
-        return guestService.addReservation(guestId, reservationDto);
+    public ReservationRequestDto addReservation(@RequestBody ReservationRequestDto reservationDto) {
+        return guestService.addReservation(reservationDto);
     }
 
     @GetMapping("/favorites")

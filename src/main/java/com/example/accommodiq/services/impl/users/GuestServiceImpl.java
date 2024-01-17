@@ -90,7 +90,8 @@ public class GuestServiceImpl implements IGuestService {
 
     @Transactional
     @Override
-    public ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto) {
+    public ReservationRequestDto addReservation(ReservationRequestDto reservationDto) {
+        Long guestId = getGuestId();
         Account userAccount = accountService.findAccountByUserId(guestId);
 
         if (userAccount.getStatus() == AccountStatus.BLOCKED) {
