@@ -280,6 +280,12 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
+
+        if (hasOverlappingReservations) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "accommodationUnavailable");
+        }
+
         return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
     }
 
@@ -289,7 +295,9 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
-        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo));
+        boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
+
+        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo) && !hasOverlappingReservations);
     }
 
     @Override
