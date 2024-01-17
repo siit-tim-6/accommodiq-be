@@ -94,7 +94,6 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     @Transactional
     public void deleteByUserId(Long id) {
-        notificationSettingService.deleteByUserId(id);
         allNotifications.deleteByUserId(id);
     }
 }

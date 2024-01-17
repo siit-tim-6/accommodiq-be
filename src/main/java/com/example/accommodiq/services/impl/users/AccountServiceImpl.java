@@ -157,6 +157,7 @@ public class AccountServiceImpl implements IAccountService {
         reportRepository.deleteByReportedUserId(accountId);
         reportRepository.flush();
 
+        notificationSettingService.deleteByUserId(found.getUser().getId());
         notificationService.deleteByUserId(found.getUser().getId());
 
         allAccounts.delete(found);
