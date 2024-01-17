@@ -50,7 +50,7 @@ public class ReservationCardDto {
         this.startDate = reservation.getStartDate();
         this.endDate = reservation.getEndDate();
         this.status = reservation.getStatus();
-        this.totalPrice = reservation.getAccommodation().getTotalPrice(this.startDate, this.endDate, this.guests);
+        this.totalPrice = reservation.getTotalPrice();
     }
 
     public long getId() {

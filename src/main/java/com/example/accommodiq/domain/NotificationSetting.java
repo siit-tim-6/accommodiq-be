@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity
 public class NotificationSetting {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private NotificationType type;

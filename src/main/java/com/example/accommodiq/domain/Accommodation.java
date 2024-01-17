@@ -11,7 +11,7 @@ import java.util.*;
 @Entity
 public class Accommodation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
@@ -59,7 +59,6 @@ public class Accommodation {
         this.location = accommodationDto.getLocation();
         this.minGuests = accommodationDto.getMinGuests();
         this.maxGuests = accommodationDto.getMaxGuests();
-        this.available = accommodationDto.getAvailable();
         this.pricingType = accommodationDto.getPricingType();
         this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
         this.images = accommodationDto.getImages();
@@ -73,7 +72,6 @@ public class Accommodation {
         this.location = accommodationDto.getLocation() == null ? this.location : accommodationDto.getLocation();
         this.minGuests = accommodationDto.getMinGuests() == 0 ? this.minGuests : accommodationDto.getMinGuests();
         this.maxGuests = accommodationDto.getMaxGuests() == 0 ? this.maxGuests : accommodationDto.getMaxGuests();
-        this.available = accommodationDto.getAvailable() == null ? this.available : accommodationDto.getAvailable();
         this.pricingType = accommodationDto.getPricingType() == null ? this.pricingType : accommodationDto.getPricingType();
         this.automaticAcceptance = accommodationDto.isAutomaticAcceptance();
         this.images = accommodationDto.getImages() == null ? this.images : accommodationDto.getImages();

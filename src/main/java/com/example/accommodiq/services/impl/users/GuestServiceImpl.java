@@ -1,21 +1,22 @@
 package com.example.accommodiq.services.impl.users;
 
-import com.example.accommodiq.domain.Accommodation;
-import com.example.accommodiq.domain.Account;
-import com.example.accommodiq.domain.Guest;
-import com.example.accommodiq.domain.Reservation;
+import com.example.accommodiq.domain.*;
 import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.enums.AccountRole;
+import com.example.accommodiq.enums.AccountStatus;
+import com.example.accommodiq.enums.NotificationType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import com.example.accommodiq.specifications.GuestReservationSpecification;
 import com.example.accommodiq.utilities.ErrorUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +29,16 @@ public class GuestServiceImpl implements IGuestService {
     final private AccommodationRepository accommodationRepository;
     final private IAccountService accountService;
     final private ReservationRepository reservationRepository;
+    final private INotificationService notificationService;
 
     @Autowired
-    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService, ReservationRepository reservationRepository) {
+    public GuestServiceImpl(GuestRepository guestRepository, AccommodationRepository accommodationRepository, IAccountService accountService,
+                            ReservationRepository reservationRepository, INotificationService notificationService) {
         this.guestRepository = guestRepository;
         this.accommodationRepository = accommodationRepository;
         this.accountService = accountService;
         this.reservationRepository = reservationRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -84,6 +88,12 @@ public class GuestServiceImpl implements IGuestService {
     @Transactional
     @Override
     public ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto) {
+        Account userAccount = accountService.findAccountByUserId(guestId);
+
+        if (userAccount.getStatus() == AccountStatus.BLOCKED) {
+            throw ErrorUtils.generateException(HttpStatus.FORBIDDEN, "accountBlocked");
+        }
+
         Guest guest = findGuest(guestId);
         Accommodation accommodation = findAccommodation(reservationDto.getAccommodationId());
 
@@ -100,6 +110,9 @@ public class GuestServiceImpl implements IGuestService {
         guest.getReservations().add(newReservation);
         guestRepository.save(guest);
         guestRepository.flush();
+
+        Notification notification = new Notification("You have a new reservation for " + accommodation.getTitle(), NotificationType.RESERVATION_REQUEST, accommodation.getHost());
+        notificationService.createAndSendNotification(notification);
 
         return reservationDto;
     }

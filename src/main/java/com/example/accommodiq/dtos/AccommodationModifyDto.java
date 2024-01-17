@@ -16,7 +16,6 @@ public class AccommodationModifyDto {
     private Location location;
     private int minGuests;
     private int maxGuests;
-    private Set<AvailabilityDto> available;
     private PricingType pricingType;
     private boolean automaticAcceptance;
     private List<String> images;
@@ -34,10 +33,6 @@ public class AccommodationModifyDto {
         this.location = accommodation.getLocation();
         this.minGuests = accommodation.getMinGuests();
         this.maxGuests = accommodation.getMaxGuests();
-        this.available = new HashSet<>();
-        for (Availability availability : accommodation.getAvailable()) {
-            this.available.add(new AvailabilityDto(availability.getFromDate(), availability.getToDate(), availability.getPrice()));
-        }
         this.pricingType = accommodation.getPricingType();
         this.automaticAcceptance = accommodation.isAutomaticAcceptance();
         this.images = accommodation.getImages();
@@ -83,24 +78,6 @@ public class AccommodationModifyDto {
 
     public void setMaxGuests(int maxGuests) {
         this.maxGuests = maxGuests;
-    }
-
-    public Set<AvailabilityDto> getAvailableDto() {
-        return available;
-    }
-
-    public Set<Availability> getAvailable() {
-        Set<Availability> available = new HashSet<>();
-        if (this.available == null) return available;
-
-        for (AvailabilityDto availabilityDto : this.available) {
-            available.add(new Availability(availabilityDto));
-        }
-        return available;
-    }
-
-    public void setAvailable(Set<AvailabilityDto> available) {
-        this.available = available;
     }
 
     public PricingType getPricingType() {
