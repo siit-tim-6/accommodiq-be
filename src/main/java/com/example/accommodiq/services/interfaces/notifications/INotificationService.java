@@ -2,6 +2,7 @@ package com.example.accommodiq.services.interfaces.notifications;
 
 import com.example.accommodiq.domain.Notification;
 import com.example.accommodiq.dtos.NotificationDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -17,4 +18,7 @@ public interface INotificationService {
     void markAllAsSeen(Long userId);
 
     void markAsSeen(Long userId, Long notificationId);
+
+    @Transactional
+    void deleteByUserId(Long id);
 }

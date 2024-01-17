@@ -44,8 +44,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
                                                                     @Param("statuses") List<ReservationStatus> status);
 
 
-
-
     Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
             Long guestId,
             Long accommodationId,
@@ -60,4 +58,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Collection<Reservation> findByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(Long accommodation_id, Long startDate, Long startDate2, Long endDate, Long endDate2, ReservationStatus status);
 
     Collection<Reservation> findByAccommodationIdAndStartDateBetweenAndStatus(Long accommodationId, Long startDate1, Long startDate2, ReservationStatus status);
+
+    void deleteByAccommodation_HostId(Long id);
 }

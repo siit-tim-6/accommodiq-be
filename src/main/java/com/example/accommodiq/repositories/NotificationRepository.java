@@ -12,4 +12,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Notification> findAllByUserIdAndTypeIsInOrderByTimeDesc(Long userId, List<NotificationType> types);
 
     List<Notification> findAllByUserIdAndSeenIsFalse(Long userId);
+
+    void deleteByUserId(Long id);
 }

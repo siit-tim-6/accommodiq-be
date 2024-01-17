@@ -11,6 +11,7 @@ import com.example.accommodiq.services.interfaces.users.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,5 +89,11 @@ public class NotificationServiceImpl implements INotificationService {
         notification.setSeen(true);
         allNotifications.save(notification);
         allNotifications.flush();
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long id) {
+        allNotifications.deleteByUserId(id);
     }
 }
