@@ -47,7 +47,7 @@ public class ReservationServiceTest {
     private Accommodation validAccommodation = new Accommodation(1L, "Accommodation 1",
             "Description", null, List.of(), 1, 1,
             null, AccommodationStatus.ACCEPTED, PricingType.PER_GUEST, true, 1, null);
-    private final Reservation validReservation = new Reservation(1L, 100L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation);
+    private final Reservation validReservation = new Reservation(1L, 100L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation, 0);
     private final Long VALID_RESERVATION_ID = 1L;
     @MockBean
     private ReservationRepository reservationRepository;
@@ -179,9 +179,9 @@ public class ReservationServiceTest {
         when(reservationRepository.findById(VALID_RESERVATION_ID)).thenReturn(Optional.of(validReservation));
         validAccommodation.getAvailable().add(new Availability(null, 0L, 2000000000L, 1000));
         Collection<Reservation> overlappingReservations = new HashSet<>();
-        overlappingReservations.add(new Reservation(2L, 100L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation));
-        overlappingReservations.add(new Reservation(2L, 150L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation));
-        overlappingReservations.add(new Reservation(2L, 120L, 300L, 1, ReservationStatus.PENDING, validGuest, validAccommodation));
+        overlappingReservations.add(new Reservation(2L, 100L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation, 0));
+        overlappingReservations.add(new Reservation(2L, 150L, 200L, 1, ReservationStatus.PENDING, validGuest, validAccommodation, 0));
+        overlappingReservations.add(new Reservation(2L, 120L, 300L, 1, ReservationStatus.PENDING, validGuest, validAccommodation, 0));
         when(reservationRepository.findByAccommodationIdAndStartDateBetweenOrEndDateBetweenAndStatus(any(), any(), any(), any(), any(), any())).thenReturn(overlappingReservations);
 
         // Act
