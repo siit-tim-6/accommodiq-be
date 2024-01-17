@@ -125,7 +125,7 @@ public class AccommodationController {
 
     @GetMapping("/reviews")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(summary = "Get all reviews by status")
+    @Operation(summary = "Get all accommodation reviews by status")
     public Collection<ReviewCardDto> getReviewsByStatus(@RequestParam(name = "status") ReviewStatus status) {
         return accommodationService.getReviewsByStatus(status);
     }

@@ -99,11 +99,10 @@ public class UserController {
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Delete user account")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Account.class))})})
-    public Account deleteUser() {
+    public void deleteUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
         accountService.delete(account.getId());
-        return account;
     }
 
     @PutMapping("/password")

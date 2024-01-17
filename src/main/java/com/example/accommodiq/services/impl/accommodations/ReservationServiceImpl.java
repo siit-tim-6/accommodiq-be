@@ -230,6 +230,12 @@ public class ReservationServiceImpl implements IReservationService {
         });
     }
 
+    @Override
+    public void deleteByAccommodationHostId(Long id) {
+        allReservations.deleteByAccommodation_HostId(id);
+        allReservations.flush();
+    }
+
     private Reservation convertToReservation(ReservationRequestDto reservationDto) {
         Reservation reservation = new Reservation();
         reservation.setId(null);
