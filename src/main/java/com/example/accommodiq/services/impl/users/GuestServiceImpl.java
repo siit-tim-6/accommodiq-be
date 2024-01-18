@@ -106,6 +106,12 @@ public class GuestServiceImpl implements IGuestService {
             throw ErrorUtils.generateBadRequest("overlappingReservations");
         }
 
+        boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, reservationDto.getAccommodationId(),
+                reservationDto.getStartDate(), reservationDto.getEndDate(), List.of(ReservationStatus.ACCEPTED)) > 0;
+        if (hasOverlappingReservations || findAccommodation(reservationDto.getAccommodationId()).isAvailable(reservationDto.getStartDate(), reservationDto.getEndDate())) {
+            throw ErrorUtils.generateBadRequest("accommodationUnavailable");
+        }
+
         Reservation newReservation = new Reservation(reservationDto, guest, accommodation);
         if (accommodation.isAutomaticAcceptance()) {
             newReservation.setStatus(ReservationStatus.ACCEPTED);
