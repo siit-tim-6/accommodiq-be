@@ -73,6 +73,10 @@ public class GuestServiceImpl implements IGuestService {
 
     @Override
     public Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+        if (startDate != null && endDate != null && startDate >= endDate) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         Long guestId = getGuestId();
         return reservationRepository.findAll(GuestReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
