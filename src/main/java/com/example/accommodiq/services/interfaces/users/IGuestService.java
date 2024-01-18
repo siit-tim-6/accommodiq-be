@@ -13,7 +13,7 @@ public interface IGuestService {
 
     Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status);
 
-    ReservationRequestDto addReservation(Long guestId, ReservationRequestDto reservationDto);
+    ReservationRequestDto addReservation(ReservationRequestDto reservationDto);
 
     Collection<AccommodationCardDto> getFavorites();
 
