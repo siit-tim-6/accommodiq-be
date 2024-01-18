@@ -6,10 +6,12 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -19,6 +21,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/accommodations")
 @CrossOrigin
+@Validated
 public class AccommodationController {
     final private IAccommodationService accommodationService;
 
@@ -86,7 +89,7 @@ public class AccommodationController {
     @GetMapping("/{accommodationId}/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get accommodation financial report")
-    public List<FinancialReportMonthlyRevenueDto> getAccommodationReport(@Parameter(description = "Id of accommodation to get financial report") @PathVariable Long accommodationId, @RequestParam int year) {
+    public List<FinancialReportMonthlyRevenueDto> getAccommodationReport(@Parameter(description = "Id of accommodation to get financial report") @PathVariable Long accommodationId, @RequestParam @Min(value = 1960) int year) {
         return accommodationService.getAccommodationReport(accommodationId, year);
     }
 
@@ -106,13 +109,13 @@ public class AccommodationController {
 
     @GetMapping("/{accommodationId}/total-price")
     @Operation(summary = "Get total price")
-    public AccommodationPriceDto getTotalPrice(@Parameter(description = "Id of accommodation to get total price") @PathVariable Long accommodationId, @RequestParam long dateFrom, @RequestParam long dateTo, @RequestParam int guests) {
+    public AccommodationPriceDto getTotalPrice(@Parameter(description = "Id of accommodation to get total price") @PathVariable Long accommodationId, @RequestParam @Min(value = 1) long dateFrom, @RequestParam @Min(value = 1) long dateTo, @RequestParam @Min(value = 0) int guests) {
         return accommodationService.getTotalPrice(accommodationId, dateFrom, dateTo, guests);
     }
 
     @GetMapping("/{accommodationId}/is-available")
     @Operation(summary = "Get is available")
-    public AccommodationAvailabilityDto getIsAvailable(@Parameter(description = "Id of accommodation to get is available") @PathVariable Long accommodationId, @RequestParam long dateFrom, @RequestParam long dateTo) {
+    public AccommodationAvailabilityDto getIsAvailable(@Parameter(description = "Id of accommodation to get is available") @PathVariable Long accommodationId, @RequestParam @Min(value = 1) long dateFrom, @RequestParam @Min(value = 1) long dateTo) {
         return accommodationService.getIsAvailable(accommodationId, dateFrom, dateTo);
     }
 

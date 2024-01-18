@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,10 +138,14 @@ public class HostServiceImpl implements IHostService {
 
     @Override
     public List<FinancialReportEntryDto> getFinancialReport(long fromDate, long toDate) {
+        if (fromDate >= toDate || toDate > Instant.now().toEpochMilli()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         Long hostId = getHostId();
         Map<Long, List<Reservation>> hostPreviousReservations = reservationService
                 .findHostReservationsByFilter(hostId, null, fromDate, toDate, ReservationStatus.ACCEPTED)
-                .stream().collect(Collectors.groupingBy(Reservation::getId));
+                .stream().collect(Collectors.groupingBy(reservation -> reservation.getAccommodation().getId()));
 
         return hostPreviousReservations.values().stream().map(FinancialReportEntryDto::new).toList();
     }
