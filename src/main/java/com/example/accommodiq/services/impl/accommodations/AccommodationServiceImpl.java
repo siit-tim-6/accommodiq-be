@@ -289,13 +289,18 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        if (dateFrom >= dateTo || dateFrom <= Instant.now().toEpochMilli()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
 
         if (hasOverlappingReservations) {
             throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "accommodationUnavailable");
         }
 
-        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
+        return new AccommodationPriceDto(accommodation.getTotalPrice(dateFrom, dateTo, guests));
     }
 
     @Override
@@ -304,9 +309,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        if (dateFrom >= dateTo || dateFrom <= Instant.now().toEpochMilli()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
 
-        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo) && !hasOverlappingReservations);
+        return new AccommodationAvailabilityDto(accommodation.isAvailable(dateFrom, dateTo) && !hasOverlappingReservations);
     }
 
     @Override
