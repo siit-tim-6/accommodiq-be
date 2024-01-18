@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 
+import static com.example.accommodiq.utilities.ErrorUtils.generateBadRequest;
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 
@@ -85,6 +86,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
         boolean priceRangeSpecified = priceFrom != null && priceTo != null;
+
+        if (dateRangeSpecified && (availableFrom >= availableTo || availableFrom <= Instant.now().toEpochMilli())) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
+        if (priceRangeSpecified && (priceFrom > priceTo || priceFrom < 0)) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidPriceRange");
+        }
 
         if (dateRangeSpecified) {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
