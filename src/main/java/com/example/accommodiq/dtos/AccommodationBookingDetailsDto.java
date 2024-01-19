@@ -2,9 +2,14 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.enums.PricingType;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class AccommodationBookingDetailsDto {
+    @NotNull(message = "Cancellation deadline is required")
+    @Min(value = 0, message = "Cancellation deadline must be greater than or equal to 0")
     private int cancellationDeadline;
+    @NotNull(message = "Pricing type is required")
     private PricingType pricingType;
 
     public AccommodationBookingDetailsDto() {
