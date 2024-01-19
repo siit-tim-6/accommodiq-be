@@ -199,7 +199,7 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    @DisplayName("Should Not Add Accommodation Availability Due to Active Reservations")
+    @DisplayName("Should Not Remove Accommodation Availability Due to Active Reservations")
     public void testRemoveAccommodationAvailabilityWithActiveReservations() {
         Availability availability = new Availability(4L,1622991600000L + 100000, 1622991600000L + 100000 + 86400000, 130.0);
         validAccommodation.getAvailable().add(availability);
