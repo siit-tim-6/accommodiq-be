@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ImageController {
     @PostMapping()
     @Operation(summary = "Upload images")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json")})})
-    public ResponseEntity<List<String>> uploadImages(@RequestParam("images") List<MultipartFile> images) {
+    public ResponseEntity<List<String>> uploadImages(@RequestParam("images") @NotEmpty(message = "Please provide at least one image")  List<MultipartFile> images) {
         List<String> uploadedImages = imagesService.uploadImages(images);
         return ResponseEntity.ok(uploadedImages);
     }
