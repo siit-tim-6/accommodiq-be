@@ -4,6 +4,7 @@ import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Location;
 import com.example.accommodiq.enums.PricingType;
+import jakarta.validation.constraints.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,14 +12,21 @@ import java.util.Set;
 
 public class AccommodationModifyDto {
     private Long id;
+    @NotBlank(message = "Title is required")
     private String title;
+    @NotBlank(message = "Description is required")
     private String description;
     private Location location;
+    @Min(value = 1, message = "Min guests must be greater than or equal to 1")
     private int minGuests;
+    @Min(value = 1, message = "Max guests must be greater than or equal to 1")
     private int maxGuests;
     private PricingType pricingType;
     private boolean automaticAcceptance;
+    @NotNull(message = "Images are required")
+    @Size(min = 1, message = "Images must contain at least 1 image")
     private List<String> images;
+    @NotBlank(message = "Type is required")
     private String type;
     private Set<String> benefits;
 

@@ -261,11 +261,11 @@ public class ReservationServiceImpl implements IReservationService {
                 .findByGuestIdAndAccommodationIdInAndStatusNotAndEndDateLessThan(guestId, accommodationIds, ReservationStatus.CANCELLED, currentTime);
 
         if (reservations.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, because he has not stayed in any of his accommodations");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot review and rate this host, because he has not stayed in any of his accommodations");
         }
 
         if (reviewsForHostByGuest.size() >= reservations.size()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot comment and rate this host, as they have already left reviews for all their reservations.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Guest cannot review and rate this host, as they have already left reviews for all their reservations.");
         }
     }
 
