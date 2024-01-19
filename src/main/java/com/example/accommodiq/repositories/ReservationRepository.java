@@ -43,7 +43,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
                                                                     @Param("availabilityEnd") Long availabilityEnd,
                                                                     @Param("statuses") List<ReservationStatus> status);
 
-
     Collection<Reservation> findByGuestIdAndAccommodationIdAndStatusNotInAndEndDateGreaterThanAndEndDateLessThan(
             Long guestId,
             Long accommodationId,
