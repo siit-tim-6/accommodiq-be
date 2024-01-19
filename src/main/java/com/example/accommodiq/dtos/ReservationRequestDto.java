@@ -1,9 +1,17 @@
 package com.example.accommodiq.dtos;
 
+
+import com.example.accommodiq.validation.FutureLongDate;
+import jakarta.validation.constraints.Min;
+
 public class ReservationRequestDto {
+    @FutureLongDate
     private long startDate;
+    @FutureLongDate
     private long endDate;
+    @Min(value = 1)
     private int numberOfGuests;
+    @Min(value = 1)
     private Long accommodationId;
 
     public ReservationRequestDto() {

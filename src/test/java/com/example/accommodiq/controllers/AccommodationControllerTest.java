@@ -47,6 +47,7 @@ public class AccommodationControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
         assertFalse(responseEntity.getBody().isEmpty());
+        assertTrue(responseEntity.getBody().stream().anyMatch(availability -> availability.getFromDate().equals(availabilityDto.getFromDate()) && availability.getToDate().equals(availabilityDto.getToDate())));
     }
 
     @Test
