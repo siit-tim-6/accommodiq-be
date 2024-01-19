@@ -243,7 +243,7 @@ public class Accommodation {
 
     public double getTotalPrice(Long fromDate, Long toDate, Integer guests) {
         if ((guests == null && pricingType == PricingType.PER_GUEST)) {
-            return 0;
+            throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
         if (!isAvailable(fromDate, toDate)) {

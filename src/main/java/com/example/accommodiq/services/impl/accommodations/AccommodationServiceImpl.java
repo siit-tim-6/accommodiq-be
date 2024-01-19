@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.*;
 
+import static com.example.accommodiq.utilities.ErrorUtils.generateBadRequest;
 import static com.example.accommodiq.utilities.ErrorUtils.generateNotFound;
 
 
@@ -85,6 +86,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
         List<Accommodation> searchedAccommodations = accommodationRepository.findAll(AccommodationSpecification.searchAndFilter(title, location, guests, type, benefits)).stream().filter(accommodation -> !accommodation.getAvailable().isEmpty()).toList();
         boolean dateRangeSpecified = availableFrom != null && availableTo != null;
         boolean priceRangeSpecified = priceFrom != null && priceTo != null;
+
+        if (dateRangeSpecified && (availableFrom >= availableTo || availableFrom <= Instant.now().toEpochMilli())) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
+        if (priceRangeSpecified && (priceFrom > priceTo || priceFrom < 0)) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidPriceRange");
+        }
 
         if (dateRangeSpecified) {
             searchedAccommodations = searchedAccommodations.stream().filter(accommodation -> accommodation.isAvailable(availableFrom, availableTo)).toList();
@@ -280,13 +289,18 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
     @Override
     public AccommodationPriceDto getTotalPrice(long accommodationId, long dateFrom, long dateTo, int guests) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        if (dateFrom >= dateTo || dateFrom <= Instant.now().toEpochMilli()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
 
         if (hasOverlappingReservations) {
             throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "accommodationUnavailable");
         }
 
-        return new AccommodationPriceDto(findAccommodation(accommodationId).getTotalPrice(dateFrom, dateTo, guests));
+        return new AccommodationPriceDto(accommodation.getTotalPrice(dateFrom, dateTo, guests));
     }
 
     @Override
@@ -295,9 +309,14 @@ public class AccommodationServiceImpl implements IAccommodationService {
     }
 
     public AccommodationAvailabilityDto getIsAvailable(long accommodationId, long dateFrom, long dateTo) {
+        Accommodation accommodation = findAccommodation(accommodationId);
+        if (dateFrom >= dateTo || dateFrom <= Instant.now().toEpochMilli()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, accommodationId, dateFrom, dateTo, List.of(ReservationStatus.ACCEPTED)) > 0;
 
-        return new AccommodationAvailabilityDto(findAccommodation(accommodationId).isAvailable(dateFrom, dateTo) && !hasOverlappingReservations);
+        return new AccommodationAvailabilityDto(accommodation.isAvailable(dateFrom, dateTo) && !hasOverlappingReservations);
     }
 
     @Override

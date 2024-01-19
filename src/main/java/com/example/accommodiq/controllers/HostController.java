@@ -7,9 +7,11 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -17,6 +19,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/hosts")
 @CrossOrigin
+@Validated
 public class HostController {
     final private IHostService hostService;
 
@@ -99,7 +102,7 @@ public class HostController {
     @GetMapping("/financial-report")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Get host financial report")
-    public Collection<FinancialReportEntryDto> getFinancialReport(@RequestParam long fromDate, @RequestParam long toDate) {
+    public Collection<FinancialReportEntryDto> getFinancialReport(@RequestParam @Min(value = 1) long fromDate, @RequestParam @Min(value = 1) long toDate) {
         return hostService.getFinancialReport(fromDate, toDate);
     }
 
