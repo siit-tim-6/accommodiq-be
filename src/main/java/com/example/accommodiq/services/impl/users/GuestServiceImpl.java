@@ -73,6 +73,10 @@ public class GuestServiceImpl implements IGuestService {
 
     @Override
     public Collection<ReservationCardDto> findReservationsByFilter(String title, Long startDate, Long endDate, ReservationStatus status) {
+        if (startDate != null && endDate != null && startDate >= endDate) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         Long guestId = getGuestId();
         return reservationRepository.findAll(GuestReservationSpecification.searchAndFilter(guestId, title, startDate, endDate, status)).stream().map(ReservationCardDto::new).toList();
     }
@@ -91,6 +95,10 @@ public class GuestServiceImpl implements IGuestService {
     @Transactional
     @Override
     public ReservationRequestDto addReservation(ReservationRequestDto reservationDto) {
+        if (reservationDto.getStartDate() >= reservationDto.getEndDate()) {
+            throw ErrorUtils.generateException(HttpStatus.BAD_REQUEST, "invalidDateRange");
+        }
+
         Long guestId = getGuestId();
         Account userAccount = accountService.findAccountByUserId(guestId);
 
@@ -108,7 +116,7 @@ public class GuestServiceImpl implements IGuestService {
 
         boolean hasOverlappingReservations = reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(null, reservationDto.getAccommodationId(),
                 reservationDto.getStartDate(), reservationDto.getEndDate(), List.of(ReservationStatus.ACCEPTED)) > 0;
-        if (hasOverlappingReservations || findAccommodation(reservationDto.getAccommodationId()).isAvailable(reservationDto.getStartDate(), reservationDto.getEndDate())) {
+        if (hasOverlappingReservations || !findAccommodation(reservationDto.getAccommodationId()).isAvailable(reservationDto.getStartDate(), reservationDto.getEndDate())) {
             throw ErrorUtils.generateBadRequest("accommodationUnavailable");
         }
 

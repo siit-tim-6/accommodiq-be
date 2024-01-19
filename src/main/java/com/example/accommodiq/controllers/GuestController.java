@@ -5,11 +5,18 @@ import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -33,7 +40,7 @@ public class GuestController {
     @PostMapping("/reservations")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add reservation to guest")
-    public ReservationRequestDto addReservation(@RequestBody ReservationRequestDto reservationDto) {
+    public ReservationRequestDto addReservation(@RequestBody @Valid ReservationRequestDto reservationDto) throws ConstraintViolationException {
         return guestService.addReservation(reservationDto);
     }
 
