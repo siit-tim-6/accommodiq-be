@@ -6,6 +6,7 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.accommodations.IAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,7 @@ public class AccommodationController {
     @PutMapping()
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Update accommodation")
-    public AccommodationCardDto updateAccommodation(@RequestBody AccommodationModifyDto body) {
+    public AccommodationCardDto updateAccommodation(@Valid @RequestBody AccommodationModifyDto body) {
         return accommodationService.updateAccommodation(body);
     }
 
@@ -68,14 +69,14 @@ public class AccommodationController {
     @PutMapping("/{accommodationId}/booking-details")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Update accommodation booking details")
-    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@Parameter(description = "Id of accommodation to update booking details") @PathVariable Long accommodationId, @RequestBody AccommodationBookingDetailsDto body) {
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@Parameter(description = "Id of accommodation to update booking details") @PathVariable Long accommodationId, @Valid @RequestBody AccommodationBookingDetailsDto body) {
         return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
     }
 
     @PostMapping("/{accommodationId}/availabilities")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Add accommodation availability")
-    public ResponseEntity<List<Availability>> addAccommodationAvailability(@Parameter(description = "Id of accommodation to add availabilities") @PathVariable Long accommodationId, @RequestBody AvailabilityDto body) {
+    public ResponseEntity<List<Availability>> addAccommodationAvailability(@Parameter(description = "Id of accommodation to add availabilities") @PathVariable Long accommodationId, @Valid @RequestBody AvailabilityDto body) {
         return accommodationService.addAccommodationAvailability(accommodationId, body);
     }
 
@@ -96,7 +97,7 @@ public class AccommodationController {
     @PostMapping("{accommodationId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @Valid @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }
 

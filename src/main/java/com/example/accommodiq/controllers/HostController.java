@@ -7,6 +7,7 @@ import com.example.accommodiq.enums.ReviewStatus;
 import com.example.accommodiq.services.interfaces.users.IHostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,7 +82,7 @@ public class HostController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Create accommodation")
-    public AccommodationDetailsDto createNewAccommodation(@RequestBody AccommodationModifyDto accommodation) {
+    public AccommodationDetailsDto createNewAccommodation(@Valid @RequestBody AccommodationModifyDto accommodation) {
         return hostService.createAccommodation(accommodation);
     }
 
@@ -109,7 +110,7 @@ public class HostController {
     @PostMapping("{hostId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public ReviewDto addReview(@PathVariable Long hostId, @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@PathVariable Long hostId, @Valid @RequestBody ReviewRequestDto reviewDto) {
         return hostService.addReview(hostId, reviewDto);
     }
 

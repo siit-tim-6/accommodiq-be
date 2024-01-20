@@ -397,7 +397,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         if (reservations.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Guest cannot comment and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
+                    "Guest cannot review and rate this accommodation, because he has not stayed here or the 7-day period post-reservation has expired");
         }
 
         // Check if guest has already commented and rated this accommodation
@@ -406,7 +406,7 @@ public class AccommodationServiceImpl implements IAccommodationService {
 
         if (reviewsForAccommodationByGuest.size() >= reservationsForAccommodationByGuest.size()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Guest cannot comment and rate this accommodation, as they have already left reviews for all their reservations.");
+                    "Guest cannot review and rate this accommodation, as they have already left reviews for all their reservations.");
         }
     }
 
