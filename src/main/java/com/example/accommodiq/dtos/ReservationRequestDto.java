@@ -4,6 +4,8 @@ package com.example.accommodiq.dtos;
 import com.example.accommodiq.validation.FutureLongDate;
 import jakarta.validation.constraints.Min;
 
+import java.util.Objects;
+
 public class ReservationRequestDto {
     @FutureLongDate
     private long startDate;
@@ -55,5 +57,18 @@ public class ReservationRequestDto {
 
     public void setAccommodationId(Long accommodationId) {
         this.accommodationId = accommodationId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReservationRequestDto that = (ReservationRequestDto) o;
+        return startDate == that.startDate && endDate == that.endDate && numberOfGuests == that.numberOfGuests && Objects.equals(accommodationId, that.accommodationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startDate, endDate, numberOfGuests, accommodationId);
     }
 }

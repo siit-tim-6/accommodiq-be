@@ -80,7 +80,7 @@ public class GuestServiceTest {
         // Act
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> guestService.addReservation(validGuestId, reservationRequestDto)
+                () -> guestService.addReservation(reservationRequestDto)
         );
         // Assert
         assertEquals("404 NOT_FOUND \"Accommodation not found\"", exception.getMessage());
@@ -100,7 +100,7 @@ public class GuestServiceTest {
         // Act
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> guestService.addReservation(invalidGuestId, reservationRequestDto)
+                () -> guestService.addReservation(reservationRequestDto)
         );
         // Assert
         assertEquals("404 NOT_FOUND \"Guest not found\"", exception.getMessage());
@@ -112,7 +112,7 @@ public class GuestServiceTest {
 
     @Test
     @DisplayName("Test should accept reservation")
-    public void testShouldAutomaticAcceptReservation(){
+    public void testShouldAutomaticAcceptReservation() {
         //Arrange
         when(accommodationRepository.findById(accommodationWithAutomaticAcceptanceId)).thenReturn(Optional.of(validAccommodationWithAutomaticAcceptance));
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
@@ -120,7 +120,7 @@ public class GuestServiceTest {
         ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, accommodationWithAutomaticAcceptanceId);
 
         //Act
-        ReservationRequestDto res = guestService.addReservation(validGuestId, reservationRequestDto);
+        ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
 
         //Assert
         verify(accommodationRepository).findById(accommodationWithAutomaticAcceptanceId);
@@ -141,7 +141,7 @@ public class GuestServiceTest {
 
     @Test
     @DisplayName("Test should not accept reservation")
-    public void testShouldNotAutomaticAcceptReservation(){
+    public void testShouldNotAutomaticAcceptReservation() {
         //Arrange
         when(accommodationRepository.findById(accommodationWithManualAcceptanceId)).thenReturn(Optional.of(validAccommodationWithManualAcceptance));
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
@@ -149,7 +149,7 @@ public class GuestServiceTest {
         ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, accommodationWithManualAcceptanceId);
 
         //Act
-        ReservationRequestDto res = guestService.addReservation(validGuestId, reservationRequestDto);
+        ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
 
         //Assert
         verify(accommodationRepository).findById(accommodationWithManualAcceptanceId);
