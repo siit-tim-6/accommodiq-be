@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class AccommodationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Change accommodation status")
-    public AccommodationCardWithStatusDto changeAccommodationStatus(@Parameter(description = "Id of accommodation to change status") @PathVariable Long accommodationId, @RequestBody AccommodationStatusDto body) {
+    public AccommodationCardWithStatusDto changeAccommodationStatus(@Parameter(description = "Id of accommodation to change status") @PathVariable Long accommodationId, @Valid @RequestBody AccommodationStatusDto body) {
         return accommodationService.changeAccommodationStatus(accommodationId, body);
     }
 
@@ -130,14 +131,14 @@ public class AccommodationController {
     @GetMapping("/reviews")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all accommodation reviews by status")
-    public Collection<ReviewCardDto> getReviewsByStatus(@RequestParam(name = "status") ReviewStatus status) {
+    public Collection<ReviewCardDto> getReviewsByStatus(@RequestParam(name = "status") @NotNull(message = "Review status is required") ReviewStatus status) {
         return accommodationService.getReviewsByStatus(status);
     }
 
     @PutMapping("/reviews/{reviewId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change review status")
-    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId,@Valid @RequestBody ReviewStatusDto body) {
         return accommodationService.changeReviewStatus(reviewId, body);
     }
 }

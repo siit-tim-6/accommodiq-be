@@ -1,8 +1,11 @@
 package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.enums.AccommodationStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class AccommodationStatusDto {
+    @NotNull(message = "Status is required")
     private AccommodationStatus status;
 
     public AccommodationStatusDto() {
