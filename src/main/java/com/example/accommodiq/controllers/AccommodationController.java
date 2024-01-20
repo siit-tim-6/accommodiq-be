@@ -69,7 +69,7 @@ public class AccommodationController {
     @PutMapping("/{accommodationId}/booking-details")
     @PreAuthorize("hasAuthority('HOST')")
     @Operation(summary = "Update accommodation booking details")
-    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@Parameter(description = "Id of accommodation to update booking details") @PathVariable Long accommodationId,@Valid @RequestBody AccommodationBookingDetailsDto body) {
+    public ResponseEntity<AccommodationBookingDetailsDto> updateAccommodationBookingDetails(@Parameter(description = "Id of accommodation to update booking details") @PathVariable Long accommodationId, @Valid @RequestBody AccommodationBookingDetailsDto body) {
         return accommodationService.updateAccommodationBookingDetails(accommodationId, body);
     }
 
@@ -97,7 +97,7 @@ public class AccommodationController {
     @PostMapping("{accommodationId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId,@Valid @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@Parameter(description = "Id of accommodation to add review") @PathVariable Long accommodationId, @Valid @RequestBody ReviewRequestDto reviewDto) {
         return accommodationService.addReview(accommodationId, reviewDto);
     }
 
