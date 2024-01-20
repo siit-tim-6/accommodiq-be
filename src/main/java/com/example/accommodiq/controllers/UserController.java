@@ -180,7 +180,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Report user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportDto.class))})})
-    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id,@Valid @RequestBody ReportDto reportDto) {
+    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @Valid @RequestBody ReportDto reportDto) {
         return reportService.reportUser(id, reportDto);
     }
 
