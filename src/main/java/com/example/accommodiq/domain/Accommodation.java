@@ -243,7 +243,7 @@ public class Accommodation {
 
     public double getTotalPrice(Long fromDate, Long toDate, Integer guests) {
         if ((guests == null && pricingType == PricingType.PER_GUEST)) {
-            return 0;
+            throw ErrorUtils.generateBadRequest("invalidGuestNumber");
         }
 
         if (!isAvailable(fromDate, toDate)) {
@@ -264,13 +264,13 @@ public class Accommodation {
         Long fromDateCopy = fromDate;
         double totalPrice = 0;
         for (Availability availabilityCandidate : availabilityCandidates) {
-            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
+            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy < availabilityCandidate.getToDate()) {
                 totalPrice += availabilityCandidate.getPrice();
                 fromDateCopy += oneDay;
 
                 assert guests != null;
 
-                if (fromDateCopy > toDate) {
+                if (fromDateCopy >= toDate) {
                     return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
                 }
             }

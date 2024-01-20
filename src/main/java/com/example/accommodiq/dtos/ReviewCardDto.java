@@ -16,7 +16,7 @@ public class ReviewCardDto {
     public ReviewCardDto(Review review, Accommodation accommodation) {
         this.review = new ReviewDto(review);
         this.accommodationId = accommodation.getId();
-        this.image = accommodation.getImages().get(0);
+        this.image = (!accommodation.getImages().isEmpty()) ? accommodation.getImages().get(0) : "";
         this.title = accommodation.getTitle();
     }
 

@@ -1,8 +1,13 @@
 package com.example.accommodiq.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 public class AvailabilityDto {
+    @NotNull(message = "From date is required")
     private Long fromDate;
+    @NotNull(message = "To date is required")
     private Long toDate;
+    @NotNull(message = "Price is required")
     private double price;
 
     public AvailabilityDto() {

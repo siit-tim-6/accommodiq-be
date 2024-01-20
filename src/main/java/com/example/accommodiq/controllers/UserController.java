@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -179,7 +180,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Report user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportDto.class))})})
-    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @RequestBody ReportDto reportDto) {
+    public MessageDto reportUser(@Parameter(description = "Id of user to be reported") @PathVariable Long id, @Valid @RequestBody ReportDto reportDto) {
         return reportService.reportUser(id, reportDto);
     }
 

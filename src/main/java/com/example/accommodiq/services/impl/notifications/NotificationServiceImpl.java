@@ -8,10 +8,15 @@ import com.example.accommodiq.repositories.NotificationRepository;
 import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.notifications.INotificationSettingService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,12 +36,15 @@ public class NotificationServiceImpl implements INotificationService {
 
     final SimpMessagingTemplate messagingTemplate;
 
+    final FirebaseMessaging firebaseMessaging;
+
     @Autowired
-    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService, INotificationSettingService notificationSettingService, SimpMessagingTemplate messagingTemplate) {
+    public NotificationServiceImpl(NotificationRepository allNotifications, IUserService userService, INotificationSettingService notificationSettingService, SimpMessagingTemplate messagingTemplate, FirebaseMessaging firebaseMessaging) {
         this.allNotifications = allNotifications;
         this.userService = userService;
         this.notificationSettingService = notificationSettingService;
         this.messagingTemplate = messagingTemplate;
+        this.firebaseMessaging = firebaseMessaging;
     }
 
     @Override
@@ -69,6 +77,20 @@ public class NotificationServiceImpl implements INotificationService {
         allNotifications.flush();
         NotificationDto notificationDto = new NotificationDto(notification);
         messagingTemplate.convertAndSend("/socket-publisher/" + notification.getUser().getId(), notificationDto);
+
+        Message message = Message.builder()
+                .setNotification(com.google.firebase.messaging.Notification.builder()
+                        .setTitle(notification.getType().toString())
+                        .setBody(notification.getText())
+                        .build())
+                .setTopic("user-" + notification.getUser().getId())
+                .build();
+
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(502), "Firebase error");
+        }
     }
 
     @Override
