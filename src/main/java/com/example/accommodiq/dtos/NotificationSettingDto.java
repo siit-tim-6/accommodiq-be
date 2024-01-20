@@ -2,8 +2,10 @@ package com.example.accommodiq.dtos;
 
 import com.example.accommodiq.domain.NotificationSetting;
 import com.example.accommodiq.enums.NotificationType;
+import jakarta.validation.constraints.NotNull;
 
 public class NotificationSettingDto {
+    @NotNull(message = "Notification type is required")
     private NotificationType type;
     private boolean on;
 

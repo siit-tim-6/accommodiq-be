@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @CrossOrigin()
+@Validated
 public class UserController {
     final IAccountService accountService;
     final INotificationService notificationService;
@@ -79,7 +81,7 @@ public class UserController {
     @Transactional
     @Operation(summary = "Register new user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RegisterDto.class))})})
-    public RegisterDto registerUser(@RequestBody RegisterDto registerDto) {
+    public RegisterDto registerUser(@Valid @RequestBody RegisterDto registerDto) {
         registerDto.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         accountService.insert(registerDto);
         return registerDto;
@@ -111,7 +113,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Change user password")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UpdatePasswordDto.class))})})
-    public void changePassword(@RequestBody UpdatePasswordDto passwordDto) {
+    public void changePassword(@Valid @RequestBody UpdatePasswordDto passwordDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = (Account) accountService.loadUserByUsername(email);
 
@@ -153,7 +155,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('HOST') or hasAuthority('GUEST')")
     @Operation(summary = "Update notification settings for user")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = NotificationSettingDto.class, type = "array"))})})
-    public Collection<NotificationSettingDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
+    public Collection<NotificationSettingDto> updateNotificationSettings(@Valid @RequestBody List<NotificationSettingDto> notificationSettings) {
         User user = loggedInUserService.getLoggedUser();
         return notificationSettingService.update(user.getId(), notificationSettings);
     }
@@ -192,7 +194,7 @@ public class UserController {
     @PutMapping("/{userId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change user status")
-    public MessageDto changeUserStatus(@Parameter(description = "Id of user to be changed") @PathVariable Long userId, @RequestBody AccountStatusDto accountStatusDto) {
+    public MessageDto changeUserStatus(@Parameter(description = "Id of user to be changed") @PathVariable Long userId,@Valid @RequestBody AccountStatusDto accountStatusDto) {
         return accountService.changeUserStatus(userId, accountStatusDto.getStatus());
     }
 }
