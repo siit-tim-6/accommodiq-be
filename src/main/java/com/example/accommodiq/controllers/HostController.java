@@ -136,7 +136,7 @@ public class HostController {
     @PutMapping("/reviews/{reviewId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change host review status")
-    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+    public MessageDto changeReviewStatus(@Parameter(description = "Id of review to change status") @PathVariable Long reviewId, @Valid @RequestBody ReviewStatusDto body) {
         return hostService.changeReviewStatus(reviewId, body);
     }
 }
