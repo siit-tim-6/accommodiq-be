@@ -33,3 +33,6 @@ build/
 .vscode/
 
 /uploads
+
+### Firebase credentials ##
+/src/main/resources/firebase-service-account.json
