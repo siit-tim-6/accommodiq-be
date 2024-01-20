@@ -110,7 +110,7 @@ public class HostController {
     @PostMapping("{hostId}/reviews")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add review")
-    public ReviewDto addReview(@PathVariable Long hostId,@Valid @RequestBody ReviewRequestDto reviewDto) {
+    public ReviewDto addReview(@PathVariable Long hostId, @Valid @RequestBody ReviewRequestDto reviewDto) {
         return hostService.addReview(hostId, reviewDto);
     }
 
