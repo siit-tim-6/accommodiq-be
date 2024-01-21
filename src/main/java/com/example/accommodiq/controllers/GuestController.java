@@ -54,7 +54,7 @@ public class GuestController {
     @PostMapping("/favorites")
     @PreAuthorize("hasAuthority('GUEST')")
     @Operation(summary = "Add favorite to guest")
-    public AccommodationCardDto addFavorite(@RequestBody GuestFavoriteDto guestFavoriteDto) {
+    public AccommodationCardDto addFavorite(@Valid @RequestBody GuestFavoriteDto guestFavoriteDto) {
         return guestService.addFavorite(guestFavoriteDto);
     }
 

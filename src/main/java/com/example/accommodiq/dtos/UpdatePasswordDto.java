@@ -1,9 +1,12 @@
 package com.example.accommodiq.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UpdatePasswordDto {
+    @NotNull(message = "Old password is required")
     private String oldPassword;
+    @NotNull(message = "New password is required")
     private String newPassword;
 
     public UpdatePasswordDto(String oldPassword, String newPassword) {

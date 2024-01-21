@@ -9,6 +9,7 @@ import com.example.accommodiq.services.interfaces.feedback.IReviewService;
 import com.example.accommodiq.services.interfaces.users.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,7 @@ public class ReviewController {
     @PutMapping("/{reviewId}/status")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Change review status")
-    public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @RequestBody ReviewStatusDto body) {
+    public MessageDto setReviewStatus(@Parameter(description = "Id of review to change status")@PathVariable Long reviewId, @Valid @RequestBody ReviewStatusDto body) {
         return reviewService.setReviewStatus(reviewId, body.getStatus());
     }
 
