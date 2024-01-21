@@ -1,6 +1,9 @@
 package com.example.accommodiq.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 public class GuestFavoriteDto {
+    @NotNull(message = "Favorite ID is required")
     private Long favoriteId;
 
     public GuestFavoriteDto(Long favoriteId) {

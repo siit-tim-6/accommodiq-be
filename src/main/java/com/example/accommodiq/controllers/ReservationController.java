@@ -6,6 +6,7 @@ import com.example.accommodiq.dtos.*;
 import com.example.accommodiq.services.interfaces.accommodations.IReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +69,7 @@ public class ReservationController {
     @PutMapping("/{reservationId}/status")
     @PreAuthorize("hasAuthority('HOST') || hasAuthority('GUEST')")
     @Operation(summary = "Change reservation status")
-    public ReservationCardDto changeReservationStatus(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId, @RequestBody ReservationStatusDto statusDto) {
+    public ReservationCardDto changeReservationStatus(@Parameter(description = "Id of reservation to change status") @PathVariable Long reservationId,@Valid @RequestBody ReservationStatusDto statusDto) {
         return reservationService.changeReservationStatus(reservationId, statusDto.getStatus());
     }
 }

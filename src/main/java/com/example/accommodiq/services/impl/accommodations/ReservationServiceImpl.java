@@ -153,12 +153,17 @@ public class ReservationServiceImpl implements IReservationService {
 
         overlappingPendingReservations.remove(reservation);
         for (Reservation overlappingPendingReservation : overlappingPendingReservations) {
-            overlappingPendingReservation.setStatus(ReservationStatus.DECLINED);
+            if (Objects.equals(overlappingPendingReservation.getStartDate(), reservation.getEndDate()) ||
+                    Objects.equals(overlappingPendingReservation.getEndDate(), reservation.getStartDate())) {
+                continue;
+            }
 
-            trySendNotification(overlappingPendingReservation);
-
-            allReservations.save(overlappingPendingReservation);
-            allReservations.flush();
+            if (overlappingPendingReservation.getStatus() == ReservationStatus.PENDING) {
+                overlappingPendingReservation.setStatus(ReservationStatus.DECLINED);
+                trySendNotification(overlappingPendingReservation);
+                allReservations.save(overlappingPendingReservation);
+                allReservations.flush();
+            }
         }
     }
 

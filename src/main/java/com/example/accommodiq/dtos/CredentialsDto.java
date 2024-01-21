@@ -1,7 +1,11 @@
 package com.example.accommodiq.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CredentialsDto {
+    @NotBlank(message = "Email is required")
     private String email;
+    @NotBlank(message = "Password is required")
     private String password;
 
     public CredentialsDto(String email, String password) {

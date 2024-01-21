@@ -77,6 +77,7 @@ public class Accommodation {
         this.images = accommodationDto.getImages() == null ? this.images : accommodationDto.getImages();
         this.type = accommodationDto.getType() == null ? this.type : accommodationDto.getType();
         this.benefits = accommodationDto.getBenefits() == null ? this.benefits : accommodationDto.getBenefits();
+        this.status = AccommodationStatus.PENDING;
     }
 
     public Accommodation() {
