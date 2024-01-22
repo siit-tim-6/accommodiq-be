@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,10 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -32,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql(value = "classpath:data/reservations/reset-reservations.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class GuestControllerTest {
     private final String guestEmail = "guest.bj@example.com";
+    private final String blockedGuestEmail = "guest.blocked@example.com";
     private final String guestPassword = "123";
     private final String reservationsUrl = "/guests/reservations";
 
@@ -95,6 +93,123 @@ public class GuestControllerTest {
         assertEquals("Access Denied", getResponseMessage(response.getBody()));
         assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
     }
+
+//    @Test
+//    @DisplayName("Should return FORBIDDEN with account blocked message")
+//    public void testAccountBlocked() {
+//        HttpHeaders headers = TestUtils.createHttpHeaders(restTemplate.getRestTemplate(), blockedGuestEmail, guestPassword);
+//        ReservationRequestDto newReservation = new ReservationRequestDto(1709251200000L, 1709337600000L, 1, 3L);
+//        HttpEntity<ReservationRequestDto> requestEntity = new HttpEntity<>(newReservation, headers);
+//        ResponseEntity<String> response = restTemplate.exchange(
+//                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+//                }
+//        );
+//
+//        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//        assertEquals("Your account is blocked!", getResponseMessage(response.getBody()));
+//        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+//    }
+
+    @Test
+    @DisplayName("Should return FORBIDDEN with forbidden message")
+    public void testWrongRoleForbidden() {
+        HttpHeaders headers = TestUtils.createHttpHeaders(restTemplate.getRestTemplate(), "admin", "123");
+        ReservationRequestDto newReservation = new ReservationRequestDto(1709251200000L, 1709337600000L, 1, 3L);
+        HttpEntity<ReservationRequestDto> requestEntity = new HttpEntity<>(newReservation, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Forbidden", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
+
+    @Test
+    @DisplayName("Should return NOT_FOUND with accommodation not found message")
+    public void testAccommodationNotFound() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1709251200000L, 1709337600000L, 1, 100L);
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Accommodation not found", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
+
+    private static Stream<Arguments> getOverlappingReservations() {
+        return Stream.of(
+                Arguments.of(new ReservationRequestDto(1709683200000L, 1709856000000L, 1, 4L)),
+                Arguments.of(new ReservationRequestDto(1709510400000L, 1709683200000L, 1, 3L))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getOverlappingReservations")
+    @DisplayName("Should return BAD_REQUEST with guest overlapping message")
+    public void testGuestSelfOverlapping(ReservationRequestDto newReservation) {
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("User has an overlapping reservation", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
+
+    @Test
+    @DisplayName("Should return BAD_REQUEST with accommodation unavailable message")
+    public void testOtherOverlapping() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1709337600000L, 1709596800000L, 1, 4L);
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Accommodation is not available within provided date range", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
+
+    @Test
+    @DisplayName("Should return BAD_REQUEST with accommodation unavailable message")
+    public void testAccommodationNoSuitableAvailabilities() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1709337600000L, 1709596800000L, 1, 4L);
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Accommodation is not available within provided date range", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
+
+
+    // TODO: napraviti test kada accommodation nema uopste available tamo (tu testirati ovo od privatne metode isAvailable, kada je null available, kada availabilityCandidates nema nista, kada ima prekid)
+
+    // TODO: automatic acceptance da moze vise preklapajucih
+
+    // --------------------- PRIVATE METHODS -----------------------------------
 
     private HttpEntity<ReservationRequestDto> createStandardRequestEntity(ReservationRequestDto reservationRequestDto) {
         HttpHeaders headers = TestUtils.createHttpHeaders(restTemplate.getRestTemplate(), guestEmail, guestPassword);
