@@ -126,3 +126,11 @@ VALUES (1, 'New Reservation request', 1704150472000, false, 0, 1),
        (2, 'Reservation have been canceled', 1704150472000, false, 1, 1),
        (3, 'Guest rated you', 1704150472000, false, 2, 1),
        (4, 'Guest rated your accommodation', 1704150472000, false, 3, 1);
+
+-- Insert sample data into `reservation` table
+INSERT INTO `reservation` (`id`, `end_date`, `number_of_guests`, `start_date`, `status`, `accommodation_id`, `guest_id`,
+                           `total_price`)
+VALUES
+         (8, 1709679600000, 2, 1709683200000, 3, 3, 3, 200),
+       (9, 1709766000000, 2, 1709679600000, 3, 3, 3, 200),
+       (10, 1709766000000, 2, 1709679600000, 3, 3, 3, 200);

@@ -1,5 +1,6 @@
 package com.example.accommodiq.controllers;
 
+import com.example.accommodiq.dtos.NotificationDto;
 import com.example.accommodiq.dtos.ReservationCardDto;
 import com.example.accommodiq.dtos.ReservationStatusDto;
 import com.example.accommodiq.enums.ReservationStatus;
@@ -64,6 +65,13 @@ public class HostControllerTest {
         );
     }
 
+    private static Stream<Arguments> provideReservationStatuses2() {
+        return Stream.of(
+                Arguments.of(ReservationStatus.ACCEPTED),
+                Arguments.of(ReservationStatus.DECLINED)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("provideReservationStatuses")
     @DisplayName("Should return Forbidden status when host tries to Cancel or Pend reservation")
@@ -81,20 +89,63 @@ public class HostControllerTest {
         assertFalse(isReservationStatusChanged(activeReservationId, reservationStatus));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("provideReservationStatuses2")
     @DisplayName("Should change reservation status")
-    public void test3() {
+    public void test3(ReservationStatus reservationStatus) {
         long reservationId = 1L;
-        ReservationStatusDto reservationStatusDto = new ReservationStatusDto(ReservationStatus.ACCEPTED);
+        ReservationStatusDto reservationStatusDto = new ReservationStatusDto(reservationStatus);
         HttpEntity<ReservationStatusDto> requestEntity = createStandardRequestEntity(reservationStatusDto);
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<ReservationCardDto> response = restTemplate.exchange(
                 putIdInUrl(reservationId), HttpMethod.PUT, requestEntity, new ParameterizedTypeReference<>() {
                 }
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
+        assertEquals(reservationId, response.getBody().getId());
+        assertSame(reservationStatus, response.getBody().getStatus());
+        assertTrue(isReservationStatusChanged(reservationId, reservationStatus));
+    }
+
+
+
+    @Test
+    @DisplayName("Should return NOT_FOUND when reservation not found")
+    public void testAccommodationNotFound() {
+        long reservationId = 100L;
+        ReservationStatusDto reservationStatusDto = new ReservationStatusDto(ReservationStatus.ACCEPTED);
+        HttpEntity<ReservationStatusDto> requestEntity = createStandardRequestEntity(reservationStatusDto);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                putIdInUrl(reservationId), HttpMethod.PUT, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Reservation not found", getResponseMessage(response.getBody()));
+    }
+
+
+    @Test
+    @DisplayName("Should accept reservation and decline overlapping reservation")
+    public void test4() {
+        long reservationId = 9L;
+        ReservationStatusDto reservationStatusDto = new ReservationStatusDto(ReservationStatus.ACCEPTED);
+        HttpEntity<ReservationStatusDto> requestEntity = createStandardRequestEntity(reservationStatusDto);
+        ResponseEntity<ReservationCardDto> response = restTemplate.exchange(
+                putIdInUrl(reservationId), HttpMethod.PUT, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(reservationId, response.getBody().getId());
+        assertSame(ReservationStatus.ACCEPTED, response.getBody().getStatus());
         assertTrue(isReservationStatusChanged(reservationId, ReservationStatus.ACCEPTED));
+        assertTrue(isReservationStatusChanged(10L, ReservationStatus.DECLINED));
+        assertTrue(isReservationStatusChanged(8L, ReservationStatus.PENDING));
     }
 
     private String putIdInUrl(long reservationId) {
@@ -131,5 +182,14 @@ public class HostControllerTest {
         return response.getBody();
     }
 
+    private List<NotificationDto> fetchGuestNotifications() {
+        HttpHeaders headers = TestUtils.createHttpHeaders(restTemplate.getRestTemplate(), guestEmail, password);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<List<NotificationDto>> response = restTemplate.exchange(
+                "/guests/notifications", HttpMethod.GET, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
 
+        return response.getBody();
+    }
 }
