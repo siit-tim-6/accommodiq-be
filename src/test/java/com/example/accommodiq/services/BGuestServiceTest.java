@@ -1,14 +1,18 @@
 package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
+import com.example.accommodiq.domain.Account;
 import com.example.accommodiq.domain.Guest;
+import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
 import com.example.accommodiq.enums.AccommodationStatus;
+import com.example.accommodiq.enums.AccountRole;
 import com.example.accommodiq.enums.PricingType;
 import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.repositories.AccommodationRepository;
 import com.example.accommodiq.repositories.GuestRepository;
 import com.example.accommodiq.repositories.ReservationRepository;
+import com.example.accommodiq.services.interfaces.notifications.INotificationService;
 import com.example.accommodiq.services.interfaces.users.IAccountService;
 import com.example.accommodiq.services.interfaces.users.IGuestService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +24,15 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -59,24 +68,40 @@ public class BGuestServiceTest {
     @MockBean
     private ReservationRepository reservationRepository;
 
+    @MockBean
+    private INotificationService notificationService;
+
     @Autowired
     private IGuestService guestService;
 
     @Captor
     private ArgumentCaptor<Guest> guestArgumentCaptor;
 
+    private final Account validGuestAccount = new Account(new RegisterDto(AccountRole.GUEST, "bla.bla@hotmail.com", "$2a$10$gcj5DROzl4O6T3l08ygBjOGZeIJOnRidmlIWaQEivSYKMu67ldIaC", validGuest));
+
+
     @BeforeEach
     public void setUp() {
         validGuest.setReservations(new HashSet<>());
+
+        validGuestAccount.setId(1L);
+        validGuestAccount.setRole(AccountRole.GUEST);
+        Collection<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(AccountRole.GUEST);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(validGuestAccount, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Test
     @DisplayName("Test should throw Not found exception when accommodation not found")
     public void testShouldThrowResponseStatusExceptionWhenAccommodationNotFound() {
         // Arrange
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        when(accountService.findAccountByUserId(validGuest.getId())).thenReturn(validGuestAccount);
+
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
         when(accommodationRepository.findById(invalidAccommodationId)).thenReturn(Optional.empty());
-        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, invalidAccommodationId);
+        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 1, 1, invalidAccommodationId);
         // Act
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
@@ -88,36 +113,41 @@ public class BGuestServiceTest {
         verify(accommodationRepository).findById(invalidAccommodationId);
         verifyNoMoreInteractions(guestRepository);
         verifyNoMoreInteractions(accommodationRepository);
-        verifyNoInteractions(accountService);
     }
 
     @Test
     @DisplayName("Test should throw Not found exception when guest not found")
     public void testShouldThrowResponseStatusExceptionWhenGuestNotFound() {
         // Arrange
-        when(guestRepository.findById(invalidGuestId)).thenReturn(Optional.empty());
-        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, accommodationWithAutomaticAcceptanceId);
-        // Act
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
-                () -> guestService.addReservation(reservationRequestDto)
-        );
-        // Assert
+        when(guestRepository.findById(validGuestAccount.getId())).thenReturn(Optional.empty());
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        when(accountService.findAccountByUserId(validGuest.getId())).thenReturn(validGuestAccount);
+        ReservationRequestDto newReservation = new ReservationRequestDto(0, 1, 1, validAccommodationWithAutomaticAcceptance.getId());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> guestService.addReservation(newReservation));
+
         assertEquals("404 NOT_FOUND \"Guest not found\"", exception.getMessage());
-        verify(guestRepository).findById(invalidGuestId);
+
+        verify(guestRepository).findById(validGuestAccount.getId());
         verifyNoMoreInteractions(guestRepository);
         verifyNoInteractions(accommodationRepository);
-        verifyNoInteractions(accountService);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verify(accountService).findAccountByUserId(validGuest.getId());
+        verifyNoMoreInteractions(accountService);
     }
 
     @Test
     @DisplayName("Test should accept reservation")
     public void testShouldAutomaticAcceptReservation() {
         //Arrange
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        when(accountService.findAccountByUserId(validGuest.getId())).thenReturn(validGuestAccount);
         when(accommodationRepository.findById(accommodationWithAutomaticAcceptanceId)).thenReturn(Optional.of(validAccommodationWithAutomaticAcceptance));
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
         when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any())).thenReturn(0L);
-        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, accommodationWithAutomaticAcceptanceId);
+        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 1, 1, accommodationWithAutomaticAcceptanceId);
 
         //Act
         ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
@@ -146,7 +176,7 @@ public class BGuestServiceTest {
         when(accommodationRepository.findById(accommodationWithManualAcceptanceId)).thenReturn(Optional.of(validAccommodationWithManualAcceptance));
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
         when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any())).thenReturn(0L);
-        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 0, 1, accommodationWithManualAcceptanceId);
+        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(1, 0, 1, accommodationWithManualAcceptanceId);
 
         //Act
         ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
@@ -166,5 +196,38 @@ public class BGuestServiceTest {
         verifyNoMoreInteractions(guestRepository);
         verifyNoMoreInteractions(reservationRepository);
         verifyNoInteractions(accountService);
+    }
+
+    @Test
+    @DisplayName("Should throw an exception when start date is after end date")
+    public void testInvalidDateRange() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1, 0, 1, validAccommodationWithAutomaticAcceptance.getId());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> guestService.addReservation(newReservation));
+
+        assertEquals("400 BAD_REQUEST \"Invalid date range!\"", exception.getMessage());
+        verifyNoInteractions(guestRepository);
+        verifyNoInteractions(accommodationRepository);
+        verifyNoInteractions(accountService);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user not guest")
+    public void testWhenUserNotGuest() {
+        validGuestAccount.setRole(AccountRole.HOST);
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        ReservationRequestDto newReservation = new ReservationRequestDto(0, 1, 1, validAccommodationWithAutomaticAcceptance.getId());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> guestService.addReservation(newReservation));
+
+        assertEquals("User is not a guest", exception.getMessage());
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verifyNoMoreInteractions(accountService);
+        verifyNoInteractions(guestRepository);
+        verifyNoInteractions(accommodationRepository);
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
     }
 }
