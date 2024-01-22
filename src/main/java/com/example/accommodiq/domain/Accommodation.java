@@ -233,7 +233,7 @@ public class Accommodation {
             if (availabilityCandidate.getFromDate() <= from && to <= availabilityCandidate.getToDate()) {
                 return true;
             } else if (availabilityCandidate.getFromDate() <= from && to > availabilityCandidate.getToDate()) {
-                from = availabilityCandidate.getFromDate() + oneDay;
+                from = availabilityCandidate.getToDate() + oneDay;
             } else {
                 return false;
             }
@@ -264,21 +264,23 @@ public class Accommodation {
 
         Long fromDateCopy = fromDate;
         double totalPrice = 0;
+        double lastPrice = 0;
         for (Availability availabilityCandidate : availabilityCandidates) {
-            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy < availabilityCandidate.getToDate()) {
+            while (availabilityCandidate.getFromDate() <= fromDateCopy && fromDateCopy <= availabilityCandidate.getToDate()) {
                 totalPrice += availabilityCandidate.getPrice();
+                lastPrice = availabilityCandidate.getPrice();
                 fromDateCopy += oneDay;
 
                 assert guests != null;
 
-                if (fromDateCopy >= toDate) {
-                    return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
+                if (fromDateCopy > toDate) {
+                    return (pricingType == PricingType.PER_GUEST) ? (totalPrice - lastPrice) * guests : (totalPrice - lastPrice);
                 }
             }
         }
 
         assert guests != null;
-        return (pricingType == PricingType.PER_GUEST) ? totalPrice * guests : totalPrice;
+        return (pricingType == PricingType.PER_GUEST) ? (totalPrice - lastPrice) * guests : (totalPrice - lastPrice);
     }
 
     public double getMinPrice() {
