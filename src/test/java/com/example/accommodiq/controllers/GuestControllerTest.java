@@ -2,6 +2,7 @@ package com.example.accommodiq.controllers;
 
 import com.example.accommodiq.dtos.ReservationCardDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
+import com.example.accommodiq.enums.ReservationStatus;
 import com.example.accommodiq.utilities.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,7 +40,8 @@ public class GuestControllerTest {
     private static Stream<Arguments> getNewReservations() {
         return Stream.of(
                 Arguments.of(new ReservationRequestDto(1709251200000L, 1709337600000L, 1, 3L)),
-                Arguments.of(new ReservationRequestDto(1709596800000L, 1709769600000L, 1, 3L))
+                Arguments.of(new ReservationRequestDto(1709596800000L, 1709769600000L, 1, 3L)),
+                Arguments.of(new ReservationRequestDto(1710028800000L, 1710201600000L, 1, 4L))
         );
     }
 
@@ -213,8 +215,27 @@ public class GuestControllerTest {
         assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
     }
 
+    @Test
+    @DisplayName("Should return OK with reservation being accepted")
+    public void testAutomaticAcceptance() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1710201600000L, 1710374400000L, 1, 4L);
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
 
-    // TODO: automatic acceptance da moze vise preklapajucih (to moze gore u successful)
+        ResponseEntity<ReservationRequestDto> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(newReservation, response.getBody());
+        List<ReservationCardDto> filteredReservations = fetchUserReservations().stream().filter(reservationCardDto -> compareReservation(newReservation, reservationCardDto)).toList();
+        assertFalse(filteredReservations.isEmpty());
+        assertNotNull(filteredReservations.get(0));
+        assertEquals(filteredReservations.get(0).getStatus(), ReservationStatus.ACCEPTED);
+    }
+
+
     // TODO: invalid guest number i null za guests kada je PER_GUEST
 
     // --------------------- PRIVATE METHODS -----------------------------------

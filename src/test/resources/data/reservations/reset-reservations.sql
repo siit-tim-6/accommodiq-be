@@ -1,3 +1,3 @@
 DELETE
 FROM `reservation`
-WHERE `id` > 6;
+WHERE `id` > 7;
