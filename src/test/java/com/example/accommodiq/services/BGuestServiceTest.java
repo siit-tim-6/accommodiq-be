@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-public class GuestServiceTest {
+public class BGuestServiceTest {
     private final Guest validGuest = new Guest(1L, "John", "Doe", "address", "1234");
     private final Long validGuestId = 1L;
     private final Long invalidGuestId = 2L;
