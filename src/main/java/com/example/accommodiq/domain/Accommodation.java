@@ -223,6 +223,7 @@ public class Accommodation {
         List<Availability> availabilityCandidates = this.available.stream().filter(availability ->
                 (availability.getFromDate() <= finalFrom && finalFrom <= availability.getToDate())
                         || (availability.getFromDate() <= to && to <= availability.getToDate())
+                        || (finalFrom <= availability.getFromDate() && availability.getToDate() <= to)
         ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
 
         if (availabilityCandidates.isEmpty()) {
@@ -260,6 +261,7 @@ public class Accommodation {
         List<Availability> availabilityCandidates = available.stream().filter(availability ->
                 (availability.getFromDate() <= fromDate && fromDate <= availability.getToDate())
                         || (availability.getFromDate() <= toDate && toDate <= availability.getToDate())
+                        || (fromDate <= availability.getFromDate() && availability.getToDate() <= toDate)
         ).sorted(Comparator.comparing(Availability::getFromDate)).toList();
 
         Long fromDateCopy = fromDate;
