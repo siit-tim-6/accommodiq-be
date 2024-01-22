@@ -57,7 +57,7 @@ VALUES (1, 1, 1, 2, 'Cozy apartment near downtown TEST', 4, 2, 0, 'Downtown Retr
         'Test location', 45.263714, 19.8470915),
        (5, 0, 1, 1, 'Without availabilities', 2, 1, 0, 'Test', 'Cottage', 1,
         'Test location2', 45.263714, 19.8470915),
-       (6, 0, 1, 1, 'Test2', 2, 1, 0, 'Test', 'Cottage', 1,
+       (6, 0, 1, 1, 'Test2', 2, 1, 1, 'Test', 'Cottage', 1,
         'Test location3', 45.263714, 19.8470915);
 
 -- Insert sample data into `accommodation_available` table

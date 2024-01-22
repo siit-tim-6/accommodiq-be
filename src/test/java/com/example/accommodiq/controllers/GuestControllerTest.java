@@ -190,11 +190,14 @@ public class GuestControllerTest {
     }
 
     private static Stream<Arguments> getReservationsWithoutAvailabilities() {
+        // kada nema availabillity nijedan, kada ne matchuje nijedan avaiilailibty, kada ima prekid, kada ispada s kraja
+        // TODO: jos jedan kada ispada s pocetka
         return Stream.of(
                 Arguments.of(new ReservationRequestDto(1709683200000L, 1709856000000L, 1, 5L)),
                 Arguments.of(new ReservationRequestDto(1709856000000L, 1710028800000L, 1, 6L)),
                 Arguments.of(new ReservationRequestDto(1709251200000L, 1709769600000L, 1, 6L)),
-                Arguments.of(new ReservationRequestDto(1709596800000L, 1709856000000L, 1, 6L))
+                Arguments.of(new ReservationRequestDto(1709596800000L, 1709856000000L, 1, 6L)),
+                Arguments.of(new ReservationRequestDto(1709510400000L, 1709769600000L, 1, 6L))
         );
     }
 
@@ -235,8 +238,31 @@ public class GuestControllerTest {
         assertEquals(filteredReservations.get(0).getStatus(), ReservationStatus.ACCEPTED);
     }
 
-
     // TODO: invalid guest number i null za guests kada je PER_GUEST
+
+//    private static Stream<Arguments> getReservationsWithInvalidGuests() {
+//        return Stream.of(
+//                Arguments.of(new ReservationRequestDto(1710201600000L, 1710374400000L, 10, 6L)),
+//                Arguments.of(new ReservationRequestDto(1710201600000L, 1710374400000L, 1, 6L))
+//        );
+//    }
+
+    @Test
+    @DisplayName("Should return BAD_REQUEST with invalid guest number message")
+    public void testInvalidGuestNumber() {
+        ReservationRequestDto newReservation = new ReservationRequestDto(1709251200000L, 1709424000000L, 10, 6L);
+        HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                reservationsUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Invalid guest number", getResponseMessage(response.getBody()));
+        assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
+    }
 
     // --------------------- PRIVATE METHODS -----------------------------------
 
