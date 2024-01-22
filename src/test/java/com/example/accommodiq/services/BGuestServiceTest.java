@@ -2,6 +2,7 @@ package com.example.accommodiq.services;
 
 import com.example.accommodiq.domain.Accommodation;
 import com.example.accommodiq.domain.Account;
+import com.example.accommodiq.domain.Availability;
 import com.example.accommodiq.domain.Guest;
 import com.example.accommodiq.dtos.RegisterDto;
 import com.example.accommodiq.dtos.ReservationRequestDto;
@@ -32,9 +33,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -90,6 +89,10 @@ public class BGuestServiceTest {
         authorities.add(AccountRole.GUEST);
         Authentication authentication = new UsernamePasswordAuthenticationToken(validGuestAccount, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        validAccommodationWithAutomaticAcceptance.setAvailable(new HashSet<>(List.of(
+                new Availability(1L, 0L, 10L, 200.0)
+        )));
+        verifyNoInteractions(notificationService);
     }
 
     @Test
@@ -113,6 +116,12 @@ public class BGuestServiceTest {
         verify(accommodationRepository).findById(invalidAccommodationId);
         verifyNoMoreInteractions(guestRepository);
         verifyNoMoreInteractions(accommodationRepository);
+
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verify(accountService).findAccountByUserId(validGuest.getId());
+        verifyNoMoreInteractions(accountService);
+        verifyNoInteractions(notificationService);
+
     }
 
     @Test
@@ -136,6 +145,7 @@ public class BGuestServiceTest {
         verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
         verify(accountService).findAccountByUserId(validGuest.getId());
         verifyNoMoreInteractions(accountService);
+        verifyNoInteractions(notificationService);
     }
 
     @Test
@@ -153,9 +163,9 @@ public class BGuestServiceTest {
         ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
 
         //Assert
-        verify(accommodationRepository).findById(accommodationWithAutomaticAcceptanceId);
+        verify(accommodationRepository, times(2)).findById(accommodationWithAutomaticAcceptanceId);
         verify(guestRepository).findById(validGuestId);
-        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any());
+        verify(reservationRepository, times(2)).countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any());
         verify(guestRepository).save(guestArgumentCaptor.capture());
         verify(guestRepository).flush();
 
@@ -166,7 +176,10 @@ public class BGuestServiceTest {
         verifyNoMoreInteractions(accommodationRepository);
         verifyNoMoreInteractions(guestRepository);
         verifyNoMoreInteractions(reservationRepository);
-        verifyNoInteractions(accountService);
+
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verify(accountService).findAccountByUserId(validGuest.getId());
+        verifyNoMoreInteractions(accountService);
     }
 
     @Test
@@ -176,15 +189,20 @@ public class BGuestServiceTest {
         when(accommodationRepository.findById(accommodationWithManualAcceptanceId)).thenReturn(Optional.of(validAccommodationWithManualAcceptance));
         when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
         when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any())).thenReturn(0L);
-        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(1, 0, 1, accommodationWithManualAcceptanceId);
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        when(accountService.findAccountByUserId(validGuest.getId())).thenReturn(validGuestAccount);
+        validAccommodationWithManualAcceptance.setAvailable(new HashSet<>(List.of(
+                new Availability(1L, 0L, 10L, 200.0)
+        )));
+        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 1, 1, accommodationWithManualAcceptanceId);
 
         //Act
         ReservationRequestDto res = guestService.addReservation(reservationRequestDto);
 
         //Assert
-        verify(accommodationRepository).findById(accommodationWithManualAcceptanceId);
+        verify(accommodationRepository, times(2)).findById(accommodationWithManualAcceptanceId);
         verify(guestRepository).findById(validGuestId);
-        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any());
+        verify(reservationRepository, times(2)).countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any());
         verify(guestRepository).save(guestArgumentCaptor.capture());
         verify(guestRepository).flush();
 
@@ -195,7 +213,42 @@ public class BGuestServiceTest {
         verifyNoMoreInteractions(accommodationRepository);
         verifyNoMoreInteractions(guestRepository);
         verifyNoMoreInteractions(reservationRepository);
-        verifyNoInteractions(accountService);
+
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verify(accountService).findAccountByUserId(validGuest.getId());
+        verifyNoMoreInteractions(accountService);
+
+    }
+
+    @Test
+    @DisplayName("Test should throw not available reservation")
+    public void testShouldThrowNotAvailableReservation() {
+        //Arrange
+        when(accommodationRepository.findById(accommodationWithManualAcceptanceId)).thenReturn(Optional.of(validAccommodationWithManualAcceptance));
+        when(guestRepository.findById(validGuestId)).thenReturn(Optional.of(validGuest));
+        when(reservationRepository.countOverlappingReservationsOrGuestOverlappingReservations(any(), any(), any(), any(), any())).thenReturn(0L);
+        when(accountService.loadUserByUsername(validGuestAccount.getUsername())).thenReturn(validGuestAccount);
+        when(accountService.findAccountByUserId(validGuest.getId())).thenReturn(validGuestAccount);
+        ReservationRequestDto reservationRequestDto = new ReservationRequestDto(0, 1, 1, accommodationWithManualAcceptanceId);
+
+        //Act
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> guestService.addReservation(reservationRequestDto));
+
+        //Assert
+        assertEquals("400 BAD_REQUEST \"Accommodation is not available within provided date range\"", exception.getMessage());
+        verify(accountService).loadUserByUsername(validGuestAccount.getEmail());
+        verify(accountService).findAccountByUserId(validGuest.getId());
+        verifyNoMoreInteractions(accountService);
+        verify(guestRepository).findById(validGuestAccount.getId());
+        verifyNoMoreInteractions(guestRepository);
+        verify(accommodationRepository, times(2)).findById(reservationRequestDto.getAccommodationId());
+        verifyNoMoreInteractions(accommodationRepository);
+        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(
+                validGuestAccount.getId(), reservationRequestDto.getAccommodationId(), reservationRequestDto.getStartDate(), reservationRequestDto.getEndDate(), List.of(ReservationStatus.ACCEPTED, ReservationStatus.PENDING));
+        verify(reservationRepository).countOverlappingReservationsOrGuestOverlappingReservations(
+                null, reservationRequestDto.getAccommodationId(), reservationRequestDto.getStartDate(), reservationRequestDto.getEndDate(), List.of(ReservationStatus.ACCEPTED));
+        verifyNoMoreInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
     }
 
     @Test
@@ -211,6 +264,7 @@ public class BGuestServiceTest {
         verifyNoInteractions(accountService);
         verifyNoInteractions(reservationRepository);
         verifyNoInteractions(notificationService);
+        verifyNoInteractions(accountService);
     }
 
     @Test
