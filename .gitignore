@@ -36,3 +36,6 @@ build/
 
 ### Firebase credentials ##
 /src/main/resources/firebase-service-account.json
+
+### e2e
+geckodriver
