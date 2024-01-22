@@ -39,7 +39,9 @@ VALUES (1, 1672531200000, 100.00, 1672617600000),
        (4, 1704067200000, 50.00, 1704585600000),
        (5, 1706745600000, 100.00, 1707264000000),
        (6, 1709251200000, 120.00, 1709769600000),
-       (7, 1709251200000, 120.00, 1710979200000);
+       (7, 1709251200000, 120.00, 1710979200000),
+       (8, 1709251200000, 120.00, 1709424000000),
+       (9, 1709596800000, 120.00, 1709769600000);
 
 -- Insert sample data into `accommodation` table
 INSERT INTO `accommodation` (`id`, `status`, `automatic_acceptance`, `cancellation_deadline`, `description`,
@@ -52,7 +54,11 @@ VALUES (1, 1, 1, 2, 'Cozy apartment near downtown TEST', 4, 2, 0, 'Downtown Retr
        (3, 0, 1, 1, 'Charming cottage by the lake', 2, 1, 0, 'Lake View Cottage', 'Cottage', 1,
         'Gunduliceva 24, 21101 Novi Sad, Serbia', 45.263714, 19.8470915),
        (4, 0, 1, 1, 'Test', 2, 1, 0, 'Test', 'Cottage', 1,
-        'Test location', 45.263714, 19.8470915);
+        'Test location', 45.263714, 19.8470915),
+       (5, 0, 1, 1, 'Without availabilities', 2, 1, 0, 'Test', 'Cottage', 1,
+        'Test location2', 45.263714, 19.8470915),
+       (6, 0, 1, 1, 'Test2', 2, 1, 0, 'Test', 'Cottage', 1,
+        'Test location3', 45.263714, 19.8470915);
 
 -- Insert sample data into `accommodation_available` table
 INSERT INTO `accommodation_available` (`accommodation_id`, `available_id`)
@@ -62,7 +68,9 @@ VALUES (1, 1),
        (1, 4),
        (2, 5),
        (3, 6),
-       (4, 7);
+       (4, 7),
+       (6, 8),
+       (6, 9);
 
 -- Insert sample data into `review` table
 INSERT INTO `review` (`id`, `comment`, `date`, `rating`, `status`, `guest_id`)

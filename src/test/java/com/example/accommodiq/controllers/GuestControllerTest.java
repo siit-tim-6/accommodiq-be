@@ -187,10 +187,19 @@ public class GuestControllerTest {
         assertTrue(fetchUserReservations().stream().noneMatch(reservationCardDto -> compareReservation(newReservation, reservationCardDto)));
     }
 
-    @Test
+    private static Stream<Arguments> getReservationsWithoutAvailabilities() {
+        return Stream.of(
+                Arguments.of(new ReservationRequestDto(1709683200000L, 1709856000000L, 1, 5L)),
+                Arguments.of(new ReservationRequestDto(1709856000000L, 1710028800000L, 1, 6L)),
+                Arguments.of(new ReservationRequestDto(1709251200000L, 1709769600000L, 1, 6L)),
+                Arguments.of(new ReservationRequestDto(1709596800000L, 1709856000000L, 1, 6L))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getReservationsWithoutAvailabilities")
     @DisplayName("Should return BAD_REQUEST with accommodation unavailable message")
-    public void testAccommodationNoSuitableAvailabilities() {
-        ReservationRequestDto newReservation = new ReservationRequestDto(1709337600000L, 1709596800000L, 1, 4L);
+    public void testAccommodationNoRightAvailabilities(ReservationRequestDto newReservation) {
         HttpEntity<ReservationRequestDto> requestEntity = createStandardRequestEntity(newReservation);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -205,9 +214,8 @@ public class GuestControllerTest {
     }
 
 
-    // TODO: napraviti test kada accommodation nema uopste available tamo (tu testirati ovo od privatne metode isAvailable, kada je null available, kada availabilityCandidates nema nista, kada ima prekid)
-
-    // TODO: automatic acceptance da moze vise preklapajucih
+    // TODO: automatic acceptance da moze vise preklapajucih (to moze gore u successful)
+    // TODO: invalid guest number i null za guests kada je PER_GUEST
 
     // --------------------- PRIVATE METHODS -----------------------------------
 
