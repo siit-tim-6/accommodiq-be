@@ -190,8 +190,7 @@ public class GuestControllerTest {
     }
 
     private static Stream<Arguments> getReservationsWithoutAvailabilities() {
-        // kada nema availabillity nijedan, kada ne matchuje nijedan avaiilailibty, kada ima prekid, kada ispada s kraja
-        // TODO: jos jedan kada ispada s pocetka
+        // kada nema availabillity nijedan, kada ne matchuje nijedan avaiilailibty, kada ima prekid, kada ispada s kraja, kada ispada s pocetka
         return Stream.of(
                 Arguments.of(new ReservationRequestDto(1709683200000L, 1709856000000L, 1, 5L)),
                 Arguments.of(new ReservationRequestDto(1709856000000L, 1710028800000L, 1, 6L)),
@@ -237,15 +236,6 @@ public class GuestControllerTest {
         assertNotNull(filteredReservations.get(0));
         assertEquals(filteredReservations.get(0).getStatus(), ReservationStatus.ACCEPTED);
     }
-
-    // TODO: invalid guest number i null za guests kada je PER_GUEST
-
-//    private static Stream<Arguments> getReservationsWithInvalidGuests() {
-//        return Stream.of(
-//                Arguments.of(new ReservationRequestDto(1710201600000L, 1710374400000L, 10, 6L)),
-//                Arguments.of(new ReservationRequestDto(1710201600000L, 1710374400000L, 1, 6L))
-//        );
-//    }
 
     @Test
     @DisplayName("Should return BAD_REQUEST with invalid guest number message")
