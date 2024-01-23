@@ -82,6 +82,61 @@ public class ReservationServiceTest {
     }
 
     @ParameterizedTest
+    @EnumSource(value = ReservationStatus.class, names = {"ACCEPTED", "DECLINED", "PENDING"})
+    @DisplayName("Test should Throw Forbidden Exception when Guest tries to set Reservation status not cancelled")
+    public void testShouldThrowForbiddenExceptionWhenGuestIsLoggedIn() {
+        // Arrange
+        validHostAccount.setRole(AccountRole.GUEST);
+        Collection<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(AccountRole.GUEST);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(validHostAccount, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Act
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
+            reservationService.changeReservationStatus(1L, ReservationStatus.ACCEPTED);
+        });
+
+        // Assert
+        assertEquals("403 FORBIDDEN \"Guest can only cancel reservation\"", ex.getMessage());
+        verifyNoInteractions(reservationRepository);
+        verifyNoInteractions(notificationService);
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(userService);
+        verifyNoInteractions(accommodationRepository);
+    }
+
+    @Test
+    @DisplayName("Test should cancel Reservation when Guest tries to cancel Reservation")
+    public void testShouldCancelReservationWhenGuestTriesToCancelReservation() {
+        // Arrange
+        validHostAccount.setRole(AccountRole.GUEST);
+        Collection<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(AccountRole.GUEST);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(validHostAccount, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(reservationRepository.findById(VALID_RESERVATION_ID)).thenReturn(Optional.of(validReservation));
+        // Act
+        ReservationCardDto card = reservationService.changeReservationStatus(VALID_RESERVATION_ID, ReservationStatus.CANCELLED);
+        // Assert
+        verify(reservationRepository).findById(VALID_RESERVATION_ID);
+        verify(reservationRepository).save(reservationArgumentCaptor.capture());
+        verify(reservationRepository).flush();
+        assertSame(ReservationStatus.CANCELLED, reservationArgumentCaptor.getValue().getStatus());
+        verifyNoMoreInteractions(reservationRepository);
+
+        verify(notificationService).createAndSendNotification(notificationArgumentCaptor.capture());
+        cancelNotificationAssertions(notificationArgumentCaptor.getValue());
+        verifyNoMoreInteractions(notificationService);
+
+        verifyNoInteractions(reviewRepository);
+        verifyNoInteractions(userService);
+        verifyNoInteractions(accommodationRepository);
+
+        reservationCardAssertions(card);
+    }
+
+    @ParameterizedTest
     @DisplayName("Test should Throw Forbidden Exception when Host tries to set wrong status")
     @EnumSource(value = ReservationStatus.class, names = {"CANCELLED", "PENDING"})
     public void testShouldThrowForbiddenExceptionWhenHostTriesToCancelReservation(ReservationStatus status) {
@@ -146,32 +201,6 @@ public class ReservationServiceTest {
     }
 
     @Test
-    @DisplayName("Test should throw Bad Request when accommodation is not available")
-    public void testShouldThrowBadRequestWhenAccommodationIsNotAvailable() {
-        // Arrange
-        when(reservationRepository.findById(VALID_RESERVATION_ID)).thenReturn(Optional.of(validReservation));
-        // Act
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
-            reservationService.changeReservationStatus(VALID_RESERVATION_ID, ReservationStatus.DECLINED);
-        });
-        // Assert
-        assertEquals("400 BAD_REQUEST \"Accommodation is not available within provided date range\"", ex.getMessage());
-        verify(reservationRepository).findById(VALID_RESERVATION_ID);
-        verify(reservationRepository).save(reservationArgumentCaptor.capture());
-        verify(reservationRepository).flush();
-        assertSame(ReservationStatus.DECLINED, reservationArgumentCaptor.getValue().getStatus());
-        verifyNoMoreInteractions(reservationRepository);
-
-        verify(notificationService).createAndSendNotification(notificationArgumentCaptor.capture());
-        notificationAssertions(notificationArgumentCaptor.getValue(), " has been declined");
-        verifyNoMoreInteractions(notificationService);
-
-        verifyNoInteractions(reviewRepository);
-        verifyNoInteractions(userService);
-        verifyNoInteractions(accommodationRepository);
-    }
-
-    @Test
     @DisplayName("Test should create Reservation card Dto when Reservation is Accepted")
     public void testShouldCreateReservationCardDtoWhenReservationStatusIsAccepted() {
         // Arrange
@@ -231,12 +260,17 @@ public class ReservationServiceTest {
         assertEquals(validReservation.getStartDate(), card.getStartDate());
         assertEquals(validReservation.getEndDate(), card.getEndDate());
         assertEquals(validReservation.getStatus(), card.getStatus());
-        assertEquals(validReservation.getAccommodation().getTotalPrice(validReservation.getStartDate(), validReservation.getEndDate(), validReservation.getNumberOfGuests()), card.getTotalPrice());
+        assertEquals(validReservation.getTotalPrice(), card.getTotalPrice());
     }
 
     private void notificationAssertions(Notification n, String x) {
         assertSame(n.getType(), NotificationType.HOST_REPLY_TO_REQUEST);
         assertEquals(n.getText(), "Your reservation for accommodation " + validReservation.getAccommodation().getTitle() + x);
         assertEquals(n.getUser().getId(), validReservation.getGuest().getId());
+    }
+
+    private void cancelNotificationAssertions(Notification n) {
+        assertSame(n.getType(), NotificationType.RESERVATION_CANCEL);
+        assertEquals(n.getText(), "Reservation for accommodation " + validReservation.getAccommodation().getTitle() + " has been cancelled");
     }
 }
