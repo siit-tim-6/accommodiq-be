@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class HostControllerTest {
-    public static final long activeReservationId = 8L;
+    public static final long activeReservationId = 1L;
     public static final String hostEmail = "john.doe@example.com";
     public static final String password = "123";
 
@@ -46,7 +46,6 @@ public class HostControllerTest {
         ReservationStatusDto reservationStatusDto = new ReservationStatusDto(ReservationStatus.ACCEPTED);
         HttpHeaders headers = TestUtils.createHttpHeaders(restTemplate.getRestTemplate(), guestEmail, password);
         HttpEntity<ReservationStatusDto> requestEntity = new HttpEntity<>(reservationStatusDto, headers);
-
 
         ResponseEntity<String> response = restTemplate.exchange(
                 changeReservationStatusUrl.replace("{reservationId}", "1"), HttpMethod.PUT, requestEntity, new ParameterizedTypeReference<>() {
@@ -169,6 +168,10 @@ public class HostControllerTest {
 
     private boolean isReservationStatusChanged(long reservationId, ReservationStatus reservationStatus) {
         return fetchHostReservations().stream().anyMatch(reservation -> reservation.getId() == reservationId && reservation.getStatus() == reservationStatus);
+    }
+
+    private ReservationStatus getReservationStatus(long reservationId) {
+        return fetchHostReservations().stream().filter(reservation -> reservation.getId() == reservationId).findFirst().get().getStatus();
     }
 
     private List<ReservationCardDto> fetchHostReservations() {
